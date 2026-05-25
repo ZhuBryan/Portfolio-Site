@@ -1,0 +1,93 @@
+.about-section {
+  background: var(--bg-underwater-a);
+  padding: 32px var(--content-pad-x);
+  border-top: 1px solid var(--border-teal-08);
+  position: relative;
+  overflow: hidden;
+}
+
+.about-inner {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  position: relative;
+  z-index: 1;
+}
+
+.about-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.about-text p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.about-text p span {
+  color: var(--accent-teal);
+  font-weight: 500;
+}
+
+.msg-bottle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  font-size: 11px;
+  color: var(--accent-teal);
+  border: 1px solid var(--border-teal-20);
+  background: rgba(78, 203, 160, 0.04);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: background-color 0.2s var(--ease-smooth), border-color 0.2s var(--ease-smooth);
+}
+.msg-bottle:hover {
+  background: rgba(78, 203, 160, 0.1);
+  border-color: var(--border-teal-50);
+}
+
+.about-turtle3d {
+  flex-shrink: 0;
+  width: 240px;
+  position: relative;
+  z-index: 1;
+}
+
+.about-turtle-fallback {
+  width: 100%;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 60% 35%, rgba(78, 203, 160, 0.08), transparent 55%),
+    linear-gradient(180deg, rgba(7, 26, 40, 0.85) 0%, rgba(6, 15, 28, 0.95) 100%);
+  border: 1px solid rgba(78, 203, 160, 0.1);
+  border-radius: 14px;
+  animation: turtle-sway 6s ease-in-out infinite;
+}
+
+@keyframes turtle-sway {
+  0%,
+  100% {
+    transform: rotate(-2deg) translateY(0);
+  }
+  50% {
+    transform: rotate(2deg) translateY(-3px);
+  }
+}
+
+@media (max-width: 640px) {
+  .about-inner {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+  .about-turtle3d {
+    width: 100%;
+  }
+}

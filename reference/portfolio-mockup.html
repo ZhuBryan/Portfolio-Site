@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bryan Zhu — Portfolio Mockup</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #030a14; font-family: 'DM Sans', sans-serif; }
+
+    .port-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      color: #e8f4f0;
+    }
+
+    .section-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #4ecba0;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(180deg, #0d1f3c 0%, #0a1e35 60%, #0a2a3a 100%);
+      padding: 40px 32px 0;
+      position: relative;
+      overflow: hidden;
+      min-height: 260px;
+    }
+    .hero-stars {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background-image:
+        radial-gradient(1px 1px at 20% 15%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 25%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 45% 10%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 85% 40%, rgba(255,255,255,0.25) 0%, transparent 100%),
+        radial-gradient(1px 1px at 10% 60%, rgba(255,255,255,0.2) 0%, transparent 100%);
+    }
+    .hero-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 42px; font-weight: 600; color: #f0f8f5;
+      margin: 0 0 6px; line-height: 1.1; position: relative; z-index: 2;
+    }
+    .hero-tagline {
+      font-size: 13px; color: #7dcfb0; font-weight: 300;
+      margin: 0 0 20px; position: relative; z-index: 2; letter-spacing: 0.02em;
+    }
+    .hero-cta-row {
+      display: flex; gap: 10px; margin-bottom: 28px; position: relative; z-index: 2;
+    }
+    .btn-primary {
+      background: #1aaf7a; color: #fff; border: none; border-radius: 6px;
+      padding: 9px 20px; font-size: 12px; font-weight: 500;
+      font-family: 'DM Sans', sans-serif; cursor: pointer;
+    }
+    .btn-ghost {
+      background: transparent; color: #7dcfb0;
+      border: 1px solid rgba(125,207,176,0.35); border-radius: 6px;
+      padding: 9px 20px; font-size: 12px; font-family: 'DM Sans', sans-serif; cursor: pointer;
+    }
+    .waterline-wrap { position: relative; height: 72px; margin-top: 10px; }
+    .water-surface { position: absolute; bottom: 0; left: -10px; right: -10px; height: 60px; }
+
+    /* ── MASK TRANSITION ── */
+    .mask-section {
+      background: linear-gradient(180deg, #0a2a3a 0%, #082030 50%, #071a28 100%);
+      padding: 28px 32px;
+      display: flex; align-items: center; gap: 28px;
+      border-top: 1px solid rgba(78,203,160,0.1);
+      position: relative;
+    }
+    .mask-desc h3 {
+      font-family: 'Playfair Display', serif; font-size: 17px;
+      font-weight: 400; font-style: italic; color: #c8eadf; margin: 0 0 6px;
+    }
+    .mask-desc p { font-size: 12px; color: #5a9a80; line-height: 1.6; margin: 0; }
+    .scroll-indicator {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      color: #4ecba0; font-size: 10px; letter-spacing: 0.1em;
+      text-transform: uppercase; opacity: 0.6; flex-shrink: 0;
+    }
+
+    /* ── ABOUT ── */
+    .about-section {
+      background: #071a28; padding: 28px 32px;
+      border-top: 1px solid rgba(78,203,160,0.08); position: relative;
+    }
+    .about-inner { display: flex; gap: 24px; align-items: flex-start; }
+    .about-text p { font-size: 13px; line-height: 1.8; color: #a8d4c4; margin: 0; }
+    .about-text p span { color: #4ecba0; font-weight: 500; }
+    .msg-bottle {
+      display: inline-flex; align-items: center; gap: 6px; margin-top: 12px;
+      font-size: 11px; color: #4ecba0; border: 1px solid rgba(78,203,160,0.2);
+      border-radius: 20px; padding: 4px 12px; cursor: pointer;
+    }
+
+    /* ── PROJECTS (CORAL) ── */
+    .projects-section {
+      background: #060f1c; padding: 28px 32px 36px; position: relative;
+    }
+    .reef-floor {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 24px 20px;
+      margin-top: 16px; padding-bottom: 32px; position: relative;
+    }
+    .reef-floor::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+      height: 24px; background: #071428;
+    }
+    .coral-card { position: relative; cursor: pointer; }
+    .coral-card:hover .coral-body { border-color: rgba(78,203,160,0.5); }
+    .coral-stem-wrap { display: flex; justify-content: center; margin-bottom: 0; }
+    .coral-body {
+      background: rgba(8,22,40,0.92);
+      border: 1px solid rgba(78,203,160,0.2);
+      border-radius: 14px 14px 4px 4px;
+      padding: 14px 14px 12px; position: relative;
+      transition: border-color 0.2s;
+    }
+    .coral-top {
+      position: absolute; top: -1px; left: 0; right: 0;
+      height: 4px; border-radius: 14px 14px 0 0;
+    }
+    .pname { font-size: 13px; font-weight: 500; color: #d0ece4; margin: 0 0 3px; }
+    .pdesc { font-size: 11px; color: #5a8a7a; line-height: 1.55; margin: 0 0 9px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 4px; }
+    .tag { font-size: 9px; border-radius: 4px; padding: 2px 7px; border: 1px solid; letter-spacing: 0.03em; }
+    .tg { background: rgba(78,203,160,0.08); color: #4ecba0; border-color: rgba(78,203,160,0.2); }
+    .ta { background: rgba(200,168,48,0.08); color: #c8a830; border-color: rgba(200,168,48,0.2); }
+    .tb { background: rgba(96,128,200,0.08); color: #6080c8; border-color: rgba(96,128,200,0.2); }
+    .tc { background: rgba(200,100,160,0.08); color: #c864a0; border-color: rgba(200,100,160,0.2); }
+    .sand-base {
+      background: #071428; border-top: 1px solid rgba(78,203,160,0.06);
+      padding: 6px 32px 10px; display: flex; align-items: center; gap: 14px;
+      position: relative;
+    }
+    .sand-note { font-size: 10px; color: #304858; letter-spacing: 0.05em; position: relative; z-index: 1; }
+
+    /* ── EXPERIENCE ── */
+    .exp-section {
+      background: #071420; padding: 28px 32px;
+      border-top: 1px solid rgba(78,203,160,0.08); position: relative;
+    }
+    .timeline { margin-top: 14px; display: flex; flex-direction: column; position: relative; padding-left: 20px; }
+    .timeline::before {
+      content: ''; position: absolute; left: 5px; top: 8px; bottom: 8px;
+      width: 1px; background: rgba(78,203,160,0.2);
+    }
+    .timeline-item { position: relative; padding: 0 0 20px 18px; }
+    .timeline-dot {
+      position: absolute; left: -14px; top: 5px;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #1aaf7a; border: 1.5px solid #071420;
+    }
+    .timeline-role { font-size: 13px; font-weight: 500; color: #c8eadf; margin: 0 0 1px; }
+    .timeline-org { font-size: 11px; color: #4ecba0; margin: 0 0 5px; }
+    .timeline-bullets { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 3px; }
+    .timeline-bullets li { font-size: 11px; color: #5a8a7a; line-height: 1.5; display: flex; gap: 6px; }
+    .timeline-bullets li::before { content: '↗'; color: #1aaf7a; flex-shrink: 0; font-size: 10px; margin-top: 1px; }
+    .stat-pill {
+      display: inline-block; background: rgba(26,175,122,0.12); color: #4ecba0;
+      border-radius: 4px; padding: 1px 6px; font-weight: 500; font-size: 10px;
+      border: 1px solid rgba(78,203,160,0.2);
+    }
+
+    /* ── SKILLS ── */
+    .skills-section {
+      background: #060f1c; padding: 28px 32px;
+      border-top: 1px solid rgba(78,203,160,0.08);
+    }
+    .skills-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 14px; }
+    .skill-chip {
+      background: rgba(10,30,50,0.7); border: 1px solid rgba(78,203,160,0.12);
+      border-radius: 8px; padding: 8px 10px; display: flex; align-items: center; gap: 7px;
+    }
+    .skill-dot { width: 5px; height: 5px; border-radius: 50%; background: #1aaf7a; flex-shrink: 0; }
+    .skill-name { font-size: 11px; color: #8abfb0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .skills-legend { display: flex; gap: 16px; margin-top: 12px; font-size: 10px; color: #4a6a5a; }
+    .legend-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+
+    /* ── CONTACT ── */
+    .contact-section {
+      background: linear-gradient(180deg, #060f1c 0%, #0a1e35 50%, #0d2040 100%);
+      padding: 28px 32px 36px;
+      border-top: 1px solid rgba(78,203,160,0.08); text-align: center;
+    }
+    .contact-tagline {
+      font-family: 'Playfair Display', serif; font-size: 20px; font-style: italic;
+      color: #c8eadf; margin: 0 0 6px; font-weight: 400;
+    }
+    .contact-sub { font-size: 12px; color: #4a7a6a; margin: 0 0 18px; }
+    .contact-links { display: flex; justify-content: center; gap: 12px; }
+    .contact-link {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(78,203,160,0.08); border: 1px solid rgba(78,203,160,0.2);
+      border-radius: 8px; padding: 8px 16px; font-size: 12px; color: #7dcfb0;
+      cursor: pointer; text-decoration: none;
+    }
+
+    .bubble {
+      position: absolute; border-radius: 50%;
+      border: 1px solid rgba(78,203,160,0.15);
+      animation: rise 6s infinite ease-in;
+    }
+    @keyframes rise {
+      0% { transform: translateY(0); opacity: 0.4; }
+      100% { transform: translateY(-80px); opacity: 0; }
+    }
+    .depth-bar {
+      position: absolute; right: 10px; top: 0; bottom: 0;
+      width: 3px; background: rgba(78,203,160,0.06);
+      border-radius: 4px; display: flex; flex-direction: column;
+      justify-content: space-around; align-items: center;
+    }
+    .depth-tick { width: 3px; height: 1px; background: rgba(78,203,160,0.25); }
+  </style>
+</head>
+<body>
+<div class="port-wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-stars"></div>
+    <div class="section-label">Portfolio</div>
+    <div class="hero-name">Bryan Zhu</div>
+    <div class="hero-tagline">CS @ Waterloo · AI / ML · Finance · Builder</div>
+    <div class="hero-cta-row">
+      <button class="btn-primary">Download Resume</button>
+      <button class="btn-ghost">View Projects ↓</button>
+    </div>
+    <div class="waterline-wrap">
+      <svg class="water-surface" viewBox="0 0 660 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="wg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0a2a3a" stop-opacity="0"/>
+            <stop offset="100%" stop-color="#0a2a3a" stop-opacity="1"/>
+          </linearGradient>
+        </defs>
+        <path d="M0,20 C80,5 160,35 240,20 C320,5 400,35 480,18 C560,2 620,30 660,18 L660,60 L0,60 Z" fill="url(#wg)" opacity="0.5"/>
+        <path d="M0,30 C100,15 200,45 320,28 C440,12 540,38 660,26 L660,60 L0,60 Z" fill="#0a2a3a" opacity="0.9"/>
+        <path d="M0,30 C100,15 200,45 320,28 C440,12 540,38 660,26" fill="none" stroke="rgba(78,203,160,0.35)" stroke-width="1.5"/>
+        <text x="50%" y="50" text-anchor="middle" fill="rgba(78,203,160,0.5)" font-size="9" font-family="DM Sans, sans-serif" letter-spacing="3">scroll to dive in ↓</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- MASK TRANSITION -->
+  <div class="mask-section">
+    <div style="flex-shrink:0;width:120px;height:80px;">
+      <svg viewBox="0 0 120 80" xmlns="http://www.w3.org/2000/svg" width="120" height="80">
+        <rect x="5" y="10" width="110" height="55" rx="14" fill="none" stroke="rgba(78,203,160,0.5)" stroke-width="3"/>
+        <rect x="10" y="14" width="40" height="47" rx="11" fill="rgba(14,180,120,0.08)" stroke="rgba(78,203,160,0.3)" stroke-width="1.5"/>
+        <rect x="70" y="14" width="40" height="47" rx="11" fill="rgba(14,180,120,0.08)" stroke="rgba(78,203,160,0.3)" stroke-width="1.5"/>
+        <line x1="55" y1="22" x2="65" y2="22" stroke="rgba(78,203,160,0.4)" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="2" y1="30" x2="5" y2="30" stroke="rgba(78,203,160,0.35)" stroke-width="2" stroke-linecap="round"/>
+        <line x1="115" y1="30" x2="118" y2="30" stroke="rgba(78,203,160,0.35)" stroke-width="2" stroke-linecap="round"/>
+        <ellipse cx="30" cy="38" rx="12" ry="9" fill="rgba(78,203,160,0.12)" stroke="rgba(78,203,160,0.2)" stroke-width="0.5"/>
+        <ellipse cx="90" cy="38" rx="12" ry="9" fill="rgba(78,203,160,0.12)" stroke="rgba(78,203,160,0.2)" stroke-width="0.5"/>
+        <text x="30" y="42" text-anchor="middle" fill="rgba(78,203,160,0.5)" font-size="8" font-family="DM Sans">AR</text>
+        <text x="90" y="42" text-anchor="middle" fill="rgba(78,203,160,0.5)" font-size="8" font-family="DM Sans">ML</text>
+        <circle cx="22" cy="15" r="3" fill="none" stroke="rgba(78,203,160,0.6)" stroke-width="1"/>
+        <circle cx="98" cy="15" r="3" fill="none" stroke="rgba(78,203,160,0.6)" stroke-width="1"/>
+      </svg>
+    </div>
+    <div class="mask-desc" style="flex:1;">
+      <div class="section-label">The transition</div>
+      <h3>putting on the mask</h3>
+      <p>As you scroll, the diving mask sweeps across the viewport. A water-lens ripple clears — and you're underwater. Scroll-controlled, ~1.5s, happens once.</p>
+    </div>
+    <div class="scroll-indicator">
+      <svg width="12" height="24" viewBox="0 0 12 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="2" width="8" height="14" rx="4" stroke="rgba(78,203,160,0.5)" stroke-width="1.2"/>
+        <circle cx="6" cy="6" r="1.5" fill="rgba(78,203,160,0.5)"/>
+        <path d="M4 20L6 22L8 20" stroke="rgba(78,203,160,0.5)" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
+      scroll
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="about-section">
+    <div style="position:absolute;right:28px;top:20px;opacity:0.5;">
+      <div class="bubble" style="width:6px;height:6px;right:0;top:10px;animation-delay:0s;animation-duration:5s;"></div>
+      <div class="bubble" style="width:4px;height:4px;right:10px;top:30px;animation-delay:2s;animation-duration:7s;"></div>
+    </div>
+    <div class="section-label">About</div>
+    <div class="about-inner">
+      <div class="about-text">
+        <p>CS student at <span>Waterloo</span> (4.0 GPA) who builds things at the intersection of <span>AI, machine learning, and finance</span>. Currently leading AR/VR gesture recognition at <span>Waterloo Reality Labs</span>. Obsessive hackathon builder — I like hard problems, elegant systems, and the occasional turtle.</p>
+        <div class="msg-bottle">
+          <svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="1" width="4" height="2" rx="1" stroke="rgba(78,203,160,0.7)" stroke-width="1"/>
+            <rect x="2" y="3" width="8" height="10" rx="3" stroke="rgba(78,203,160,0.7)" stroke-width="1"/>
+            <line x1="4" y1="7" x2="8" y2="7" stroke="rgba(78,203,160,0.5)" stroke-width="0.8"/>
+            <line x1="4" y1="9" x2="7" y2="9" stroke="rgba(78,203,160,0.5)" stroke-width="0.8"/>
+          </svg>
+          message in a bottle →
+        </div>
+      </div>
+      <div style="flex-shrink:0;width:64px;">
+        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+          <ellipse cx="32" cy="34" rx="16" ry="12" fill="#1aaf7a" opacity="0.85"/>
+          <ellipse cx="32" cy="33" rx="12" ry="9" fill="#0d8a5e"/>
+          <path d="M22,26 C20,20 16,18 14,22 C12,26 16,30 20,28" fill="#1aaf7a"/>
+          <path d="M42,26 C44,20 48,18 50,22 C52,26 48,30 44,28" fill="#1aaf7a"/>
+          <path d="M22,40 C20,44 17,46 16,44 C15,42 18,38 21,38" fill="#1aaf7a"/>
+          <path d="M42,40 C44,44 47,46 48,44 C49,42 46,38 43,38" fill="#1aaf7a"/>
+          <ellipse cx="32" cy="26" rx="7" ry="6" fill="#1aaf7a"/>
+          <ellipse cx="32" cy="26" rx="5" ry="4" fill="#0d8a5e"/>
+          <circle cx="29" cy="24" r="1.5" fill="#e8f4f0"/>
+          <circle cx="35" cy="24" r="1.5" fill="#e8f4f0"/>
+          <circle cx="29" cy="24" r="0.7" fill="#0a1628"/>
+          <circle cx="35" cy="24" r="0.7" fill="#0a1628"/>
+          <path d="M32,46 C31,49 31,52 32,52 C33,52 33,49 32,46" fill="#1aaf7a"/>
+          <path d="M24,33 L26,31 M28,31 L30,29 M34,29 L36,31 M38,31 L40,33" stroke="#0d8a5e" stroke-width="0.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECTS (CORAL CARDS) -->
+  <div class="projects-section">
+    <div class="depth-bar">
+      <div class="depth-tick"></div><div class="depth-tick"></div>
+      <div class="depth-tick"></div><div class="depth-tick"></div>
+    </div>
+    <div class="section-label">Projects</div>
+    <div style="font-size:11px;color:#4a7a6a;margin-top:2px;margin-bottom:0;">click any coral to explore</div>
+    <div class="reef-floor">
+
+      <!-- VANTAGE -->
+      <div class="coral-card">
+        <div class="coral-stem-wrap">
+          <svg width="120" height="64" viewBox="0 0 120 64" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+            <path d="M60,64 C60,52 58,44 54,36 C50,28 44,24 44,16 C44,10 47,6 50,4" fill="none" stroke="#1aaf7a" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+            <path d="M60,64 C60,52 62,42 66,34 C70,26 76,22 74,14 C73,10 70,7 68,5" fill="none" stroke="#1aaf7a" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+            <path d="M60,64 C60,56 60,46 60,36" fill="none" stroke="#0d8a5e" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+            <ellipse cx="50" cy="4" rx="5" ry="4" fill="#1aaf7a" opacity="0.8"/>
+            <ellipse cx="68" cy="5" rx="4" ry="3.5" fill="#1aaf7a" opacity="0.6"/>
+            <ellipse cx="44" cy="16" rx="4" ry="3" fill="#0d8a5e" opacity="0.6"/>
+            <ellipse cx="74" cy="14" rx="3.5" ry="3" fill="#0d8a5e" opacity="0.5"/>
+            <circle cx="54" cy="36" r="2.5" fill="#4ecba0" opacity="0.5"/>
+            <circle cx="66" cy="34" r="2" fill="#4ecba0" opacity="0.4"/>
+          </svg>
+        </div>
+        <div class="coral-body">
+          <div class="coral-top" style="background:#1aaf7a;opacity:0.7;"></div>
+          <div class="pname">VANTAGE</div>
+          <div class="pdesc">Satellite audit platform — 94% accuracy detecting deforestation via fine-tuned ResNet-18 on 27k+ images</div>
+          <div class="tags">
+            <span class="tag tg">PyTorch</span><span class="tag tg">FastAPI</span><span class="tag ta">Grad-CAM</span><span class="tag tg">Reflex</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- HONEYKEY -->
+      <div class="coral-card">
+        <div class="coral-stem-wrap">
+          <svg width="120" height="64" viewBox="0 0 120 64" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+            <path d="M60,64 L60,30" fill="none" stroke="#b87820" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+            <path d="M60,44 L50,32 L44,20 M44,20 C42,16 40,12 42,9 C44,6 47,6 49,8" fill="none" stroke="#c8a830" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+            <path d="M60,38 L70,26 L76,14 M76,14 C78,10 80,8 78,5 C76,3 73,4 72,7" fill="none" stroke="#c8a830" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+            <ellipse cx="42" cy="9" rx="4.5" ry="3.5" fill="#c8a830" opacity="0.75"/>
+            <ellipse cx="72" cy="7" rx="4" ry="3.5" fill="#c8a830" opacity="0.6"/>
+            <circle cx="44" cy="20" r="2" fill="#e0c060" opacity="0.4"/>
+            <circle cx="76" cy="14" r="2" fill="#e0c060" opacity="0.4"/>
+          </svg>
+        </div>
+        <div class="coral-body" style="border-color:rgba(200,168,48,0.2);">
+          <div class="coral-top" style="background:#c8a830;opacity:0.65;"></div>
+          <div class="pname">HoneyKey</div>
+          <div class="pdesc">Honeypot security system detecting credential abuse, MITRE ATT&CK mapping, AI SOC reports — nwHacks 2026</div>
+          <div class="tags">
+            <span class="tag ta">FastAPI</span><span class="tag ta">SQLite</span><span class="tag tb">LLM</span><span class="tag ta">Pydantic</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- INVESTHER -->
+      <div class="coral-card">
+        <div class="coral-stem-wrap">
+          <svg width="120" height="64" viewBox="0 0 120 64" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+            <path d="M60,64 C60,56 58,48 56,40 C54,32 52,26 54,18 C55,12 58,8 60,6" fill="none" stroke="#5070c0" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+            <path d="M60,64 C60,56 64,46 68,38 C72,30 76,24 74,16 C73,11 70,7 68,5" fill="none" stroke="#6080c8" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+            <path d="M58,40 C54,36 46,36 42,32 C40,30 40,26 43,24" fill="none" stroke="#6080c8" stroke-width="1.8" stroke-linecap="round" opacity="0.5"/>
+            <path d="M64,32 C68,28 76,28 80,24 C82,22 82,18 79,16" fill="none" stroke="#5070c0" stroke-width="1.8" stroke-linecap="round" opacity="0.45"/>
+            <ellipse cx="60" cy="6" rx="5" ry="4" fill="#6080c8" opacity="0.75"/>
+            <ellipse cx="68" cy="5" rx="4" ry="3.5" fill="#5070c0" opacity="0.6"/>
+            <ellipse cx="43" cy="24" rx="3.5" ry="3" fill="#6080c8" opacity="0.55"/>
+            <ellipse cx="79" cy="16" rx="3.5" ry="3" fill="#5070c0" opacity="0.5"/>
+          </svg>
+        </div>
+        <div class="coral-body" style="border-color:rgba(96,128,200,0.2);">
+          <div class="coral-top" style="background:#6080c8;opacity:0.65;"></div>
+          <div class="pname">InvestHER</div>
+          <div class="pdesc">Chrome extension reducing impulse purchases 70% with RAG-based AI coaching + voice synthesis — Hack Western 12</div>
+          <div class="tags">
+            <span class="tag tb">React</span><span class="tag tb">Supabase</span><span class="tag tb">Gemini</span><span class="tag tc">TypeScript</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- INSTRUMENT CLASSIFIER -->
+      <div class="coral-card">
+        <div class="coral-stem-wrap">
+          <svg width="120" height="64" viewBox="0 0 120 64" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+            <path d="M60,64 L60,28" fill="none" stroke="#8050a8" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+            <path d="M60,48 C56,42 48,40 44,34 C41,29 42,24 45,21" fill="none" stroke="#a060c8" stroke-width="2" stroke-linecap="round" opacity="0.65"/>
+            <path d="M60,42 C64,36 72,34 76,28 C79,23 78,18 75,15" fill="none" stroke="#9050b8" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+            <path d="M60,34 C56,28 52,22 54,14 C55,9 58,6 60,4" fill="none" stroke="#b070d8" stroke-width="1.8" stroke-linecap="round" opacity="0.55"/>
+            <ellipse cx="45" cy="21" rx="4.5" ry="3.5" fill="#a060c8" opacity="0.7"/>
+            <ellipse cx="75" cy="15" rx="4" ry="3.5" fill="#9050b8" opacity="0.65"/>
+            <ellipse cx="60" cy="4" rx="4" ry="3.5" fill="#b070d8" opacity="0.6"/>
+            <circle cx="44" cy="34" r="2.5" fill="#c090e0" opacity="0.45"/>
+            <circle cx="76" cy="28" r="2.5" fill="#c090e0" opacity="0.4"/>
+          </svg>
+        </div>
+        <div class="coral-body" style="border-color:rgba(160,96,200,0.2);">
+          <div class="coral-top" style="background:#a060c8;opacity:0.65;"></div>
+          <div class="pname">Instrument Classifier</div>
+          <div class="pdesc">CNN achieving 98% accuracy on mel spectrograms — 4-layer architecture, Adam optimizer, 2000+ audio samples</div>
+          <div class="tags">
+            <span class="tag tc">PyTorch</span><span class="tag tc">torchaudio</span><span class="tag tc">CNN</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="sand-base">
+      <svg width="100%" height="18" viewBox="0 0 600 18" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" style="position:absolute;left:0;top:0;">
+        <path d="M0,10 C40,4 80,14 120,8 C160,2 200,12 240,7 C280,2 320,11 360,6 C400,1 440,12 480,7 C520,2 560,10 600,6 L600,18 L0,18 Z" fill="#0a1e30" opacity="0.8"/>
+      </svg>
+      <span class="sand-note">~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~</span>
+    </div>
+  </div>
+
+  <!-- EXPERIENCE -->
+  <div class="exp-section">
+    <div class="depth-bar" style="opacity:0.7;">
+      <div class="depth-tick"></div><div class="depth-tick"></div><div class="depth-tick"></div>
+    </div>
+    <div class="section-label">Experience</div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-role">Software Project Lead</div>
+        <div class="timeline-org">Waterloo Reality Labs · Sep 2025 – Present</div>
+        <ul class="timeline-bullets">
+          <li>Reduced inference overhead <span class="stat-pill">75%</span> upgrading AR/VR hand gesture system on Meta Quest</li>
+          <li>Achieved <span class="stat-pill">99% accuracy</span> across 1,246 temporal samples with Conv2D PyTorch model</li>
+          <li>Improved few-shot classification from <span class="stat-pill">71% → 92%</span> using Siamese network with triplet loss</li>
+        </ul>
+      </div>
+      <div class="timeline-item" style="padding-bottom:0;">
+        <div class="timeline-dot" style="background:#c8a830;"></div>
+        <div class="timeline-role">Content Strategist — World Finalist</div>
+        <div class="timeline-org">Wharton Global Investment Competition · Nov 2023 – Apr 2024</div>
+        <ul class="timeline-bullets">
+          <li>Placed <span class="stat-pill">Top 11 / 4000+ teams</span> worldwide, first-ever finalist from Alberta</li>
+          <li>Delivered <span class="stat-pill">7.11%</span> avg monthly return via mean-variance optimization</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SKILLS -->
+  <div class="skills-section">
+    <div class="section-label">Skills</div>
+    <div class="skills-grid">
+      <div class="skill-chip"><div class="skill-dot"></div><span class="skill-name">Python</span></div>
+      <div class="skill-chip"><div class="skill-dot"></div><span class="skill-name">PyTorch</span></div>
+      <div class="skill-chip"><div class="skill-dot"></div><span class="skill-name">TypeScript</span></div>
+      <div class="skill-chip"><div class="skill-dot"></div><span class="skill-name">React</span></div>
+      <div class="skill-chip"><div class="skill-dot"></div><span class="skill-name">FastAPI</span></div>
+      <div class="skill-chip"><div class="skill-dot" style="background:#c8a830;"></div><span class="skill-name">scikit-learn</span></div>
+      <div class="skill-chip"><div class="skill-dot" style="background:#c8a830;"></div><span class="skill-name">ONNX</span></div>
+      <div class="skill-chip"><div class="skill-dot"></div><span class="skill-name">Node.js</span></div>
+      <div class="skill-chip"><div class="skill-dot" style="background:#c8a830;"></div><span class="skill-name">SQL / SQLite</span></div>
+      <div class="skill-chip"><div class="skill-dot"></div><span class="skill-name">C / C++</span></div>
+      <div class="skill-chip"><div class="skill-dot" style="background:#6080c8;"></div><span class="skill-name">Supabase</span></div>
+      <div class="skill-chip"><div class="skill-dot" style="background:#6080c8;"></div><span class="skill-name">MongoDB</span></div>
+      <div class="skill-chip"><div class="skill-dot" style="background:#c8a830;"></div><span class="skill-name">Transfer Learning</span></div>
+      <div class="skill-chip"><div class="skill-dot" style="background:#c8a830;"></div><span class="skill-name">Grad-CAM</span></div>
+      <div class="skill-chip"><div class="skill-dot"></div><span class="skill-name">Git / GitHub</span></div>
+      <div class="skill-chip"><div class="skill-dot" style="background:#6080c8;"></div><span class="skill-name">REST APIs</span></div>
+    </div>
+    <div class="skills-legend">
+      <span><span class="legend-dot" style="background:#1aaf7a;"></span>Languages & Frameworks</span>
+      <span><span class="legend-dot" style="background:#c8a830;"></span>ML & AI</span>
+      <span><span class="legend-dot" style="background:#6080c8;"></span>Tools & Platforms</span>
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="contact-section">
+    <div style="font-size:28px;margin-bottom:10px;">🐢</div>
+    <div class="contact-tagline">always open to cool problems</div>
+    <div class="contact-sub">the turtle will find you first, but just in case —</div>
+    <div class="contact-links">
+      <a class="contact-link" href="mailto:bryan.zhu@uwaterloo.ca">✉ Email</a>
+      <a class="contact-link" href="https://linkedin.com/in/bryan-zhu101">in LinkedIn</a>
+      <a class="contact-link" href="https://github.com/ZhuBryan">⌥ GitHub</a>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

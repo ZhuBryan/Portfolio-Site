@@ -1,0 +1,263 @@
+.projects-section {
+  background: var(--bg-underwater-c);
+  padding: 32px var(--content-pad-x) 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.projects-subnote {
+  font-size: 11px;
+  color: var(--text-faint);
+  margin-top: 2px;
+  margin-bottom: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.reef-floor {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px 20px;
+  margin-top: 18px;
+  padding-bottom: 22px;
+  position: relative;
+  z-index: 1;
+}
+
+.coral-card {
+  position: relative;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  display: block;
+  width: 100%;
+}
+
+.coral-card:focus-visible {
+  outline: 2px solid var(--accent-teal);
+  outline-offset: 4px;
+  border-radius: 14px;
+}
+
+.coral-card:hover .coral-body {
+  border-color: var(--border-teal-50);
+  transform: translateY(-2px);
+}
+
+.coral-stem-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: -2px; /* tuck the stem base flush against the card top */
+  overflow: visible;
+  transform-origin: 50% 100%;
+}
+
+/* ─────────────────────────────────────────────
+   Generative organic coral — animated SVG filter
+   ─────────────────────────────────────────────
+   Every coral SVG carries .organic-coral. The filter is defined globally in
+   CoralFilterDefs and animates baseFrequency + scale via SMIL so the edges
+   actually ripple over time (not just sway). The CSS sway adds whole-body
+   drift. Each card stagger their phase via --coral-stagger so the reef
+   doesn't breathe in lockstep.
+*/
+.coral-filter-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.organic-coral {
+  overflow: visible;
+  filter: url(#underwater-current);
+  transform-origin: 50% 100%;
+  transform: translateZ(0);
+  will-change: filter, transform;
+  animation: coral-sway 9s ease-in-out infinite alternate;
+  animation-delay: var(--coral-stagger, 0s);
+}
+
+/* ── Bioluminescent polyp shimmer ─────────────────────────────────── */
+.coral-polyp {
+  transform-origin: center;
+  transform-box: fill-box;
+  mix-blend-mode: screen;
+  animation: polyp-breathe 5s ease-in-out infinite alternate;
+  animation-delay: var(--coral-stagger, 0s);
+}
+
+.coral-polyp.pulse-slow {
+  animation:
+    polyp-breathe 5.6s ease-in-out infinite alternate,
+    polyp-glow-soft 4.2s ease-in-out infinite alternate;
+  animation-delay: var(--coral-stagger, 0s), var(--coral-stagger, 0s);
+}
+
+.coral-polyp.pulse-fast {
+  animation:
+    polyp-breathe 3.4s ease-in-out infinite alternate,
+    polyp-glow-bright 2.8s ease-in-out infinite alternate;
+  animation-delay: calc(var(--coral-stagger, 0s) + 0.4s),
+    calc(var(--coral-stagger, 0s) + 0.4s);
+}
+
+@keyframes coral-sway {
+  0% {
+    transform: translateZ(0) rotate(-1.4deg) skewX(-0.8deg);
+  }
+  100% {
+    transform: translateZ(0) rotate(1.8deg) skewX(1deg);
+  }
+}
+
+@keyframes polyp-breathe {
+  0% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1.12);
+  }
+}
+
+@keyframes polyp-glow-soft {
+  0% {
+    filter: drop-shadow(0 0 1px rgba(78, 203, 160, 0.4));
+  }
+  100% {
+    filter: drop-shadow(0 0 6px rgba(78, 203, 160, 0.85));
+  }
+}
+
+@keyframes polyp-glow-bright {
+  0% {
+    filter: drop-shadow(0 0 2px rgba(78, 203, 160, 0.5));
+  }
+  100% {
+    filter: drop-shadow(0 0 10px var(--project-accent, #4ecba0));
+  }
+}
+
+/* Hover ignite — the coral's project-accent halo blooms */
+.coral-card:hover .organic-coral,
+.coral-card:focus-visible .organic-coral {
+  filter:
+    url(#underwater-current)
+    drop-shadow(0 0 8px var(--project-accent, #4ecba0))
+    drop-shadow(0 0 22px rgba(78, 203, 160, 0.35));
+  transition: filter 0.32s var(--ease-smooth);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .organic-coral,
+  .coral-polyp,
+  .coral-polyp.pulse-slow,
+  .coral-polyp.pulse-fast {
+    animation: none !important;
+  }
+  /* The displacement filter itself still applies (gives the stems their
+     organic look) but it stops animating because all SMIL animations
+     inherit the reduced-motion setting from the user agent. */
+}
+
+.coral-body {
+  background: rgba(8, 22, 40, 0.92);
+  border: 1px solid var(--border-teal-20);
+  border-radius: 14px 14px 4px 4px;
+  padding: 14px 14px 12px;
+  position: relative;
+  transition: border-color 0.2s var(--ease-smooth), transform 0.2s var(--ease-smooth);
+}
+
+.coral-top {
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  border-radius: 14px 14px 0 0;
+}
+
+.pname {
+  font-size: 13px;
+  font-weight: 500;
+  color: #d0ece4;
+  margin: 0 0 3px;
+}
+
+.pdesc {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin: 0 0 9px;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.tag {
+  font-size: 9px;
+  border-radius: 4px;
+  padding: 2px 7px;
+  border: 1px solid;
+  letter-spacing: 0.03em;
+}
+
+.tag-teal {
+  background: rgba(78, 203, 160, 0.08);
+  color: var(--accent-teal);
+  border-color: var(--border-teal-20);
+}
+.tag-amber {
+  background: rgba(200, 168, 48, 0.08);
+  color: var(--accent-amber);
+  border-color: rgba(200, 168, 48, 0.2);
+}
+.tag-blue {
+  background: rgba(96, 128, 200, 0.08);
+  color: var(--accent-blue);
+  border-color: rgba(96, 128, 200, 0.2);
+}
+.tag-purple {
+  background: rgba(200, 100, 160, 0.08);
+  color: var(--accent-pink);
+  border-color: rgba(200, 100, 160, 0.2);
+}
+
+.sand-base {
+  background: #071428;
+  border-top: 1px solid rgba(78, 203, 160, 0.06);
+  padding: 6px var(--content-pad-x) 10px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.sand-note {
+  font-size: 10px;
+  color: #304858;
+  letter-spacing: 0.05em;
+  position: relative;
+  z-index: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 640px) {
+  .reef-floor {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}

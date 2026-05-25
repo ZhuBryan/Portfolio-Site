@@ -1,0 +1,90 @@
+.contact-section {
+  background: linear-gradient(
+    180deg,
+    var(--bg-underwater-c) 0%,
+    var(--bg-hero-mid) 50%,
+    #0d2040 100%
+  );
+  padding: 40px var(--content-pad-x) 56px;
+  border-top: 1px solid var(--border-teal-08);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.contact-turtle-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 14px;
+  animation: turtle-float 5s ease-in-out infinite;
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes turtle-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.contact-tagline {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-style: italic;
+  color: var(--text-ink);
+  margin: 0 0 6px;
+  font-weight: 400;
+  position: relative;
+  z-index: 1;
+}
+
+.contact-sub {
+  font-size: 12px;
+  color: #4a7a6a;
+  margin: 0 0 22px;
+  position: relative;
+  z-index: 1;
+}
+
+.contact-links {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(78, 203, 160, 0.08);
+  border: 1px solid var(--border-teal-20);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 12px;
+  color: var(--text-soft-blue);
+  text-decoration: none;
+  transition: background-color 0.18s var(--ease-smooth),
+    border-color 0.18s var(--ease-smooth), color 0.18s var(--ease-smooth);
+}
+.contact-link:hover {
+  background: rgba(78, 203, 160, 0.16);
+  border-color: var(--border-teal-50);
+  color: var(--accent-teal);
+}
+
+.contact-footer {
+  margin-top: 32px;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #2a4858;
+  position: relative;
+  z-index: 1;
+}
