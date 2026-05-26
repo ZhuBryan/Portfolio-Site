@@ -73,7 +73,7 @@ export default function About() {
               </div>
             }
           >
-            <TurtleMascot3D height={220} showHud />
+            <TurtleMascot3D height={360} showHud />
           </Suspense>
         </motion.div>
       </div>
