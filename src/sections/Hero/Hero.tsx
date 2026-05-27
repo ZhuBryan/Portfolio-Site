@@ -1,5 +1,5 @@
 import SectionLabel from '../../components/SectionLabel';
-import WaterSurface from '../../svg/WaterSurface';
+
 import './Hero.css';
 
 export default function Hero() {
@@ -20,9 +20,6 @@ export default function Hero() {
         <button className="btn-ghost" type="button" onClick={scrollToProjects}>
           View Projects ↓
         </button>
-      </div>
-      <div className="waterline-wrap">
-        <WaterSurface />
       </div>
     </section>
   );

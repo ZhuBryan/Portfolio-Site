@@ -43,8 +43,8 @@
   --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
 
   /* Layout */
-  --content-max: 760px;
-  --content-pad-x: 32px;
+  --content-max: 1280px;
+  --content-pad-x: 64px;
 
   /* Motion */
   --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
@@ -98,7 +98,8 @@ svg {
    Layout shell
    ───────────────────────────────────────────── */
 .port-wrap {
-  max-width: var(--content-max);
+  width: 100%;
+  max-width: 100%;
   margin: 0 auto;
   color: var(--text-primary);
   position: relative;
@@ -184,6 +185,12 @@ svg {
 @media (max-width: 640px) {
   :root {
     --content-pad-x: 20px;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  :root {
+    --content-pad-x: 48px;
   }
 }
 

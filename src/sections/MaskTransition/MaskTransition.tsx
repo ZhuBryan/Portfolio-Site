@@ -43,9 +43,9 @@ export default function MaskTransition() {
   // Tighter spring — minimal mass so the visor tracks the wheel/touchpad
   // instead of swimming behind it. Critically damped so it never overshoots.
   const smooth = useSpring(scrollYProgress, {
-    stiffness: 260,
-    damping: 38,
-    mass: 0.18,
+    stiffness: 50,
+    damping: 15,
+    mass: 1.2,
   });
 
   /* ── Visor scale: approach → snap → engulf ─────────────────────────────
@@ -54,9 +54,11 @@ export default function MaskTransition() {
      an enormous window, with the rubber rim well past the screen edges. */
   const visorScale = useTransform(
     smooth,
-    [0, 0.1, 0.42, 0.55, 0.85, 1],
-    shouldReduceMotion ? [1, 1, 1, 1, 1, 1] : [0.55, 0.82, 2.6, 4.4, 12, 14]
+    [0, 0.1, 0.42, 0.55, 0.75, 1],
+    shouldReduceMotion ? [1, 1, 1, 1, 1, 1] : [0.55, 0.82, 2.6, 4.4, 18, 28]
   );
+  // Fade the visor out as the lens engulfs the screen so the page below shows through
+  const visorOpacity = useTransform(smooth, [0, 0.65, 0.88, 1], [1, 1, 0.3, 0]);
 
   // Forward-settle: the mask comes toward your face from below.
   const visorY = useTransform(
@@ -84,12 +86,11 @@ export default function MaskTransition() {
   const surfaceOpacity = useTransform(smooth, [0, 0.32], [1, 0]);
   const surfaceBlur = useTransform(smooth, [0, 0.4], ['blur(0px)', 'blur(10px)']);
 
-  /* ── Underwater layer fades in (visible through the lens cutout) ─────── */
-  const oceanOpacity = useTransform(smooth, [0.12, 0.55], [0, 1]);
+  /* ── Underwater layer fades in, then fades OUT completely to reveal the page ─────── */
+  const oceanOpacity = useTransform(smooth, [0.12, 0.45, 0.75, 1], [0, 1, 1, 0]);
 
-  /* ── Depth tint: a full-viewport teal cast that deepens during descent.
-       This is what sells "I'm submerging" beyond the visor itself.       */
-  const tintOpacity = useTransform(smooth, [0.15, 0.7], [0, 0.45]);
+  /* ── Depth tint: fades in, then ALL the way out at the end ────────── */
+  const tintOpacity = useTransform(smooth, [0.15, 0.5, 0.78, 1], [0, 0.45, 0.2, 0]);
 
   /* ── Lens distortion ripple — peaks at the seal moment ──────────────── */
   const rippleOpacity = useTransform(
@@ -104,21 +105,20 @@ export default function MaskTransition() {
        that was causing most of the frame-time spikes. ────────────────── */
   const haloOpacity = useTransform(
     smooth,
-    [0, 0.3, 0.55],
-    shouldReduceMotion ? [0, 0, 0] : [0.55, 0.4, 0]
+    [0, 0.3, 0.55, 0.85, 1],
+    shouldReduceMotion ? [0, 0, 0, 0, 0] : [0.55, 0.4, 0, 0, 0]
   );
 
   /* ── Bubbles layer — visible during the dive, peaks while engulfed ──── */
   const bubblesOpacity = useTransform(
     smooth,
-    [0.18, 0.55, 0.95, 1],
-    shouldReduceMotion ? [0, 0, 0, 0] : [0, 1, 1, 0]
+    [0.18, 0.55, 0.8, 1],
+    shouldReduceMotion ? [0, 0, 0, 0] : [0, 1, 0.4, 0]
   );
 
-  /* ── HUD readouts ──────────────────────────────────────────────────── */
-  const hudOpacity = useTransform(smooth, [0, 0.12, 0.92, 1], [0, 1, 1, 0]);
+  /* ── HUD readouts (fades out as you fall into the page) ──────────────── */
+  const hudOpacity = useTransform(smooth, [0, 0.12, 0.7, 0.88], [0, 1, 1, 0]);
   const ctaOpacity = useTransform(smooth, [0, 0.08], [1, 0]);
-  const deepIntroOpacity = useTransform(smooth, [0.82, 0.95], [0, 1]);
 
   // Depth meter accelerates with smoothstep — you fall faster as you descend.
   useMotionValueEvent(smooth, 'change', (latest) => {
@@ -146,11 +146,11 @@ export default function MaskTransition() {
   return (
     <section ref={sectionRef} className="mask-section" id="mask-transition">
       <div className="mask-sticky">
-        {/* Layer 1 — underwater backdrop */}
-        <div className="mask-ocean" aria-hidden="true">
-          <motion.div className="mask-ocean__veil" style={{ opacity: oceanOpacity }} />
+        {/* Layer 1 — underwater backdrop, fades completely to reveal page below */}
+        <motion.div className="mask-ocean" aria-hidden="true" style={{ opacity: oceanOpacity }}>
+          <div className="mask-ocean__veil" />
           <div className="mask-ocean__shafts" />
-        </div>
+        </motion.div>
 
         {/* Layer 2 — above-water surface (fades early) */}
         <motion.div
@@ -158,7 +158,6 @@ export default function MaskTransition() {
           style={{ opacity: surfaceOpacity, filter: surfaceBlur }}
           aria-hidden="true"
         >
-          <div className="mask-surface__stars" />
           <div className="mask-surface__waterline">
             <WaterSurface showScrollHint={false} />
           </div>
@@ -203,6 +202,7 @@ export default function MaskTransition() {
             rotate: visorRotate,
             y: visorY,
             x: visorX,
+            opacity: visorOpacity,
           }}
           aria-hidden="true"
         >
@@ -246,17 +246,6 @@ export default function MaskTransition() {
         <motion.div className="mask-cta" style={{ opacity: ctaOpacity }} aria-hidden="true">
           <span className="mask-cta__label">scroll to dive</span>
           <span className="mask-cta__arrow">↓</span>
-        </motion.div>
-
-        {/* Deep-ocean welcome — fades in once you're fully engulfed */}
-        <motion.div
-          className="mask-arrival"
-          style={{ opacity: deepIntroOpacity }}
-          aria-hidden="true"
-        >
-          <span className="mask-arrival__eyebrow">— pressure stable —</span>
-          <h3 className="mask-arrival__title">welcome to the deep</h3>
-          <span className="mask-arrival__sub">−{depth}m · keep scrolling</span>
         </motion.div>
       </div>
     </section>

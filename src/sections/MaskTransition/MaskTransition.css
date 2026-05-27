@@ -7,8 +7,9 @@
   position: relative;
   width: 100%;
   height: 280vh;
-  background-color: var(--bg-hero-bottom);
-  border-top: 1px solid var(--border-teal-10);
+  /* Normal flow — the About section sits below this naturally.
+     All visual layers fade to 0 at scroll=1 so the transition
+     becomes invisible when complete, and content flows in. */
 }
 
 .mask-sticky {
@@ -21,6 +22,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  /* No background — once all layers fade to opacity:0 the sticky element
+     becomes fully transparent, and the About section below scrolls into view */
 }
 
 /* ── Layer 1: underwater backdrop ───────────────────────────────────── */
@@ -60,12 +63,7 @@
   position: absolute;
   inset: 0;
   z-index: 2;
-  background: linear-gradient(
-    180deg,
-    var(--bg-hero-top) 0%,
-    var(--bg-hero-mid) 55%,
-    var(--bg-hero-bottom) 100%
-  );
+  background: var(--bg-hero-bottom);
 }
 .mask-surface__stars {
   position: absolute;
@@ -84,8 +82,8 @@
   position: absolute;
   left: -10%;
   right: -10%;
-  bottom: 30vh;
-  height: 80px;
+  bottom: 0;
+  height: 160px;
 }
 
 /* ── Layer 2.5: rising bubble field ──────────────────────────────────── */
@@ -154,8 +152,10 @@
   justify-content: center;
   pointer-events: none;
   /* NO drop-shadow here — it scales with the SVG and tanks the GPU */
-  transform-origin: 50% 50%;
-  will-change: transform;
+  /* Anchor the scale to the visual center of the lens hole, not the SVG edge.
+     Tweak the Y offset if the mask design places the hole off-center. */
+  transform-origin: 50% 52%;
+  will-change: transform, opacity;
 }
 .mask-visor > svg {
   width: min(88vw, 680px);

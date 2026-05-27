@@ -10,7 +10,7 @@ export default function WaterSurface({ showScrollHint = true }: WaterSurfaceProp
   return (
     <svg
       className="water-surface"
-      viewBox="0 0 660 60"
+      viewBox="0 0 660 120"
       preserveAspectRatio="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
@@ -21,41 +21,49 @@ export default function WaterSurface({ showScrollHint = true }: WaterSurfaceProp
           <stop offset="100%" stopColor="#0a2a3a" stopOpacity="1" />
         </linearGradient>
       </defs>
+      {/* Background large wave */}
       <path
-        d="M0,20 C80,5 160,35 240,20 C320,5 400,35 480,18 C560,2 620,30 660,18 L660,60 L0,60 Z"
+        d="M0,40 C110,80 220,-20 330,40 C440,100 550,0 660,40 L660,120 L0,120 Z"
         fill="url(#water-fill)"
-        opacity="0.5"
+        opacity="0.6"
       >
         <animate
           attributeName="d"
-          dur="9s"
+          dur="8s"
           repeatCount="indefinite"
           values="
-            M0,20 C80,5 160,35 240,20 C320,5 400,35 480,18 C560,2 620,30 660,18 L660,60 L0,60 Z;
-            M0,22 C80,8 160,30 240,22 C320,8 400,32 480,22 C560,8 620,28 660,20 L660,60 L0,60 Z;
-            M0,20 C80,5 160,35 240,20 C320,5 400,35 480,18 C560,2 620,30 660,18 L660,60 L0,60 Z"
+            M0,40 C110,80 220,-20 330,40 C440,100 550,0 660,40 L660,120 L0,120 Z;
+            M0,50 C110,-10 220,90 330,50 C440,-10 550,90 660,50 L660,120 L0,120 Z;
+            M0,40 C110,80 220,-20 330,40 C440,100 550,0 660,40 L660,120 L0,120 Z
+          "
         />
       </path>
+      {/* Foreground crisp cartoon wave */}
       <path
-        d="M0,30 C100,15 200,45 320,28 C440,12 540,38 660,26 L660,60 L0,60 Z"
+        d="M0,60 C130,120 200,-10 330,60 C460,130 530,-10 660,60 L660,120 L0,120 Z"
         fill="#0a2a3a"
         opacity="0.9"
       />
+      {/* White foam crest line */}
       <path
-        d="M0,30 C100,15 200,45 320,28 C440,12 540,38 660,26"
+        d="M0,60 C130,120 200,-10 330,60 C460,130 530,-10 660,60"
         fill="none"
-        stroke="rgba(78,203,160,0.35)"
-        strokeWidth="1.5"
+        stroke="#ffffff"
+        strokeWidth="3"
+        strokeLinecap="round"
+        opacity="0.85"
       />
       {showScrollHint && (
         <text
           x="50%"
-          y="50"
+          y="100"
           textAnchor="middle"
-          fill="rgba(78,203,160,0.5)"
-          fontSize="9"
+          fill="rgba(78,203,160,0.8)"
+          fontSize="12"
           fontFamily="DM Sans, sans-serif"
-          letterSpacing="3"
+          fontStyle="italic"
+          fontWeight="bold"
+          letterSpacing="2"
         >
           scroll to dive in ↓
         </text>
