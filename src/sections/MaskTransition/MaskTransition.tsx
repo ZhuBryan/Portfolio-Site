@@ -4,31 +4,29 @@ import {
   useMotionValueEvent,
   useReducedMotion,
   useScroll,
-  useSpring,
   useTransform,
 } from 'framer-motion';
 import ScubaVisor from '../../svg/ScubaVisor';
-import WaterSurface from '../../svg/WaterSurface';
 import './MaskTransition.css';
 
 /**
- * Cinematic "putting on the mask" transition.
+ * Act II — "putting on the mask".
  *
- * The motion timeline (driven by scroll progress 0 → 1):
+ * Scroll timeline (progress 0 → 1 across a 260vh scrub zone):
  *
- *   0.00 ─── 0.10   mask far away, lightly tilted, surface fully visible
- *   0.10 ─── 0.45   mask approaches the face — scales, rotates flat,
- *                   surface dims & blurs, underwater starts bleeding in
- *   0.45 ─── 0.58   SEAL — quick x-wobble, ripple flashes, depth tint
- *                   ramps; the rubber and rim suddenly fill the screen
- *   0.58 ─── 0.85   you're inside the mask — lens engulfs everything,
- *                   bubbles drift up, tint deepens, depth meter accelerates
- *   0.85 ─── 1.00   settled at depth — HUD softens, arrival message fades in
+ *   0.00 ─ 0.12   just under the surface: bright shallows, mask floats ahead
+ *   0.12 ─ 0.50   the mask approaches your face — scales up, levels out,
+ *                 the surface light dims as the lagoon hue takes over
+ *   0.50 ─ 0.82   ENGULF — the lens swallows the viewport; the rubber rim
+ *                 slides past the screen edges; bubbles stream upward
+ *   0.82 ─ 0.86   fully inside: only the lagoon is visible through the lens
+ *   0.86 ─ 0.98   the whole sticky layer crossfades out over the About
+ *                 section, whose background is the IDENTICAL lagoon
+ *                 gradient — so the handoff is invisible, no pop
  *
- * Geometric note: the visor SVG has ONE big oval lens cutout (see
- * `ScubaVisor.tsx`). That's why scaling it up actually lets the user
- * "look through" the mask instead of just seeing the rubber between two
- * lenses.
+ * The two rules that keep it seamless:
+ *   1. Nothing behind the visor ever fades until the zoom is 100% done.
+ *   2. The color on screen at fade-out start == About's background color.
  */
 export default function MaskTransition() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -40,135 +38,80 @@ export default function MaskTransition() {
     offset: ['start start', 'end end'],
   });
 
-  // Tighter spring — minimal mass so the visor tracks the wheel/touchpad
-  // instead of swimming behind it. Critically damped so it never overshoots.
-  const smooth = useSpring(scrollYProgress, {
-    stiffness: 50,
-    damping: 15,
-    mass: 1.2,
-  });
-
-  /* ── Visor scale: approach → snap → engulf ─────────────────────────────
-     Scale 14 at the end means the lens cutout (which spans ~80% of the SVG
-     width) covers ~11× the viewport width — i.e. you're looking through
-     an enormous window, with the rubber rim well past the screen edges. */
+  /* ── Visor: approach → engulf. Direct 1:1 mapping (no spring) so reverse
+     scrolling replays the exact same frames with zero lag or overshoot. ── */
   const visorScale = useTransform(
-    smooth,
-    [0, 0.1, 0.42, 0.55, 0.75, 1],
-    shouldReduceMotion ? [1, 1, 1, 1, 1, 1] : [0.55, 0.82, 2.6, 4.4, 18, 28]
+    scrollYProgress,
+    [0, 0.12, 0.5, 0.82, 1],
+    shouldReduceMotion ? [1, 1, 1, 1, 1] : [0.55, 0.8, 3.4, 34, 34]
   );
-  // Fade the visor out as the lens engulfs the screen so the page below shows through
-  const visorOpacity = useTransform(smooth, [0, 0.65, 0.88, 1], [1, 1, 0.3, 0]);
-
-  // Forward-settle: the mask comes toward your face from below.
   const visorY = useTransform(
-    smooth,
-    [0, 0.45, 0.6, 1],
-    shouldReduceMotion ? [0, 0, 0, 0] : [80, 12, -4, -8]
+    scrollYProgress,
+    [0, 0.5, 0.82, 1],
+    shouldReduceMotion ? [0, 0, 0, 0] : [70, 8, 0, 0]
   );
-
-  // Tilt: held loosely at first, levels off as it reaches your face.
   const visorRotate = useTransform(
-    smooth,
-    [0, 0.45, 0.6, 1],
-    shouldReduceMotion ? [0, 0, 0, 0] : [7, 1, -0.4, 0]
+    scrollYProgress,
+    [0, 0.5, 0.82, 1],
+    shouldReduceMotion ? [0, 0, 0, 0] : [6, 1, 0, 0]
   );
 
-  // "Seal" wobble — tiny x-jitter as the mask snaps onto the face.
-  // Only happens in a narrow band around scroll 0.5.
-  const visorX = useTransform(
-    smooth,
-    [0.44, 0.47, 0.5, 0.53, 0.56, 0.6],
-    shouldReduceMotion ? [0, 0, 0, 0, 0, 0] : [0, -5, 6, -3, 1, 0]
-  );
+  /* ── Sub-surface light fades as we sink (under-layer is always opaque) ── */
+  const shallowsOpacity = useTransform(scrollYProgress, [0.2, 0.62], [1, 0]);
 
-  /* ── Surface above-water fades & blurs out early ─────────────────────── */
-  const surfaceOpacity = useTransform(smooth, [0, 0.32], [1, 0]);
-  const surfaceBlur = useTransform(smooth, [0, 0.4], ['blur(0px)', 'blur(10px)']);
+  /* ── Sun shafts strongest near the surface ────────────────────────────── */
+  const shaftsOpacity = useTransform(scrollYProgress, [0, 0.55, 0.85], [0.85, 0.5, 0]);
 
-  /* ── Underwater layer fades in, then fades OUT completely to reveal the page ─────── */
-  const oceanOpacity = useTransform(smooth, [0.12, 0.45, 0.75, 1], [0, 1, 1, 0]);
-
-  /* ── Depth tint: fades in, then ALL the way out at the end ────────── */
-  const tintOpacity = useTransform(smooth, [0.15, 0.5, 0.78, 1], [0, 0.45, 0.2, 0]);
-
-  /* ── Lens distortion ripple — peaks at the seal moment ──────────────── */
-  const rippleOpacity = useTransform(
-    smooth,
-    [0.28, 0.5, 0.7],
-    shouldReduceMotion ? [0, 0, 0] : [0, 0.65, 0]
-  );
-  const rippleScale = useTransform(smooth, [0, 1], [0.85, 1.45]);
-
-  /* ── Visor halo: a cheap gradient glow that fades out as the visor
-       engulfs the screen. Replaces the expensive `filter: drop-shadow`
-       that was causing most of the frame-time spikes. ────────────────── */
-  const haloOpacity = useTransform(
-    smooth,
-    [0, 0.3, 0.55, 0.85, 1],
-    shouldReduceMotion ? [0, 0, 0, 0, 0] : [0.55, 0.4, 0, 0, 0]
-  );
-
-  /* ── Bubbles layer — visible during the dive, peaks while engulfed ──── */
+  /* ── Bubbles stream while descending ──────────────────────────────────── */
   const bubblesOpacity = useTransform(
-    smooth,
-    [0.18, 0.55, 0.8, 1],
-    shouldReduceMotion ? [0, 0, 0, 0] : [0, 1, 0.4, 0]
+    scrollYProgress,
+    [0.12, 0.45, 0.86],
+    shouldReduceMotion ? [0, 0, 0] : [0, 1, 0.4]
   );
 
-  /* ── HUD readouts (fades out as you fall into the page) ──────────────── */
-  const hudOpacity = useTransform(smooth, [0, 0.12, 0.7, 0.88], [0, 1, 1, 0]);
-  const ctaOpacity = useTransform(smooth, [0, 0.08], [1, 0]);
+  /* ── Whole sticky layer crossfades out ONLY after the engulf completes ── */
+  const stickyOpacity = useTransform(scrollYProgress, [0.86, 0.98], [1, 0]);
 
-  // Depth meter accelerates with smoothstep — you fall faster as you descend.
-  useMotionValueEvent(smooth, 'change', (latest) => {
+  /* ── HUD + CTA ─────────────────────────────────────────────────────────── */
+  const hudOpacity = useTransform(scrollYProgress, [0.04, 0.14, 0.7, 0.84], [0, 1, 1, 0]);
+  const ctaOpacity = useTransform(scrollYProgress, [0, 0.08], [1, 0]);
+
+  // Depth meter eases in — you fall faster the deeper you go.
+  useMotionValueEvent(scrollYProgress, 'change', (latest) => {
     const t = Math.max(0, Math.min(1, latest));
     const eased = t * t * (3 - 2 * t);
-    const next = Math.round(2 + eased * 50);
+    const next = Math.round(2 + eased * 16);
     setDepth((prev) => (prev === next ? prev : next));
   });
 
-  // Stable bubble field — randomized once on mount so positions don't
-  // re-roll every render (which would kill the rising animation).
+  // Stable bubble field — randomized once on mount.
   const bubbles = useMemo(
     () =>
-      Array.from({ length: 14 }).map((_, i) => ({
+      Array.from({ length: 16 }).map((_, i) => ({
         id: i,
         left: Math.random() * 100,
-        size: 6 + Math.random() * 18,
-        delay: -Math.random() * 14,
-        duration: 9 + Math.random() * 8,
-        drift: (Math.random() - 0.5) * 80,
+        size: 8 + Math.random() * 20,
+        delay: -Math.random() * 12,
+        duration: 8 + Math.random() * 7,
+        drift: (Math.random() - 0.5) * 90,
       })),
     []
   );
 
   return (
     <section ref={sectionRef} className="mask-section" id="mask-transition">
-      <div className="mask-sticky">
-        {/* Layer 1 — underwater backdrop, fades completely to reveal page below */}
-        <motion.div className="mask-ocean" aria-hidden="true" style={{ opacity: oceanOpacity }}>
-          <div className="mask-ocean__veil" />
-          <div className="mask-ocean__shafts" />
-        </motion.div>
+      <motion.div className="mask-sticky" style={{ opacity: stickyOpacity }}>
+        {/* Layer 1 — the lagoon underneath (always opaque, matches About bg) */}
+        <div className="mask-lagoon" aria-hidden="true" />
 
-        {/* Layer 2 — above-water surface (fades early) */}
-        <motion.div
-          className="mask-surface"
-          style={{ opacity: surfaceOpacity, filter: surfaceBlur }}
-          aria-hidden="true"
-        >
-          <div className="mask-surface__waterline">
-            <WaterSurface showScrollHint={false} />
-          </div>
-        </motion.div>
+        {/* Layer 2 — bright shallows just under the surface */}
+        <motion.div className="mask-shallows" style={{ opacity: shallowsOpacity }} aria-hidden="true" />
 
-        {/* Layer 2.5 — drifting bubble field (immersion) */}
-        <motion.div
-          className="mask-bubbles"
-          style={{ opacity: bubblesOpacity }}
-          aria-hidden="true"
-        >
+        {/* Layer 3 — sun shafts slicing down */}
+        <motion.div className="mask-shafts" style={{ opacity: shaftsOpacity }} aria-hidden="true" />
+
+        {/* Layer 4 — rising bubbles */}
+        <motion.div className="mask-bubbles" style={{ opacity: bubblesOpacity }} aria-hidden="true">
           {bubbles.map((b) => (
             <span
               key={b.id}
@@ -187,67 +130,43 @@ export default function MaskTransition() {
           ))}
         </motion.div>
 
-        {/* Layer 3 — soft halo behind the visor (cheap GPU-friendly glow) */}
-        <motion.div
-          className="mask-halo"
-          style={{ opacity: haloOpacity }}
-          aria-hidden="true"
-        />
-
-        {/* Layer 4 — the visor, scaling up to engulf the viewport */}
+        {/* Layer 5 — the visor scaling up to engulf the viewport */}
         <motion.div
           className="mask-visor"
-          style={{
-            scale: visorScale,
-            rotate: visorRotate,
-            y: visorY,
-            x: visorX,
-            opacity: visorOpacity,
-          }}
+          style={{ scale: visorScale, rotate: visorRotate, y: visorY }}
           aria-hidden="true"
         >
           <ScubaVisor />
         </motion.div>
 
-        {/* Layer 5 — lens distortion ripple (peaks at the seal moment) */}
-        <motion.div
-          className="mask-ripple"
-          style={{ opacity: rippleOpacity, scale: rippleScale }}
-          aria-hidden="true"
-        />
-
-        {/* Layer 6 — full-viewport depth tint */}
-        <motion.div
-          className="mask-tint"
-          style={{ opacity: tintOpacity }}
-          aria-hidden="true"
-        />
-
-        {/* Layer 7 — HUD overlays */}
+        {/* Layer 6 — dive HUD */}
         <motion.div className="mask-hud" style={{ opacity: hudOpacity }} aria-hidden="true">
-          <div className="mask-hud__corner mask-hud__corner--tl">
-            <span className="mask-hud__dot mask-hud__dot--live" />
-            <span>Descent mode · engaged</span>
+          <div className="mask-hud__chip mask-hud__chip--tl">
+            <span className="mask-hud__dot" />
+            <span>Descent · engaged</span>
           </div>
-          <div className="mask-hud__corner mask-hud__corner--tr">
+          <div className="mask-hud__chip mask-hud__chip--tr">
             <span className="mask-hud__label">Depth</span>
             <span className="mask-hud__value">−{String(depth).padStart(2, '0')}m</span>
           </div>
-          <div className="mask-hud__corner mask-hud__corner--bl">
-            <span className="mask-hud__dot mask-hud__dot--stable" />
-            <span>Pressure stable</span>
+          <div className="mask-hud__chip mask-hud__chip--bl">
+            <span>Visibility · excellent</span>
           </div>
-          <div className="mask-hud__corner mask-hud__corner--br">
-            <span>SYS · AR / ML</span>
+          <div className="mask-hud__chip mask-hud__chip--br">
+            <span>Water · 27°C</span>
           </div>
         </motion.div>
 
-        {/* Initial CTA — invites the user to scroll */}
+        {/* Initial CTA */}
         <motion.div className="mask-cta" style={{ opacity: ctaOpacity }} aria-hidden="true">
-          <span className="mask-cta__label">scroll to dive</span>
-          <span className="mask-cta__arrow">↓</span>
+          <span className="mask-cta__label">keep scrolling — mask on</span>
+          <span className="mask-cta__arrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M12 4v14m0 0l-6-6m6 6l6-6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
         </motion.div>
-      </div>
+      </motion.div>
     </section>
   );
 }

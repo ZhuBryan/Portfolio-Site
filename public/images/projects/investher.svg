@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1b4fc4"/>
+      <stop offset="55%" stop-color="#2e7cf6"/>
+      <stop offset="100%" stop-color="#7cb1ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <!-- browser window -->
+  <rect x="560" y="110" width="560" height="360" rx="22" fill="#ffffff" opacity="0.95"/>
+  <rect x="560" y="110" width="560" height="56" rx="22" fill="#dbe9ff"/>
+  <circle cx="600" cy="138" r="9" fill="#ff6f61"/>
+  <circle cx="630" cy="138" r="9" fill="#ffc14d"/>
+  <circle cx="660" cy="138" r="9" fill="#3ee6c0"/>
+  <!-- cart row blocked -->
+  <rect x="600" y="200" width="480" height="54" rx="12" fill="#eef4ff"/>
+  <rect x="600" y="274" width="480" height="54" rx="12" fill="#eef4ff"/>
+  <rect x="600" y="368" width="220" height="58" rx="29" fill="#2e7cf6"/>
+  <text x="640" y="406" font-family="system-ui, sans-serif" font-size="26" font-weight="700" fill="#ffffff">Checkout…</text>
+  <!-- coaching bubble -->
+  <g>
+    <path d="M150 300 h360 a26 26 0 0 1 26 26 v140 a26 26 0 0 1 -26 26 h-250 l-60 56 v-56 h-50 a26 26 0 0 1 -26 -26 v-140 a26 26 0 0 1 26 -26z" fill="#0c2d63"/>
+    <text x="190" y="362" font-family="system-ui, sans-serif" font-size="27" font-weight="600" fill="#9ec5ff">"Wait — does this buy</text>
+    <text x="190" y="400" font-family="system-ui, sans-serif" font-size="27" font-weight="600" fill="#9ec5ff">match your goals?"</text>
+    <circle cx="190" cy="444" r="6" fill="#3ee6c0"/>
+    <text x="208" y="452" font-family="system-ui, sans-serif" font-size="20" fill="#6fa6f5">voice coaching · live</text>
+  </g>
+  <!-- coin -->
+  <circle cx="520" cy="180" r="64" fill="#ffc14d" stroke="#b87412" stroke-width="8"/>
+  <text x="520" y="202" font-family="Georgia, serif" font-size="64" font-weight="700" fill="#7a4a06" text-anchor="middle">$</text>
+  <!-- title -->
+  <text x="72" y="610" font-family="Georgia, serif" font-size="76" font-weight="600" fill="#ffffff">InvestHER</text>
+  <text x="74" y="652" font-family="system-ui, sans-serif" font-size="26" fill="#d6e6ff">RAG coaching at checkout · −70% impulse buys</text>
+</svg>

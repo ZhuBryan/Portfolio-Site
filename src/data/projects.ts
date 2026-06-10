@@ -1,12 +1,3 @@
-import type { ComponentType } from 'react';
-import {
-  VantageCoral,
-  HoneyKeyCoral,
-  InvestHerCoral,
-  InstrumentCoral,
-  BoxBotsCoral,
-} from '../svg/corals';
-
 export type TagTone = 'teal' | 'amber' | 'blue' | 'purple';
 
 export interface ProjectTag {
@@ -28,11 +19,15 @@ export interface Project {
   id: string;
   name: string;
   description: string;
+  mediaType: 'video' | 'photo';
   /** Short blurb shown inside the expanded modal. */
   longDescription?: string;
+  /** Card thumbnail URL (16:9). */
+  imageUrl?: string;
+  thumbnailVideoUrl?: string;
+  gallery?: string[];
+  fullVideoUrl?: string;
   accentColor: string;
-  borderColor: string;
-  Coral: ComponentType;
   tags: ProjectTag[];
   /** Three deck cards rendered as a 3D stack inside the modal. */
   deckCards?: DeckCard[];
@@ -47,9 +42,10 @@ export const projects: Project[] = [
       'Satellite audit platform — 94% accuracy detecting deforestation via fine-tuned ResNet-18 on 27k+ images',
     longDescription:
       'Built an end-to-end environmental audit platform that ingests satellite tiles, classifies land-use change with a fine-tuned ResNet-18 (94% accuracy on 27k+ EuroSAT images), and surfaces explainable per-pixel attribution via Grad-CAM. Real-time API + dashboard.',
-    accentColor: '#1aaf7a',
-    borderColor: 'rgba(78,203,160,0.2)',
-    Coral: VantageCoral,
+    accentColor: '#0ea5a0',
+    mediaType: 'photo',
+    imageUrl: '/images/projects/vantage.svg',
+    gallery: ['/images/projects/vantage.svg'],
     tags: [
       { label: 'PyTorch', tone: 'teal' },
       { label: 'FastAPI', tone: 'teal' },
@@ -84,9 +80,10 @@ export const projects: Project[] = [
       'Honeypot security system detecting credential abuse, MITRE ATT&CK mapping, AI SOC reports — nwHacks 2026',
     longDescription:
       'A deceptive honeypot service that exposes fake credentials, observes attacker behaviour, and auto-generates SOC-grade incident reports via an LLM. Maps observed TTPs onto MITRE ATT&CK and triages severity. Built end-to-end at nwHacks 2026.',
-    accentColor: '#c8a830',
-    borderColor: 'rgba(200,168,48,0.2)',
-    Coral: HoneyKeyCoral,
+    accentColor: '#f5a524',
+    mediaType: 'photo',
+    imageUrl: '/images/projects/honeykey.svg',
+    gallery: ['/images/projects/honeykey.svg'],
     tags: [
       { label: 'FastAPI', tone: 'amber' },
       { label: 'SQLite', tone: 'amber' },
@@ -121,9 +118,10 @@ export const projects: Project[] = [
       'Chrome extension reducing impulse purchases 70% with RAG-based AI coaching + voice synthesis — Hack Western 12',
     longDescription:
       'Chrome extension that intercepts checkout flows and runs an in-the-moment coaching conversation, grounded by RAG over the user’s prior financial decisions. ElevenLabs voice synthesis makes the nudge feel human. Reduced impulse purchases by 70% in user testing.',
-    accentColor: '#6080c8',
-    borderColor: 'rgba(96,128,200,0.2)',
-    Coral: InvestHerCoral,
+    accentColor: '#2e7cf6',
+    mediaType: 'photo',
+    imageUrl: '/images/projects/investher.svg',
+    gallery: ['/images/projects/investher.svg'],
     tags: [
       { label: 'React', tone: 'blue' },
       { label: 'Supabase', tone: 'blue' },
@@ -158,9 +156,10 @@ export const projects: Project[] = [
       'CNN achieving 98% accuracy on mel spectrograms — 4-layer architecture, Adam optimizer, 2000+ audio samples',
     longDescription:
       'Trained a four-layer convolutional network on mel-spectrogram representations of 2000+ audio samples to classify musical instruments with 98% test accuracy. Used Adam, data augmentation, and careful regularization to keep generalization tight.',
-    accentColor: '#a060c8',
-    borderColor: 'rgba(160,96,200,0.2)',
-    Coral: InstrumentCoral,
+    accentColor: '#8b5cf6',
+    mediaType: 'photo',
+    imageUrl: '/images/projects/instrument-classifier.svg',
+    gallery: ['/images/projects/instrument-classifier.svg'],
     tags: [
       { label: 'PyTorch', tone: 'purple' },
       { label: 'torchaudio', tone: 'purple' },
@@ -194,9 +193,10 @@ export const projects: Project[] = [
       'Multi-Arduino I²C robotic skee-ball — 99%+ communication reliability, Best Game Award',
     longDescription:
       'Designed a distributed embedded system where multiple Arduinos coordinate over I²C to run a robotic skee-ball arcade game. Achieved 99%+ inter-board communication reliability under load. Won Best Game Award.',
-    accentColor: '#1aaf7a',
-    borderColor: 'rgba(78,203,160,0.2)',
-    Coral: BoxBotsCoral,
+    accentColor: '#ff6f61',
+    mediaType: 'photo',
+    imageUrl: '/images/projects/boxbots-skeeball.svg',
+    gallery: ['/images/projects/boxbots-skeeball.svg'],
     tags: [
       { label: 'Arduino', tone: 'teal' },
       { label: 'C++', tone: 'teal' },

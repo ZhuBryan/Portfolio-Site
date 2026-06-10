@@ -1,3 +1,4 @@
+import Navbar from './components/Navbar/Navbar';
 import Hero from './sections/Hero/Hero';
 import MaskTransition from './sections/MaskTransition/MaskTransition';
 import About from './sections/About/About';
@@ -9,9 +10,12 @@ import Contact from './sections/Contact/Contact';
 export default function App() {
   return (
     <div className="port-wrap">
+      <Navbar />
       <Hero />
-      <MaskTransition />
-      <About />
+      <div className="portal-sequence">
+        <MaskTransition />
+        <About />
+      </div>
       <Projects />
       <Experience />
       <Skills />

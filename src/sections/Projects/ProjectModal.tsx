@@ -48,23 +48,29 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
             aria-modal="true"
             aria-label={`${project.name} project details`}
             onClick={(e) => e.stopPropagation()}
-            initial={{ opacity: 0, y: 12, scale: 0.98 }}
+            initial={{ opacity: 0, y: 28, scale: 0.94 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 12, scale: 0.98 }}
-            transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+            exit={{ opacity: 0, y: 18, scale: 0.96 }}
+            transition={{ type: 'spring', stiffness: 340, damping: 30 }}
           >
-            <div
-              className="modal-accent"
-              style={{ background: project.accentColor, opacity: 0.75 }}
-            />
-            <button
-              className="modal-close"
-              type="button"
-              onClick={onClose}
-              aria-label="Close"
-            >
-              ×
+            <div className="modal-accent" style={{ background: project.accentColor }} />
+            <button className="modal-close" type="button" onClick={onClose} aria-label="Close">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+              </svg>
             </button>
+
+            <div className="modal-media">
+              {project.mediaType === 'video' && project.fullVideoUrl ? (
+                <video className="modal-media__video" src={project.fullVideoUrl} controls playsInline />
+              ) : (
+                <div className="modal-media__gallery">
+                  {(project.gallery ?? (project.imageUrl ? [project.imageUrl] : [])).map((src, index) => (
+                    <img key={`${src}-${index}`} src={src} alt={`${project.name} gallery ${index + 1}`} />
+                  ))}
+                </div>
+              )}
+            </div>
 
             {project.deckCards?.length ? (
               <div className="modal-grid">
@@ -76,14 +82,9 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
                   />
                 </div>
                 <div className="modal-grid__body">
-                  <div className="modal-coral modal-coral--inline">
-                    <project.Coral />
-                  </div>
                   <h3 className="modal-title">{project.name}</h3>
                   <p className="modal-tagline">{project.description}</p>
-                  <p className="modal-body">
-                    {project.longDescription ?? project.description}
-                  </p>
+                  <p className="modal-body">{project.longDescription ?? project.description}</p>
                   <div className="modal-tags">
                     {project.tags.map((t) => (
                       <span key={t.label} className={TAG_TONE_CLASS[t.tone]}>
@@ -95,14 +96,9 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
               </div>
             ) : (
               <>
-                <div className="modal-coral">
-                  <project.Coral />
-                </div>
                 <h3 className="modal-title">{project.name}</h3>
                 <p className="modal-tagline">{project.description}</p>
-                <p className="modal-body">
-                  {project.longDescription ?? project.description}
-                </p>
+                <p className="modal-body">{project.longDescription ?? project.description}</p>
                 <div className="modal-tags">
                   {project.tags.map((t) => (
                     <span key={t.label} className={TAG_TONE_CLASS[t.tone]}>

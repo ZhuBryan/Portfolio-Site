@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4402f"/>
+      <stop offset="55%" stop-color="#ff6f61"/>
+      <stop offset="100%" stop-color="#ffb09a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <!-- skee-ball target rings -->
+  <g transform="translate(950 230)">
+    <circle r="170" fill="#8c1f12" opacity="0.9"/>
+    <circle r="125" fill="#ffb09a"/>
+    <circle r="85" fill="#8c1f12"/>
+    <circle r="45" fill="#ffe9b8"/>
+    <text y="14" font-family="Georgia, serif" font-size="40" font-weight="700" fill="#8c1f12" text-anchor="middle">50</text>
+  </g>
+  <!-- ramp lanes -->
+  <g stroke="#ffe1d6" stroke-width="10" opacity="0.7" fill="none">
+    <path d="M120 640 q300 -90 640 -260"/>
+    <path d="M220 670 q330 -80 660 -240"/>
+  </g>
+  <!-- the ball mid-flight -->
+  <circle cx="600" cy="430" r="42" fill="#ffe9b8" stroke="#8c1f12" stroke-width="8"/>
+  <!-- circuit traces -->
+  <g stroke="#7a160b" stroke-width="6" fill="none" opacity="0.8">
+    <path d="M120 140 h150 v70 h120"/>
+    <path d="M120 210 h90 v-40 h100"/>
+    <circle cx="395" cy="210" r="11" fill="#7a160b"/>
+    <circle cx="315" cy="170" r="11" fill="#7a160b"/>
+  </g>
+  <rect x="120" y="100" width="120" height="34" rx="8" fill="#7a160b"/>
+  <text x="136" y="124" font-family="ui-monospace, monospace" font-size="20" fill="#ffb09a">I²C · 99%</text>
+  <!-- award chip -->
+  <rect x="120" y="280" width="290" height="48" rx="24" fill="#7a160b" opacity="0.9"/>
+  <path d="M152 290 l5.5 11 12 1.8 -8.7 8.5 2 12 -10.8 -5.7 -10.8 5.7 2 -12 -8.7 -8.5 12 -1.8 z" fill="#ffc14d"/>
+  <text x="176" y="312" font-family="system-ui, sans-serif" font-size="24" font-weight="600" fill="#ffe9b8">Best Game Award</text>
+  <!-- title -->
+  <text x="72" y="610" font-family="Georgia, serif" font-size="76" font-weight="600" fill="#ffffff">BoxBots Skee-ball</text>
+  <text x="74" y="652" font-family="system-ui, sans-serif" font-size="26" fill="#ffe1d6">Multi-Arduino I²C arcade robot</text>
+</svg>

@@ -1,5 +1,5 @@
 /* ─────────────────────────────────────────────
-   3D depth stack — deck of project cards
+   3D depth stack — deck of project cards (light)
    ───────────────────────────────────────────── */
 .deck-pane {
   display: flex;
@@ -28,10 +28,10 @@
   justify-content: space-between;
   text-align: left;
   padding: 18px 18px 14px;
-  border-radius: 14px;
-  border: 1px solid rgba(78, 203, 160, 0.18);
-  background: linear-gradient(180deg, rgba(8, 22, 40, 0.96) 0%, rgba(5, 14, 26, 0.96) 100%);
-  color: var(--text-primary);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(9, 58, 77, 0.12);
+  background: #ffffff;
+  color: var(--ink);
   font: inherit;
   cursor: default;
   overflow: hidden;
@@ -45,39 +45,35 @@
   will-change: transform, opacity;
 }
 
-/* Front card — high contrast, active styling */
+/* Front card — crisp, active */
 .deck-card--front {
   cursor: pointer;
-  border-color: rgba(78, 203, 160, 0.45);
-  background: linear-gradient(180deg, #0a1e30 0%, #061421 100%);
-  box-shadow:
-    0 26px 50px -22px rgba(0, 0, 0, 0.85),
-    0 0 0 1px rgba(78, 203, 160, 0.08) inset,
-    0 0 28px rgba(78, 203, 160, 0.08);
+  border-color: rgba(9, 58, 77, 0.18);
+  box-shadow: 0 26px 50px -22px rgba(8, 60, 80, 0.45);
 }
 
-/* Back cards — visibly different background, no shine, faded */
+/* Back cards — washed out, receding into the water */
 .deck-card--back {
-  background: linear-gradient(180deg, #050d18 0%, #03080f 100%);
-  border-color: rgba(78, 203, 160, 0.08);
-  box-shadow: 0 14px 30px -22px rgba(0, 0, 0, 0.6);
-  color: rgba(232, 244, 240, 0.45);
+  background: #eef7fa;
+  border-color: rgba(9, 58, 77, 0.07);
+  box-shadow: 0 14px 30px -22px rgba(8, 60, 80, 0.3);
+  color: rgba(9, 58, 77, 0.5);
   filter: saturate(0.6);
 }
 
 .deck-card:focus-visible {
-  outline: 2px solid var(--accent-teal);
-  outline-offset: 4px;
+  outline: 3px solid var(--sun);
+  outline-offset: 3px;
 }
 
-/* Accent bar across the top — bright on front, dim on back */
+/* Accent bar across the top */
 .deck-card__accent {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
-  opacity: 0.9;
+  height: 4px;
+  opacity: 0.95;
 }
 
 /* ── Header row: doc number badge + cycle hint ──────────────────────── */
@@ -96,17 +92,14 @@
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 9px;
   letter-spacing: 0.18em;
-  color: rgba(168, 212, 196, 0.55);
-}
-.deck-card--front .deck-card__doc {
-  color: rgba(168, 212, 196, 0.85);
+  color: var(--ink-faint);
 }
 .deck-card__doc-no {
-  color: var(--accent-teal);
-  font-weight: 600;
+  color: var(--ink-soft);
+  font-weight: 700;
 }
 .deck-card--back .deck-card__doc-no {
-  color: rgba(78, 203, 160, 0.4);
+  color: rgba(9, 58, 77, 0.35);
 }
 .deck-card__doc-sep {
   width: 14px;
@@ -119,7 +112,8 @@
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 9px;
   letter-spacing: 0.1em;
-  color: rgba(78, 203, 160, 0.7);
+  color: var(--coral-cta);
+  font-weight: 600;
 }
 
 /* ── Body ───────────────────────────────────────────────────────────── */
@@ -134,15 +128,15 @@
 .deck-card__type {
   display: inline-block;
   align-self: flex-start;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 9px;
-  letter-spacing: 0.16em;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(168, 212, 196, 0.55);
-  padding: 2px 8px;
-  border-radius: 4px;
-  border: 1px solid rgba(168, 212, 196, 0.18);
-  background: rgba(78, 203, 160, 0.06);
+  color: var(--ink-faint);
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(9, 58, 77, 0.15);
+  background: rgba(25, 149, 180, 0.06);
 }
 
 .deck-card__title {
@@ -154,15 +148,15 @@
   color: inherit;
 }
 .deck-card--front .deck-card__title {
-  color: var(--text-primary);
+  color: var(--ink);
 }
 
 .deck-card__copy {
-  font-size: 11px;
+  font-size: 12.5px;
   line-height: 1.55;
   color: inherit;
   margin: 0;
-  opacity: 0.88;
+  opacity: 0.85;
 }
 .deck-card--back .deck-card__copy {
   opacity: 0.55;
@@ -172,19 +166,20 @@
 .deck-card__footer {
   margin-top: 12px;
   padding-top: 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid rgba(9, 58, 77, 0.08);
   display: flex;
   justify-content: space-between;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 9px;
   letter-spacing: 0.12em;
-  color: rgba(168, 212, 196, 0.45);
+  color: var(--ink-faint);
 }
 .deck-card__status {
-  color: var(--accent-teal);
+  color: var(--coral-cta);
+  font-weight: 600;
 }
 .deck-card--back .deck-card__status {
-  color: rgba(168, 212, 196, 0.3);
+  color: rgba(9, 58, 77, 0.3);
 }
 
 @media (max-width: 720px) {

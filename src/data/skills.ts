@@ -6,9 +6,9 @@ export interface Skill {
 }
 
 export const CATEGORY_COLOR: Record<SkillCategory, string> = {
-  lang: '#1aaf7a',
-  ml: '#c8a830',
-  tools: '#6080c8',
+  lang: '#0ea5a0',
+  ml: '#f5a524',
+  tools: '#ff6f61',
 };
 
 export const CATEGORY_LABEL: Record<SkillCategory, string> = {

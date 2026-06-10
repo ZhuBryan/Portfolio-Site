@@ -1,263 +1,181 @@
+/* ── Act IV: the coral reef (projects) ──────────────────────────────── */
 .projects-section {
-  background: var(--bg-underwater-c);
-  padding: 32px var(--content-pad-x) 40px;
   position: relative;
+  background: linear-gradient(180deg, var(--lagoon-2) 0%, var(--lagoon-3) 100%);
+  padding: 110px 0 140px;
   overflow: hidden;
 }
 
-.projects-subnote {
-  font-size: 11px;
-  color: var(--text-faint);
-  margin-top: 2px;
-  margin-bottom: 0;
-  position: relative;
-  z-index: 1;
-}
-
-.reef-floor {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 28px 20px;
-  margin-top: 18px;
-  padding-bottom: 22px;
-  position: relative;
-  z-index: 1;
-}
-
-.coral-card {
-  position: relative;
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 0;
-  font: inherit;
-  color: inherit;
-  text-align: left;
-  display: block;
-  width: 100%;
-}
-
-.coral-card:focus-visible {
-  outline: 2px solid var(--accent-teal);
-  outline-offset: 4px;
-  border-radius: 14px;
-}
-
-.coral-card:hover .coral-body {
-  border-color: var(--border-teal-50);
-  transform: translateY(-2px);
-}
-
-.coral-stem-wrap {
-  display: flex;
-  justify-content: center;
-  margin-bottom: -2px; /* tuck the stem base flush against the card top */
-  overflow: visible;
-  transform-origin: 50% 100%;
-}
-
-/* ─────────────────────────────────────────────
-   Generative organic coral — animated SVG filter
-   ─────────────────────────────────────────────
-   Every coral SVG carries .organic-coral. The filter is defined globally in
-   CoralFilterDefs and animates baseFrequency + scale via SMIL so the edges
-   actually ripple over time (not just sway). The CSS sway adds whole-body
-   drift. Each card stagger their phase via --coral-stagger so the reef
-   doesn't breathe in lockstep.
-*/
-.coral-filter-defs {
+/* coral silhouettes growing along the bottom edge */
+.projects-coral-silhouette {
   position: absolute;
-  width: 0;
-  height: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.organic-coral {
-  overflow: visible;
-  filter: url(#underwater-current);
-  transform-origin: 50% 100%;
-  transform: translateZ(0);
-  will-change: filter, transform;
-  animation: coral-sway 9s ease-in-out infinite alternate;
-  animation-delay: var(--coral-stagger, 0s);
-}
-
-/* ── Bioluminescent polyp shimmer ─────────────────────────────────── */
-.coral-polyp {
-  transform-origin: center;
-  transform-box: fill-box;
-  mix-blend-mode: screen;
-  animation: polyp-breathe 5s ease-in-out infinite alternate;
-  animation-delay: var(--coral-stagger, 0s);
-}
-
-.coral-polyp.pulse-slow {
-  animation:
-    polyp-breathe 5.6s ease-in-out infinite alternate,
-    polyp-glow-soft 4.2s ease-in-out infinite alternate;
-  animation-delay: var(--coral-stagger, 0s), var(--coral-stagger, 0s);
-}
-
-.coral-polyp.pulse-fast {
-  animation:
-    polyp-breathe 3.4s ease-in-out infinite alternate,
-    polyp-glow-bright 2.8s ease-in-out infinite alternate;
-  animation-delay: calc(var(--coral-stagger, 0s) + 0.4s),
-    calc(var(--coral-stagger, 0s) + 0.4s);
-}
-
-@keyframes coral-sway {
-  0% {
-    transform: translateZ(0) rotate(-1.4deg) skewX(-0.8deg);
-  }
-  100% {
-    transform: translateZ(0) rotate(1.8deg) skewX(1deg);
-  }
-}
-
-@keyframes polyp-breathe {
-  0% {
-    transform: scale(0.9);
-  }
-  100% {
-    transform: scale(1.12);
-  }
-}
-
-@keyframes polyp-glow-soft {
-  0% {
-    filter: drop-shadow(0 0 1px rgba(78, 203, 160, 0.4));
-  }
-  100% {
-    filter: drop-shadow(0 0 6px rgba(78, 203, 160, 0.85));
-  }
-}
-
-@keyframes polyp-glow-bright {
-  0% {
-    filter: drop-shadow(0 0 2px rgba(78, 203, 160, 0.5));
-  }
-  100% {
-    filter: drop-shadow(0 0 10px var(--project-accent, #4ecba0));
-  }
-}
-
-/* Hover ignite — the coral's project-accent halo blooms */
-.coral-card:hover .organic-coral,
-.coral-card:focus-visible .organic-coral {
-  filter:
-    url(#underwater-current)
-    drop-shadow(0 0 8px var(--project-accent, #4ecba0))
-    drop-shadow(0 0 22px rgba(78, 203, 160, 0.35));
-  transition: filter 0.32s var(--ease-smooth);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .organic-coral,
-  .coral-polyp,
-  .coral-polyp.pulse-slow,
-  .coral-polyp.pulse-fast {
-    animation: none !important;
-  }
-  /* The displacement filter itself still applies (gives the stems their
-     organic look) but it stops animating because all SMIL animations
-     inherit the reduced-motion setting from the user agent. */
-}
-
-.coral-body {
-  background: rgba(8, 22, 40, 0.92);
-  border: 1px solid var(--border-teal-20);
-  border-radius: 14px 14px 4px 4px;
-  padding: 14px 14px 12px;
-  position: relative;
-  transition: border-color 0.2s var(--ease-smooth), transform 0.2s var(--ease-smooth);
-}
-
-.coral-top {
-  position: absolute;
-  top: -1px;
   left: 0;
   right: 0;
-  height: 4px;
-  border-radius: 14px 14px 0 0;
+  bottom: -6px;
+  height: 130px;
+  pointer-events: none;
+  opacity: 0.22;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 130' preserveAspectRatio='none'%3E%3Cpath d='M0 130 L0 96 Q14 92 16 74 Q18 56 30 60 Q40 64 38 84 Q52 60 48 44 Q44 28 58 30 Q72 32 66 52 Q80 40 84 56 Q88 72 76 88 L80 130 Z M120 130 L118 84 Q104 80 108 64 Q112 50 124 58 Q120 36 134 34 Q148 32 144 54 Q158 44 160 62 Q162 78 146 86 L150 130 Z M220 130 L216 92 Q200 88 204 70 Q208 54 222 62 Q218 40 234 40 Q250 40 244 64 Q260 52 262 72 Q263 88 246 94 L250 130 Z M340 130 L338 90 Q322 84 328 66 Q333 52 346 60 Q344 38 360 38 Q374 38 370 60 Q384 50 386 68 Q388 84 372 92 L376 130 Z M460 130 L456 96 Q442 92 446 76 Q450 62 462 68 Q458 48 474 46 Q488 44 484 66 Q498 56 500 74 Q501 88 486 96 L490 130 Z M560 130 L558 88 Q544 84 548 68 Q552 54 564 60 Q562 42 576 42 Q590 42 586 62 Q598 54 600 70 L600 130 Z' fill='%23063a4f'/%3E%3C/svg%3E");
+  background-size: 1200px 130px;
+  background-repeat: repeat-x;
 }
 
-.pname {
-  font-size: 13px;
-  font-weight: 500;
-  color: #d0ece4;
-  margin: 0 0 3px;
+/* the grid */
+.reef-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px 28px;
+  position: relative;
+  z-index: 2;
 }
 
-.pdesc {
-  font-size: 11px;
-  color: var(--text-muted);
-  line-height: 1.55;
-  margin: 0 0 9px;
-}
-
-.tags {
+/* ── card ───────────────────────────────────────────────────────────── */
+.reef-card {
+  position: relative;
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
+  flex-direction: column;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  width: 100%;
+  padding: 0;
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.3s var(--ease-smooth), box-shadow 0.3s var(--ease-smooth);
+}
+.reef-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-card-hover);
+}
+.reef-card:focus-visible {
+  outline: 3px solid var(--sun);
+  outline-offset: 3px;
 }
 
-.tag {
-  font-size: 9px;
-  border-radius: 4px;
-  padding: 2px 7px;
-  border: 1px solid;
-  letter-spacing: 0.03em;
+/* media — uniform 16:9 */
+.reef-card__media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(25, 149, 180, 0.15), rgba(25, 149, 180, 0.05));
+}
+.reef-card__img,
+.reef-card__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s var(--ease-smooth);
 }
 
-.tag-teal {
-  background: rgba(78, 203, 160, 0.08);
-  color: var(--accent-teal);
-  border-color: var(--border-teal-20);
+/* shine sweep across the media on hover */
+.reef-card__media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 62%
+  );
+  transform: translateX(-130%);
+  pointer-events: none;
 }
-.tag-amber {
-  background: rgba(200, 168, 48, 0.08);
-  color: var(--accent-amber);
-  border-color: rgba(200, 168, 48, 0.2);
+.reef-card:hover .reef-card__media::after {
+  transition: transform 0.75s var(--ease-smooth);
+  transform: translateX(130%);
 }
-.tag-blue {
-  background: rgba(96, 128, 200, 0.08);
-  color: var(--accent-blue);
-  border-color: rgba(96, 128, 200, 0.2);
+.reef-card:hover .reef-card__img,
+.reef-card:hover .reef-card__video {
+  transform: scale(1.045);
 }
-.tag-purple {
-  background: rgba(200, 100, 160, 0.08);
-  color: var(--accent-pink);
-  border-color: rgba(200, 100, 160, 0.2);
+.reef-card__placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+}
+/* per-project accent ribbon along the media base */
+.reef-card__accent {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4px;
+  background: var(--card-accent, var(--coral));
 }
 
-.sand-base {
-  background: #071428;
-  border-top: 1px solid rgba(78, 203, 160, 0.06);
-  padding: 6px var(--content-pad-x) 10px;
+/* body */
+.reef-card__body {
+  padding: 22px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.reef-card__titlerow {
   display: flex;
   align-items: center;
-  gap: 14px;
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
-.sand-note {
-  font-size: 10px;
-  color: #304858;
-  letter-spacing: 0.05em;
-  position: relative;
-  z-index: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.reef-card__name {
+  font-family: var(--font-display);
+  font-size: 23px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0;
+  letter-spacing: -0.01em;
 }
 
-@media (max-width: 640px) {
-  .reef-floor {
+.reef-card__open {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  color: var(--card-accent, var(--coral));
+  background: color-mix(in srgb, var(--card-accent, var(--coral)) 12%, transparent);
+  transition: transform 0.25s var(--ease-spring), background-color 0.25s var(--ease-smooth);
+}
+.reef-card:hover .reef-card__open {
+  transform: translate(2px, -2px);
+  background: color-mix(in srgb, var(--card-accent, var(--coral)) 22%, transparent);
+}
+
+.reef-card__desc {
+  font-size: 14.5px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+  margin: 0 0 16px;
+  flex: 1;
+}
+
+.reef-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* ── responsive ─────────────────────────────────────────────────────── */
+@media (max-width: 860px) {
+  .reef-grid {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 26px;
+  }
+  .projects-section {
+    padding: 80px 0 110px;
   }
 }

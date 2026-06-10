@@ -18,7 +18,7 @@ export const experience: ExperienceEntry[] = [
   {
     role: 'Software Project Lead',
     org: 'Waterloo Reality Labs · Sep 2025 – Present',
-    dotColor: '#1aaf7a',
+    dotColor: '#3ee6c0',
     bullets: [
       'Reduced inference overhead <stat>75%</stat> upgrading AR/VR hand gesture system on Meta Quest',
       'Achieved <stat>99% accuracy</stat> across 1,246 temporal samples with Conv2D PyTorch model',
@@ -28,7 +28,7 @@ export const experience: ExperienceEntry[] = [
   {
     role: 'Content Strategist — World Finalist',
     org: 'Wharton Global Investment Competition · Nov 2023 – Apr 2024',
-    dotColor: '#c8a830',
+    dotColor: '#ffc14d',
     bullets: [
       'Placed <stat>Top 11 / 4000+ teams</stat> worldwide, first-ever finalist from Alberta',
       'Delivered <stat>7.11%</stat> avg monthly return via mean-variance optimization',

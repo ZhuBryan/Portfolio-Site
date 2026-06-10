@@ -1,4 +1,5 @@
-import type { CSSProperties } from 'react';
+import { useState, type CSSProperties } from 'react';
+import { motion } from 'framer-motion';
 import type { Project, TagTone } from '../../data/projects';
 
 const TAG_TONE_CLASS: Record<TagTone, string> = {
@@ -10,46 +11,68 @@ const TAG_TONE_CLASS: Record<TagTone, string> = {
 
 interface CoralCardProps {
   project: Project;
-  /** Position in the grid — used to stagger sway + polyp pulse cadence. */
+  /** Position in the grid — drives the entrance stagger. */
   index: number;
   onSelect: (project: Project) => void;
 }
 
-/**
- * `--project-accent` and `--coral-stagger` are read by Projects.css to
- *   1. drive the per-card hover ignite glow color
- *   2. offset each card's sway + polyp pulse so the reef doesn't breathe
- *      in lockstep (creates the organic out-of-sync effect)
- */
-type CoralCardStyle = CSSProperties & {
-  '--project-accent'?: string;
-  '--coral-stagger'?: string;
-};
+type AccentStyle = CSSProperties & { '--card-accent'?: string };
 
 export default function CoralCard({ project, index, onSelect }: CoralCardProps) {
-  const { Coral, name, description, tags, accentColor, borderColor } = project;
+  const { name, description, tags, accentColor, imageUrl, thumbnailVideoUrl } = project;
+  const [isHovered, setIsHovered] = useState(false);
 
-  const cardStyle: CoralCardStyle = {
-    '--project-accent': accentColor,
-    '--coral-stagger': `${(index * 0.83) % 4}s`,
-  };
+  const style: AccentStyle = { '--card-accent': accentColor };
 
   return (
-    <button
+    <motion.button
       type="button"
-      className="coral-card"
+      className="reef-card"
+      style={style}
       onClick={() => onSelect(project)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       aria-label={`Open details for ${name}`}
-      style={cardStyle}
+      initial={{ opacity: 0, y: 36 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.25 }}
+      transition={{ duration: 0.6, delay: (index % 2) * 0.12, ease: [0.22, 1, 0.36, 1] }}
     >
-      <div className="coral-stem-wrap">
-        <Coral />
+      <div className="reef-card__media" aria-hidden="true">
+        {project.mediaType === 'video' && isHovered && thumbnailVideoUrl ? (
+          <video
+            src={thumbnailVideoUrl}
+            className="reef-card__video"
+            autoPlay
+            muted
+            loop
+            playsInline
+          />
+        ) : imageUrl ? (
+          <img src={imageUrl} alt="" className="reef-card__img" loading="lazy" />
+        ) : (
+          <div className="reef-card__placeholder">Preview coming soon</div>
+        )}
+        <span className="reef-card__accent" />
       </div>
-      <div className="coral-body" style={{ borderColor }}>
-        <div className="coral-top" style={{ background: accentColor, opacity: 0.7 }} />
-        <div className="pname">{name}</div>
-        <div className="pdesc">{description}</div>
-        <div className="tags">
+
+      <div className="reef-card__body">
+        <div className="reef-card__titlerow">
+          <h3 className="reef-card__name">{name}</h3>
+          <span className="reef-card__open">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M7 17L17 7M9 7h8v8"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </span>
+        </div>
+        <p className="reef-card__desc">{description}</p>
+        <div className="reef-card__tags">
           {tags.map((t) => (
             <span key={t.label} className={TAG_TONE_CLASS[t.tone]}>
               {t.label}
@@ -57,6 +80,6 @@ export default function CoralCard({ project, index, onSelect }: CoralCardProps) 
           ))}
         </div>
       </div>
-    </button>
+    </motion.button>
   );
 }

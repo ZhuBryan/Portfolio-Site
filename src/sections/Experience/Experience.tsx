@@ -1,7 +1,5 @@
 import { Fragment, type ReactNode } from 'react';
-import SectionLabel from '../../components/SectionLabel';
-import DepthBar from '../../components/DepthBar';
-import ParallaxCoralBackdrop from '../../components/ParallaxCoralBackdrop';
+import { motion } from 'framer-motion';
 import { experience, STAT_OPEN, STAT_CLOSE } from '../../data/experience';
 import './Experience.css';
 
@@ -43,25 +41,36 @@ function renderBulletWithStats(text: string): ReactNode[] {
 export default function Experience() {
   return (
     <section className="exp-section" id="experience">
-      <ParallaxCoralBackdrop tone="amber" density="quiet" />
-      <DepthBar ticks={3} opacity={0.7} />
-      <SectionLabel>Experience</SectionLabel>
+      <div className="section-inner">
+        <p className="section-label">Act V · The Currents</p>
+        <h2 className="section-title">Experience</h2>
+        <p className="section-sub">Where the diving has taken me so far.</p>
 
-      <div className="timeline">
-        {experience.map((entry) => (
-          <div className="timeline-item" key={entry.role}>
-            <div className="timeline-dot" style={{ background: entry.dotColor }} />
-            <div className="timeline-role">{entry.role}</div>
-            <div className="timeline-org">{entry.org}</div>
-            <ul className="timeline-bullets">
-              {entry.bullets.map((bullet, i) => (
-                <li key={i}>
-                  <span>{renderBulletWithStats(bullet)}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+        <div className="timeline">
+          {experience.map((entry, i) => (
+            <motion.div
+              className="timeline-item"
+              key={entry.role}
+              initial={{ opacity: 0, x: -24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.4 }}
+              transition={{ duration: 0.6, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="timeline-dot" style={{ background: entry.dotColor }} />
+              <div className="timeline-card">
+                <div className="timeline-role">{entry.role}</div>
+                <div className="timeline-org">{entry.org}</div>
+                <ul className="timeline-bullets">
+                  {entry.bullets.map((bullet, j) => (
+                    <li key={j}>
+                      <span>{renderBulletWithStats(bullet)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );

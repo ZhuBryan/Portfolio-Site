@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#b87412"/>
+      <stop offset="50%" stop-color="#f5a524"/>
+      <stop offset="100%" stop-color="#ffd06b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <!-- honeycomb field -->
+  <g fill="none" stroke="#fff3d6" stroke-width="5" opacity="0.5">
+    <path d="M900 80 l70 40 v80 l-70 40 l-70 -40 v-80 z"/>
+    <path d="M1040 160 l70 40 v80 l-70 40 l-70 -40 v-80 z"/>
+    <path d="M900 240 l70 40 v80 l-70 40 l-70 -40 v-80 z"/>
+    <path d="M1040 320 l70 40 v80 l-70 40 l-70 -40 v-80 z"/>
+    <path d="M760 160 l70 40 v80 l-70 40 l-70 -40 v-80 z"/>
+    <path d="M760 320 l70 40 v80 l-70 40 l-70 -40 v-80 z"/>
+  </g>
+  <g fill="#fff3d6" opacity="0.35">
+    <path d="M900 256 l56 32 v64 l-56 32 l-56 -32 v-64 z"/>
+  </g>
+  <!-- the decoy key -->
+  <g transform="translate(190 240) rotate(-18)">
+    <circle cx="80" cy="80" r="76" fill="none" stroke="#7a4a06" stroke-width="34"/>
+    <rect x="140" y="62" width="270" height="36" rx="18" fill="#7a4a06"/>
+    <rect x="330" y="62" width="34" height="86" rx="12" fill="#7a4a06"/>
+    <rect x="384" y="62" width="34" height="66" rx="12" fill="#7a4a06"/>
+  </g>
+  <!-- alert chip -->
+  <rect x="640" y="520" width="320" height="48" rx="24" fill="#7a4a06" opacity="0.9"/>
+  <circle cx="672" cy="544" r="8" fill="#ff6f61"/>
+  <text x="692" y="552" font-family="system-ui, sans-serif" font-size="24" font-weight="600" fill="#ffe9b8">intruder · logged · mapped</text>
+  <!-- title -->
+  <text x="72" y="610" font-family="Georgia, serif" font-size="76" font-weight="600" fill="#3d2502">HoneyKey</text>
+  <text x="74" y="652" font-family="system-ui, sans-serif" font-size="26" fill="#5c3a08">Credential honeypot · MITRE ATT&amp;CK · AI SOC reports</text>
+</svg>

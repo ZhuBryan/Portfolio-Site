@@ -1,102 +1,395 @@
+/* ── Act I: the sunlit surface ──────────────────────────────────────── */
 .hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
   background: linear-gradient(
     180deg,
-    var(--bg-hero-top) 0%,
-    var(--bg-hero-mid) 60%,
-    var(--bg-hero-bottom) 100%
+    var(--sky-top) 0%,
+    var(--sky-mid) 46%,
+    var(--horizon) 74%,
+    #aef0e4 86%,
+    var(--water-surface) 100%
   );
-  padding: 56px var(--content-pad-x) 0;
-  position: relative;
-  overflow: hidden;
-  min-height: 360px;
+  padding: 120px var(--content-pad-x) 200px;
 }
 
-.hero-stars {
+/* sun — soft glowing disc near the horizon */
+.hero-sun {
   position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(1px 1px at 20% 15%, rgba(255, 255, 255, 0.5) 0%, transparent 100%),
-    radial-gradient(1px 1px at 70% 25%, rgba(255, 255, 255, 0.3) 0%, transparent 100%),
-    radial-gradient(1px 1px at 45% 10%, rgba(255, 255, 255, 0.4) 0%, transparent 100%),
-    radial-gradient(1px 1px at 85% 40%, rgba(255, 255, 255, 0.25) 0%, transparent 100%),
-    radial-gradient(1px 1px at 10% 60%, rgba(255, 255, 255, 0.2) 0%, transparent 100%),
-    radial-gradient(1px 1px at 55% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 100%),
-    radial-gradient(1px 1px at 92% 12%, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
+  top: 12%;
+  right: 14%;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fffbe8 0%, var(--sun-core) 38%, rgba(255, 233, 168, 0) 72%);
+  filter: blur(2px);
+  animation: sun-breathe 7s ease-in-out infinite alternate;
   pointer-events: none;
+}
+@keyframes sun-breathe {
+  from {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+}
+
+/* clouds — soft white blobs drifting slowly */
+.hero-cloud {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 999px;
+  filter: blur(14px);
+  pointer-events: none;
+}
+.hero-cloud--a {
+  width: 280px;
+  height: 64px;
+  top: 16%;
+  left: 8%;
+  animation: cloud-drift 38s linear infinite;
+}
+.hero-cloud--b {
+  width: 200px;
+  height: 48px;
+  top: 30%;
+  left: 55%;
+  opacity: 0.7;
+  animation: cloud-drift 52s linear infinite reverse;
+}
+.hero-cloud--c {
+  width: 340px;
+  height: 70px;
+  top: 7%;
+  left: 40%;
+  opacity: 0.55;
+  animation: cloud-drift 64s linear infinite;
+}
+@keyframes cloud-drift {
+  from {
+    transform: translateX(-6vw);
+  }
+  to {
+    transform: translateX(106vw);
+  }
+}
+
+/* floating translucent shapes — soft glass slivers drifting in the sky */
+.hero-shape {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+}
+.hero-shape__inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.08));
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  box-shadow:
+    0 10px 40px -12px rgba(8, 60, 80, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+.hero-shape--a {
+  width: 420px;
+  height: 96px;
+  top: 22%;
+  right: -90px;
+}
+.hero-shape--b {
+  width: 300px;
+  height: 72px;
+  top: 56%;
+  left: -70px;
+}
+.hero-shape--c {
+  width: 180px;
+  height: 48px;
+  top: 12%;
+  left: 22%;
+}
+
+/* headline block */
+.hero-ui {
+  position: relative;
+  z-index: 4;
+  max-width: var(--content-max);
+  margin: 0 auto;
+  width: 100%;
+}
+
+.hero-eyebrow {
+  font-size: 13px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin: 0 0 18px;
 }
 
 .hero-name {
   font-family: var(--font-display);
-  font-size: 42px;
-  font-weight: 600;
-  color: #f0f8f5;
-  margin: 0 0 6px;
-  line-height: 1.1;
-  position: relative;
-  z-index: 2;
+  font-size: clamp(56px, 9.5vw, 124px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 0.98;
+  margin: 0 0 22px;
 }
 
 .hero-tagline {
-  font-size: 13px;
-  color: var(--text-soft-blue);
-  font-weight: 300;
-  margin: 0 0 24px;
-  position: relative;
-  z-index: 2;
-  letter-spacing: 0.02em;
+  font-size: clamp(17px, 1.8vw, 21px);
+  color: var(--ink-soft);
+  font-weight: 400;
+  line-height: 1.65;
+  margin: 0 0 36px;
+  max-width: 640px;
+}
+.hero-tagline em {
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--coral-cta);
 }
 
 .hero-cta-row {
   display: flex;
-  gap: 10px;
-  margin-bottom: 36px;
-  position: relative;
-  z-index: 2;
+  gap: 14px;
   flex-wrap: wrap;
 }
 
-.btn-primary {
-  background: var(--accent-green);
-  color: #fff;
+/* water band beneath the wave */
+.hero-water {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 110px;
+  background: var(--water-surface);
+  z-index: 2;
+  pointer-events: none;
+}
+.hero-water__sparkle {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(2px 2px at 12% 30%, rgba(255, 255, 255, 0.9) 0%, transparent 100%),
+    radial-gradient(2px 2px at 34% 60%, rgba(255, 255, 255, 0.7) 0%, transparent 100%),
+    radial-gradient(3px 2px at 56% 35%, rgba(255, 255, 255, 0.8) 0%, transparent 100%),
+    radial-gradient(2px 2px at 72% 65%, rgba(255, 255, 255, 0.65) 0%, transparent 100%),
+    radial-gradient(2px 2px at 88% 40%, rgba(255, 255, 255, 0.85) 0%, transparent 100%);
+  animation: sparkle-shift 4.5s ease-in-out infinite alternate;
+}
+@keyframes sparkle-shift {
+  from {
+    opacity: 0.5;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(10px);
+  }
+}
+
+/* the bottle — riding the waterline */
+.hero-bottle {
+  position: absolute;
+  bottom: 88px;
+  right: 12%;
+  width: 96px;
+  height: 96px;
+  background: none;
   border: none;
-  border-radius: 6px;
-  padding: 10px 22px;
+  padding: 0;
+  z-index: 5;
+  cursor: pointer;
+}
+.hero-bottle__bob {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 10px 14px rgba(8, 70, 80, 0.3));
+  animation: bottle-bob 4.2s ease-in-out infinite;
+}
+@keyframes bottle-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-4deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(5deg);
+  }
+}
+.hero-bottle__hint {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
   font-size: 12px;
-  font-weight: 500;
-  font-family: var(--font-body);
-  transition: background-color 0.18s var(--ease-smooth), transform 0.18s var(--ease-smooth);
-  display: inline-flex;
-  align-items: center;
+  font-weight: 600;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 999px;
+  padding: 4px 12px;
+  box-shadow: 0 6px 16px -6px rgba(8, 60, 80, 0.35);
+  opacity: 0;
+  transition: opacity 0.25s var(--ease-smooth), transform 0.25s var(--ease-smooth);
+  pointer-events: none;
 }
-.btn-primary:hover {
-  background: #1ec38a;
-  transform: translateY(-1px);
-}
-.btn-primary:active {
-  transform: translateY(0);
+.hero-bottle:hover .hero-bottle__hint,
+.hero-bottle:focus-visible .hero-bottle__hint {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-4px);
 }
 
-.btn-ghost {
-  background: transparent;
-  color: var(--text-soft-blue);
-  border: 1px solid var(--border-teal-35);
-  border-radius: 6px;
-  padding: 10px 22px;
+/* scroll cue */
+.hero-scroll-cue {
+  position: absolute;
+  bottom: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 12px;
-  font-family: var(--font-body);
-  transition: border-color 0.18s var(--ease-smooth), color 0.18s var(--ease-smooth);
-  display: inline-flex;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.95);
+  z-index: 5;
+  pointer-events: none;
+}
+.hero-scroll-cue svg {
+  animation: cue-bob 1.8s ease-in-out infinite;
+}
+@keyframes cue-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(5px);
+  }
+}
+
+/* bottle letter popup */
+.bottle-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(7, 48, 66, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
   align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 1100;
 }
-.btn-ghost:hover {
-  border-color: var(--accent-teal);
-  color: var(--accent-teal);
+
+.bottle-letter {
+  position: relative;
+  width: min(460px, 100%);
+  background: linear-gradient(180deg, #fffdf4 0%, #fff6dd 100%);
+  border: 1px solid rgba(217, 165, 20, 0.35);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-pop);
+  padding: 34px 36px 28px;
+}
+.bottle-letter::before {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: 36px;
+  right: 36px;
+  height: 1px;
+  background: repeating-linear-gradient(90deg, rgba(217, 165, 20, 0.4) 0 8px, transparent 8px 16px);
 }
 
+.bottle-letter__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  background: rgba(9, 58, 77, 0.06);
+  border: none;
+  border-radius: 50%;
+  color: var(--ink-soft);
+  transition: background-color 0.18s var(--ease-smooth), color 0.18s var(--ease-smooth);
+}
+.bottle-letter__close:hover {
+  background: rgba(9, 58, 77, 0.12);
+  color: var(--ink);
+}
 
+.bottle-letter__eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #a36204;
+  margin: 0 0 14px;
+}
 
-@media (max-width: 640px) {
-  .hero-name {
-    font-size: 36px;
+.bottle-letter__body {
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--ink);
+  margin: 0 0 16px;
+}
+
+.bottle-letter__sign {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 22px;
+  color: var(--coral-cta);
+  margin: 0;
+  text-align: right;
+}
+
+/* ── responsive ─────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .hero {
+    padding: 110px var(--content-pad-x) 150px;
+  }
+  .hero-shape--a {
+    width: 260px;
+    height: 64px;
+    right: -80px;
+  }
+  .hero-shape--b {
+    width: 200px;
+    height: 52px;
+  }
+  .hero-shape--c {
+    display: none;
+  }
+  .hero-sun {
+    width: 120px;
+    height: 120px;
+    right: 8%;
+  }
+  .hero-bottle {
+    width: 72px;
+    height: 72px;
+    bottom: 64px;
+    right: 8%;
+  }
+  .hero-water {
+    height: 70px;
+  }
+  .bottle-letter {
+    padding: 28px 24px 22px;
   }
 }

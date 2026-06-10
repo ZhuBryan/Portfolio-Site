@@ -1,139 +1,120 @@
 import { Suspense, useMemo, useRef, useState, useEffect } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Float, Environment } from '@react-three/drei';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Float } from '@react-three/drei';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import './TurtleMascot3D.css';
 
 /* ──────────────────────────────────────────────────────────────────────────
-   Palette
+   Cursor tracking — done at the WINDOW level, not through R3F's event
+   system. (`eventSource={document.body}` normalized the pointer against the
+   whole page height, so creature tracking broke the moment the user
+   scrolled.) One passive listener feeds a shared NDC vector that every
+   creature reads each frame, regardless of where the canvas sits on the
+   page.
    ────────────────────────────────────────────────────────────────────────── */
-const COL_SHELL_TOP = '#1aaf7a';
-const COL_SHELL_RIM = '#0a5a3e';
-const COL_SKIN = '#2bc28d';
-const COL_GLOW = '#4ecba0';
+const cursorNDC = new THREE.Vector2(0, 0);
+let cursorListenerBound = false;
+function bindCursorListener() {
+  if (cursorListenerBound || typeof window === 'undefined') return;
+  cursorListenerBound = true;
+  window.addEventListener(
+    'pointermove',
+    (e: PointerEvent) => {
+      cursorNDC.set(
+        (e.clientX / window.innerWidth) * 2 - 1,
+        -(e.clientY / window.innerHeight) * 2 + 1
+      );
+    },
+    { passive: true }
+  );
+}
 
-const COL_MANTA_TOP = '#10314f';
-const COL_MANTA_UNDER = '#2a5e85';
-const COL_MANTA_STRIPE = '#7be8c4';
-
-const COL_ANGLER_BODY = '#1a1430';
-const COL_ANGLER_JAW = '#0c0820';
-const COL_ANGLER_TEETH = '#e8f4f0';
-const COL_LURE = '#ffd84a';
-
-const COL_SQUID_MANTLE = '#7a2452';
-const COL_SQUID_TENTACLE = '#b14a86';
-const COL_SQUID_GLOW = '#ff7adf';
-
-const COL_SHARK_BODY = '#1d3557';
-const COL_SHARK_BELLY = '#456a85';
-
-const COL_JELLY = '#9b80e8';
-const COL_JELLY_CORE = '#7be8c4';
+/** Cursor position in world units on the z=0 plane. */
+function cursorWorld(viewport: { width: number; height: number }): [number, number] {
+  return [(cursorNDC.x * viewport.width) / 2, (cursorNDC.y * viewport.height) / 2];
+}
 
 /* ──────────────────────────────────────────────────────────────────────────
-   Goofy Eyes Component
+   Palette — tropical lagoon
    ────────────────────────────────────────────────────────────────────────── */
-const GoofyEyes: React.FC<{ scale?: number; position?: [number, number, number] }> = ({ scale = 1, position = [0, 0, 0] }) => (
+const COL_SHELL_TOP = '#2ebd85';
+const COL_SHELL_RIM = '#0f7a55';
+const COL_SKIN = '#45d6a3';
+const COL_GLOW = '#3ee6c0';
+
+const COL_MANTA_TOP = '#2d6fb0';
+const COL_MANTA_UNDER = '#bfe8ff';
+const COL_MANTA_STRIPE = '#ffe08a';
+
+const COL_CLOWN_BODY = '#ff8a3c';
+const COL_CLOWN_BAND = '#fff8ef';
+const COL_CLOWN_FIN = '#f4702a';
+
+const COL_SQUID_MANTLE = '#ff7a88';
+const COL_SQUID_TENTACLE = '#ffa0b0';
+const COL_SQUID_GLOW = '#ffd1dc';
+
+const COL_SHARK_BODY = '#5e8fb8';
+const COL_SHARK_BELLY = '#ddeff7';
+
+const COL_JELLY = '#b5a2f2';
+const COL_JELLY_CORE = '#7ff0d4';
+
+const COL_SAND = '#f0dca8';
+const COL_CORAL_RED = '#ff6f61';
+const COL_CORAL_PINK = '#ff9ec0';
+const COL_CORAL_MAGENTA = '#e6539e';
+const COL_CORAL_ORANGE = '#ffab4d';
+const COL_CORAL_LAVENDER = '#c9a2e8';
+const COL_SEAWEED = '#2fbf8f';
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Goofy Eyes (pure 2D — the personality of the whole reef)
+   ────────────────────────────────────────────────────────────────────────── */
+const GoofyEyes: React.FC<{ scale?: number; position?: [number, number, number] }> = ({
+  scale = 1,
+  position = [0, 0, 0],
+}) => (
   <group position={position} scale={scale}>
-    {/* Left Eye: Slightly larger, looks slightly derpy */}
-    <mesh position={[-0.2, 0.1, 0]} scale={1.2}>
-      <sphereGeometry args={[0.15, 16, 16]} />
-      <meshBasicMaterial color="#ffffff" />
-      <mesh position={[0, 0, 0.12]} scale={0.35}>
-        <sphereGeometry />
-        <meshBasicMaterial color="#000000" />
+    <group position={[-0.25, 0.1, 0]}>
+      <mesh>
+        <circleGeometry args={[0.2, 32]} />
+        <meshBasicMaterial color="#ffffff" side={THREE.DoubleSide} />
       </mesh>
-    </mesh>
-    
-    {/* Right Eye: Smaller, offset */}
-    <mesh position={[0.2, 0.15, 0.05]} scale={0.9}>
-      <sphereGeometry args={[0.15, 16, 16]} />
-      <meshBasicMaterial color="#ffffff" />
-      <mesh position={[0, 0, 0.12]} scale={0.4}>
-        <sphereGeometry />
-        <meshBasicMaterial color="#000000" />
+      <mesh position={[0, -0.02, 0.01]} scale={0.4}>
+        <circleGeometry args={[0.2, 32]} />
+        <meshBasicMaterial color="#000000" side={THREE.DoubleSide} />
       </mesh>
-    </mesh>
+    </group>
+    <group position={[0.25, 0.15, 0]}>
+      <mesh scale={0.8}>
+        <circleGeometry args={[0.2, 32]} />
+        <meshBasicMaterial color="#ffffff" side={THREE.DoubleSide} />
+      </mesh>
+      <mesh position={[0, -0.02, 0.01]} scale={0.32}>
+        <circleGeometry args={[0.2, 32]} />
+        <meshBasicMaterial color="#000000" side={THREE.DoubleSide} />
+      </mesh>
+    </group>
   </group>
 );
 
 /* ──────────────────────────────────────────────────────────────────────────
-   Glowing Message in a Bottle
+   Sun-dust — bright drifting motes catching the light
    ────────────────────────────────────────────────────────────────────────── */
-const GlowingBottle: React.FC<{ position: [number, number, number] }> = ({ position }) => {
-  return (
-    <Float speed={2.5} rotationIntensity={0.4} floatIntensity={0.5}>
-      <group position={position} rotation={[0, 0, 0.4]}>
-        {/* Glass Bottle Body */}
-        <mesh>
-          <cylinderGeometry args={[0.1, 0.15, 0.6, 12]} />
-          <meshPhysicalMaterial 
-            transmission={0.9} 
-            opacity={1} 
-            transparent
-            roughness={0.1} 
-            ior={1.5} 
-            thickness={0.5} 
-            color="#88ccff" 
-          />
-        </mesh>
-        {/* Cork */}
-        <mesh position={[0, 0.35, 0]}>
-          <cylinderGeometry args={[0.08, 0.08, 0.1, 12]} />
-          <meshStandardMaterial color="#8b5a2b" roughness={0.9} />
-        </mesh>
-        {/* Glowing Message Scroll Inside */}
-        <mesh position={[0, -0.1, 0]} rotation={[0.2, 0, 0.1]}>
-          <cylinderGeometry args={[0.04, 0.04, 0.3, 8]} />
-          <meshStandardMaterial color="#ffea00" emissive="#ffdd00" emissiveIntensity={2.5} />
-        </mesh>
-      </group>
-    </Float>
-  );
-};
-
-/* ──────────────────────────────────────────────────────────────────────────
-   Procedural Coral Cluster
-   ────────────────────────────────────────────────────────────────────────── */
-const ReefCoral: React.FC<{ position: [number, number, number]; scale: number }> = ({ position, scale }) => {
-  return (
-    <group position={position} scale={scale}>
-      {/* Neon Tube Sponges */}
-      <mesh position={[-0.4, 0.4, 0]} rotation={[0, 0, 0.2]}>
-        <cylinderGeometry args={[0.08, 0.05, 0.8, 8]} />
-        <meshStandardMaterial color="#ff007f" emissive="#ff0055" emissiveIntensity={0.8} flatShading />
-      </mesh>
-      <mesh position={[0.2, 0.6, -0.2]} rotation={[0, 0, -0.1]}>
-        <cylinderGeometry args={[0.1, 0.06, 1.2, 8]} />
-        <meshStandardMaterial color="#7209b7" emissive="#4361ee" emissiveIntensity={0.9} flatShading />
-      </mesh>
-      
-      {/* Dense Brain Coral Base */}
-      <mesh position={[0, 0.1, 0.2]} scale={[1, 0.6, 1]}>
-        <icosahedronGeometry args={[0.5, 1]} />
-        <meshStandardMaterial color="#4ecba0" emissive="#00f5d4" emissiveIntensity={0.3} flatShading />
-      </mesh>
-    </group>
-  );
-};
-
-/* ──────────────────────────────────────────────────────────────────────────
-   Marine Snow
-   ────────────────────────────────────────────────────────────────────────── */
-function MarineSnow({ count = 150 }) {
+function SunDust({ count = 140 }) {
   const mesh = useRef<THREE.InstancedMesh>(null);
   const dummy = useMemo(() => new THREE.Object3D(), []);
 
   const particles = useMemo(() => {
     const temp = [];
     for (let i = 0; i < count; i++) {
-      const x = (Math.random() - 0.5) * 12;
-      const y = (Math.random() - 0.5) * 12;
-      const z = (Math.random() - 0.5) * 12;
-      const speed = 0.05 + Math.random() * 0.05;
-      const scale = 0.01 + Math.random() * 0.02;
+      const x = (Math.random() - 0.5) * 16;
+      const y = (Math.random() - 0.5) * 10;
+      const z = (Math.random() - 0.5) * 10;
+      const speed = 0.04 + Math.random() * 0.05;
+      const scale = 0.01 + Math.random() * 0.022;
       const offset = Math.random() * Math.PI * 2;
       temp.push({ x, y, z, speed, scale, offset });
     }
@@ -146,8 +127,8 @@ function MarineSnow({ count = 150 }) {
       particles.forEach((p, i) => {
         const drift = Math.sin(time * 0.5 + p.offset) * 0.3;
         dummy.position.set(p.x + drift, p.y + time * p.speed, p.z);
-        if (dummy.position.y > 6) {
-          p.y -= 12;
+        if (dummy.position.y > 5) {
+          p.y -= 10;
         }
         dummy.scale.setScalar(p.scale);
         dummy.updateMatrix();
@@ -160,15 +141,25 @@ function MarineSnow({ count = 150 }) {
   return (
     <instancedMesh ref={mesh} args={[undefined, undefined, count]}>
       <sphereGeometry args={[1, 8, 8]} />
-      <meshBasicMaterial color="#ffffff" transparent opacity={0.25} />
+      <meshBasicMaterial color="#fff8df" transparent opacity={0.45} />
     </instancedMesh>
   );
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
-   Turtle
+   Shared creature props — every creature has a `home` anchor and drifts a
+   bounded distance from it toward the cursor, while turning to face it.
    ────────────────────────────────────────────────────────────────────────── */
-function TurtleProcedural({ isHovered }: { isHovered: boolean }) {
+interface CreatureProps {
+  home: [number, number, number];
+  scale?: number;
+  phase?: number;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Turtle — the mascot. Strongest cursor affinity of the school.
+   ────────────────────────────────────────────────────────────────────────── */
+function TurtleProcedural({ home, scale = 1, isHovered }: CreatureProps & { isHovered: boolean }) {
   const groupRef = useRef<THREE.Group>(null);
   const headRef = useRef<THREE.Group>(null);
   const flLeft = useRef<THREE.Mesh>(null);
@@ -217,19 +208,47 @@ function TurtleProcedural({ isHovered }: { isHovered: boolean }) {
 
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
-    if (groupRef.current) {
-      groupRef.current.position.y = Math.sin(t * 1.2) * 0.06;
-      groupRef.current.rotation.z = Math.sin(t * 0.9) * 0.03;
-      const yawTarget = state.pointer.x * 0.35;
-      const pitchTarget = -state.pointer.y * 0.16;
-      groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, yawTarget, 0.06);
-      groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, pitchTarget, 0.06);
+    const [tx, ty] = cursorWorld(state.viewport);
+    const g = groupRef.current;
+    if (g) {
+      // swim toward the cursor, but never further than ~1.8 units from home
+      const fx = home[0] + THREE.MathUtils.clamp((tx - home[0]) * 0.4, -1.8, 1.8);
+      const fy =
+        home[1] +
+        THREE.MathUtils.clamp((ty - home[1]) * 0.32, -1.4, 1.4) +
+        Math.sin(t * 1.2) * 0.08;
+      g.position.x = THREE.MathUtils.lerp(g.position.x, fx, 0.035);
+      g.position.y = THREE.MathUtils.lerp(g.position.y, fy, 0.035);
+      g.position.z = home[2];
+
+      // face the swim direction + bank into the turn
+      const dx = tx - g.position.x;
+      const dy = ty - g.position.y;
+      g.rotation.y = THREE.MathUtils.lerp(
+        g.rotation.y,
+        THREE.MathUtils.clamp(dx * 0.22, -0.75, 0.75),
+        0.06
+      );
+      g.rotation.x = THREE.MathUtils.lerp(
+        g.rotation.x,
+        THREE.MathUtils.clamp(-dy * 0.14, -0.4, 0.4),
+        0.06
+      );
+      g.rotation.z = THREE.MathUtils.lerp(g.rotation.z, -dx * 0.05 + Math.sin(t * 0.9) * 0.03, 0.05);
     }
     if (headRef.current) {
-      const headY = state.pointer.x * 0.3;
-      const headX = -state.pointer.y * 0.22;
-      headRef.current.rotation.y = THREE.MathUtils.lerp(headRef.current.rotation.y, headY, 0.1);
-      headRef.current.rotation.x = THREE.MathUtils.lerp(headRef.current.rotation.x, headX, 0.1);
+      const dxh = tx - (g?.position.x ?? 0);
+      const dyh = ty - (g?.position.y ?? 0);
+      headRef.current.rotation.y = THREE.MathUtils.lerp(
+        headRef.current.rotation.y,
+        THREE.MathUtils.clamp(dxh * 0.12, -0.5, 0.5),
+        0.1
+      );
+      headRef.current.rotation.x = THREE.MathUtils.lerp(
+        headRef.current.rotation.x,
+        THREE.MathUtils.clamp(-dyh * 0.1, -0.35, 0.35),
+        0.1
+      );
     }
     const stroke = Math.sin(t * 2.4);
     const strokeOff = Math.sin(t * 2.4 + Math.PI);
@@ -240,7 +259,7 @@ function TurtleProcedural({ isHovered }: { isHovered: boolean }) {
   });
 
   return (
-    <group ref={groupRef} dispose={null}>
+    <group ref={groupRef} position={home} scale={scale} dispose={null}>
       <mesh geometry={geos.shellGeo} scale={[0.7, 0.8, 0.7]} position={[0, 0.1, 0]}>
         <meshPhysicalMaterial color={COL_SHELL_TOP} roughness={0.4} clearcoat={0.3} />
       </mesh>
@@ -271,9 +290,9 @@ function TurtleProcedural({ isHovered }: { isHovered: boolean }) {
         <meshStandardMaterial
           color={COL_GLOW}
           emissive={COL_GLOW}
-          emissiveIntensity={isHovered ? 2.0 : 0.4}
+          emissiveIntensity={isHovered ? 1.6 : 0.3}
           transparent
-          opacity={0.8}
+          opacity={0.7}
           side={THREE.DoubleSide}
         />
       </mesh>
@@ -282,15 +301,9 @@ function TurtleProcedural({ isHovered }: { isHovered: boolean }) {
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
-   Creatures
+   Manta — glides across the upper water, banking toward the cursor
    ────────────────────────────────────────────────────────────────────────── */
-interface CreatureProps {
-  position: [number, number, number];
-  scale?: number;
-  phase?: number;
-}
-
-function EcoManta({ position, scale = 1, phase = 0 }: CreatureProps) {
+function EcoManta({ home, scale = 1, phase = 0 }: CreatureProps) {
   const groupRef = useRef<THREE.Group>(null);
   const leftWing = useRef<THREE.Mesh>(null);
   const rightWing = useRef<THREE.Mesh>(null);
@@ -312,7 +325,12 @@ function EcoManta({ position, scale = 1, phase = 0 }: CreatureProps) {
     wingShape.quadraticCurveTo(0.8, -0.6, 0, -0.8);
     wingShape.lineTo(0, 0.5);
 
-    const wingGeo = new THREE.ExtrudeGeometry(wingShape, { depth: 0.05, bevelEnabled: true, bevelSize: 0.02, bevelThickness: 0.02 });
+    const wingGeo = new THREE.ExtrudeGeometry(wingShape, {
+      depth: 0.05,
+      bevelEnabled: true,
+      bevelSize: 0.02,
+      bevelThickness: 0.02,
+    });
     wingGeo.center();
     wingGeo.rotateX(Math.PI / 2);
     wingGeo.translate(0.7, 0, -0.15);
@@ -322,19 +340,25 @@ function EcoManta({ position, scale = 1, phase = 0 }: CreatureProps) {
 
   useFrame((state) => {
     const t = state.clock.getElapsedTime() + phase;
-    if (groupRef.current) {
-      const bank = state.pointer.x * 0.35;
-      groupRef.current.rotation.z = THREE.MathUtils.lerp(groupRef.current.rotation.z, bank, 0.04);
-      groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, -state.pointer.y * 0.18, 0.05);
-      groupRef.current.position.y = position[1] + Math.sin(t * 0.9) * 0.15;
+    const [tx, ty] = cursorWorld(state.viewport);
+    const g = groupRef.current;
+    if (g) {
+      const fx = home[0] + THREE.MathUtils.clamp((tx - home[0]) * 0.22, -1.6, 1.6) + Math.sin(t * 0.4) * 0.6;
+      const fy = home[1] + THREE.MathUtils.clamp((ty - home[1]) * 0.16, -0.9, 0.9) + Math.sin(t * 0.9) * 0.18;
+      g.position.x = THREE.MathUtils.lerp(g.position.x, fx, 0.02);
+      g.position.y = THREE.MathUtils.lerp(g.position.y, fy, 0.02);
+      const dx = tx - g.position.x;
+      g.rotation.z = THREE.MathUtils.lerp(g.rotation.z, THREE.MathUtils.clamp(-dx * 0.08, -0.4, 0.4), 0.03);
+      g.rotation.y = THREE.MathUtils.lerp(g.rotation.y, THREE.MathUtils.clamp(dx * 0.1, -0.5, 0.5), 0.04);
+      g.rotation.x = THREE.MathUtils.lerp(g.rotation.x, THREE.MathUtils.clamp(-(ty - g.position.y) * 0.06, -0.3, 0.3), 0.04);
     }
     if (leftWing.current) leftWing.current.rotation.z = 0.05 + Math.sin(t * 1.3) * 0.35;
     if (rightWing.current) rightWing.current.rotation.z = -0.05 - Math.sin(t * 1.3) * 0.35;
-    if (stripeRef.current) stripeRef.current.emissiveIntensity = 0.5 + Math.sin(t * 1.6) * 1.5;
+    if (stripeRef.current) stripeRef.current.emissiveIntensity = 0.4 + Math.sin(t * 1.6) * 0.8;
   });
 
   return (
-    <group ref={groupRef} position={position} scale={scale}>
+    <group ref={groupRef} position={home} scale={scale}>
       <mesh geometry={geos.bodyGeo}>
         <meshPhysicalMaterial color={COL_MANTA_TOP} roughness={0.4} clearcoat={0.2} />
       </mesh>
@@ -360,144 +384,195 @@ function EcoManta({ position, scale = 1, phase = 0 }: CreatureProps) {
   );
 }
 
-function EcoAngler({ position, scale = 0.7, phase = 0 }: CreatureProps) {
+/* ──────────────────────────────────────────────────────────────────────────
+   Clownfish — darty little swimmer, quickest to chase the cursor
+   ────────────────────────────────────────────────────────────────────────── */
+function EcoClownfish({ home, scale = 0.7, phase = 0 }: CreatureProps) {
   const groupRef = useRef<THREE.Group>(null);
-  const lureRef = useRef<THREE.Mesh>(null);
-  const lureMatRef = useRef<THREE.MeshStandardMaterial>(null);
-  const antennaRef = useRef<THREE.Group>(null);
+  const tailRef = useRef<THREE.Mesh>(null);
+  const finTopRef = useRef<THREE.Mesh>(null);
 
   const geos = useMemo(() => {
     const bodyPts = [];
     for (let i = 0; i <= 12; i++) {
       const t = i / 12;
-      const r = Math.sin(t * Math.PI) * (1 - t * 0.5) * 0.6; 
-      bodyPts.push(new THREE.Vector2(r, (t - 0.5) * 1.4));
+      const r = Math.sin(t * Math.PI) * (1 - t * 0.25) * 0.42;
+      bodyPts.push(new THREE.Vector2(r, (t - 0.5) * 1.1));
     }
     const bodyGeo = new THREE.LatheGeometry(bodyPts, 32);
     bodyGeo.rotateX(Math.PI / 2);
-    return { bodyGeo };
+    bodyGeo.scale(0.75, 1, 1);
+
+    const finShape = new THREE.Shape();
+    finShape.moveTo(0, 0);
+    finShape.quadraticCurveTo(0.35, 0.3, 0.55, 0.05);
+    finShape.quadraticCurveTo(0.3, -0.12, 0, -0.05);
+    const finGeo = new THREE.ExtrudeGeometry(finShape, {
+      depth: 0.03,
+      bevelEnabled: true,
+      bevelSize: 0.01,
+      bevelThickness: 0.01,
+    });
+    finGeo.center();
+
+    return { bodyGeo, finGeo };
   }, []);
 
   useFrame((state) => {
     const t = state.clock.getElapsedTime() + phase;
-    if (groupRef.current) {
-      const yaw = state.pointer.x * 0.55;
-      const pitch = -state.pointer.y * 0.3;
-      groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, yaw, 0.1);
-      groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, pitch, 0.1);
-      groupRef.current.position.y = position[1] + Math.sin(t * 0.8) * 0.06;
+    const [tx, ty] = cursorWorld(state.viewport);
+    const g = groupRef.current;
+    if (g) {
+      const fx = home[0] + THREE.MathUtils.clamp((tx - home[0]) * 0.3, -1.4, 1.4) + Math.sin(t * 1.6) * 0.14;
+      const fy = home[1] + THREE.MathUtils.clamp((ty - home[1]) * 0.26, -1.1, 1.1) + Math.sin(t * 2.1) * 0.1;
+      g.position.x = THREE.MathUtils.lerp(g.position.x, fx, 0.08);
+      g.position.y = THREE.MathUtils.lerp(g.position.y, fy, 0.08);
+      const dx = tx - g.position.x;
+      const dy = ty - g.position.y;
+      g.rotation.y = THREE.MathUtils.lerp(g.rotation.y, THREE.MathUtils.clamp(dx * 0.25, -0.9, 0.9), 0.1);
+      g.rotation.x = THREE.MathUtils.lerp(g.rotation.x, THREE.MathUtils.clamp(-dy * 0.16, -0.5, 0.5), 0.1);
+      g.rotation.z = Math.sin(t * 2.1) * 0.06;
     }
-    if (antennaRef.current) {
-      antennaRef.current.rotation.z = Math.sin(t * 1.1) * 0.12;
-      antennaRef.current.rotation.x = Math.sin(t * 0.8 + 1) * 0.08;
-    }
-    if (lureRef.current) {
-      lureRef.current.scale.setScalar(0.085 * (0.85 + Math.sin(t * 3.2) * 0.2));
-    }
-    if (lureMatRef.current) {
-      lureMatRef.current.emissiveIntensity = 1.5 + Math.sin(t * 4.5) * 1.5;
-    }
+    if (tailRef.current) tailRef.current.rotation.y = Math.sin(t * 6) * 0.5;
+    if (finTopRef.current) finTopRef.current.rotation.x = Math.sin(t * 4) * 0.2;
   });
 
   return (
-    <group ref={groupRef} position={position} scale={scale}>
+    <group ref={groupRef} position={home} scale={scale}>
       <mesh geometry={geos.bodyGeo}>
-        <meshPhysicalMaterial color={COL_ANGLER_BODY} roughness={0.6} clearcoat={0.1} />
+        <meshPhysicalMaterial color={COL_CLOWN_BODY} roughness={0.35} clearcoat={0.4} />
       </mesh>
-      <mesh position={[0, -0.18, 0.32]} scale={[0.45, 0.2, 0.35]}>
-        <sphereGeometry args={[1, 16, 16]} />
-        <meshPhysicalMaterial color={COL_ANGLER_JAW} roughness={0.7} />
-      </mesh>
-      {[-0.15, -0.05, 0.05, 0.15].map((dx, i) => (
-        <mesh key={i} position={[dx, -0.12, 0.52]} scale={[0.02, 0.08, 0.02]} rotation={[0.2, 0, 0]}>
-          <coneGeometry args={[1, 1, 8]} />
-          <meshBasicMaterial color={COL_ANGLER_TEETH} />
+      {[0.28, -0.05, -0.36].map((z, i) => (
+        <mesh key={i} position={[0, 0, z]} rotation={[0, 0, Math.PI / 2]} scale={[1 - Math.abs(z) * 0.55, 0.75, 1]}>
+          <torusGeometry args={[0.34, 0.055, 12, 32]} />
+          <meshPhysicalMaterial color={COL_CLOWN_BAND} roughness={0.4} />
         </mesh>
       ))}
-      <GoofyEyes position={[0, 0.25, 0.35]} scale={0.4} />
-      <group ref={antennaRef} position={[0, 0.45, 0.25]}>
-        <mesh position={[0, 0.25, 0]} scale={[0.015, 0.5, 0.015]}>
-          <cylinderGeometry args={[1, 1, 1, 8]} />
-          <meshStandardMaterial color={COL_ANGLER_BODY} />
-        </mesh>
-        <mesh ref={lureRef} position={[0, 0.55, 0]}>
-          <sphereGeometry args={[1, 16, 16]} />
-          <meshStandardMaterial ref={lureMatRef} color={COL_LURE} emissive={COL_LURE} />
-        </mesh>
-      </group>
-      <mesh position={[0, 0, -0.65]} scale={[0.04, 0.35, 0.25]}>
-        <sphereGeometry args={[1, 16, 16]} />
-        <meshPhysicalMaterial color={COL_ANGLER_BODY} roughness={0.6} />
+      <mesh ref={finTopRef} geometry={geos.finGeo} position={[0, 0.4, 0]} rotation={[0, Math.PI / 2, 0.4]} scale={0.7}>
+        <meshPhysicalMaterial color={COL_CLOWN_FIN} roughness={0.45} side={THREE.DoubleSide} />
       </mesh>
+      <mesh geometry={geos.finGeo} position={[-0.28, -0.05, 0.12]} rotation={[0.3, 0.7, -0.7]} scale={0.5}>
+        <meshPhysicalMaterial color={COL_CLOWN_FIN} roughness={0.45} side={THREE.DoubleSide} />
+      </mesh>
+      <mesh geometry={geos.finGeo} position={[0.28, -0.05, 0.12]} rotation={[0.3, -0.7, 0.7]} scale={0.5}>
+        <meshPhysicalMaterial color={COL_CLOWN_FIN} roughness={0.45} side={THREE.DoubleSide} />
+      </mesh>
+      <mesh ref={tailRef} geometry={geos.finGeo} position={[0, 0, -0.62]} rotation={[0, Math.PI / 2, Math.PI / 2]} scale={0.8}>
+        <meshPhysicalMaterial color={COL_CLOWN_FIN} roughness={0.45} side={THREE.DoubleSide} />
+      </mesh>
+      <GoofyEyes position={[0, 0.12, 0.5]} scale={0.32} />
     </group>
   );
 }
 
-function EcoSquid({ position, scale = 0.7, phase = 0 }: CreatureProps) {
+/* ──────────────────────────────────────────────────────────────────────────
+   Squid — jets in place, mantle toward the cursor
+   ────────────────────────────────────────────────────────────────────────── */
+function EcoSquid({ home, scale = 0.7, phase = 0 }: CreatureProps) {
   const groupRef = useRef<THREE.Group>(null);
+  const mantleRef = useRef<THREE.Mesh>(null);
+  const headRef = useRef<THREE.Group>(null);
   const tentaclesRef = useRef<THREE.Group>(null);
   const finLeftRef = useRef<THREE.Mesh>(null);
   const finRightRef = useRef<THREE.Mesh>(null);
   const glowRef = useRef<THREE.Mesh>(null);
 
   const geos = useMemo(() => {
-    const mantlePts = [];
-    for (let i = 0; i <= 10; i++) {
-      const t = i / 10;
-      mantlePts.push(new THREE.Vector2(Math.sin(Math.acos(t - 1)) * 0.26, (t - 0.5) * 0.95));
-    }
+    const mantlePts = [
+      new THREE.Vector2(0.02, -0.9),
+      new THREE.Vector2(0.28, -0.6),
+      new THREE.Vector2(0.35, -0.1),
+      new THREE.Vector2(0.28, 0.45),
+      new THREE.Vector2(0.16, 0.85),
+    ];
     const mantleGeo = new THREE.LatheGeometry(mantlePts, 32);
     mantleGeo.rotateX(Math.PI / 2);
-    return { mantleGeo };
+    const headGeo = new THREE.SphereGeometry(0.22, 20, 20);
+    return { mantleGeo, headGeo };
   }, []);
+
+  const tentacles = useMemo(
+    () =>
+      Array.from({ length: 8 }).map((_, i) => ({
+        offsetX: (i - 3.5) * 0.06,
+        offsetZ: (i % 2 === 0 ? 1 : -1) * 0.02,
+        length: 0.6 + (i % 3) * 0.12,
+        bend: (i - 3.5) * 0.08,
+      })),
+    []
+  );
 
   useFrame((state) => {
     const t = state.clock.getElapsedTime() + phase;
-    if (groupRef.current) {
-      groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, state.pointer.x * 0.45, 0.08);
+    const [tx, ty] = cursorWorld(state.viewport);
+    const g = groupRef.current;
+    if (g) {
       const jet = Math.sin(t * 4) * 0.12;
-      groupRef.current.position.z = position[2] + jet;
-      groupRef.current.position.y = position[1] + Math.sin(t * 1.4) * 0.08;
+      const fx = home[0] + THREE.MathUtils.clamp((tx - home[0]) * 0.18, -1.0, 1.0);
+      const fy = home[1] + THREE.MathUtils.clamp((ty - home[1]) * 0.15, -0.8, 0.8) + Math.sin(t * 1.4) * 0.08;
+      g.position.x = THREE.MathUtils.lerp(g.position.x, fx, 0.05);
+      g.position.y = THREE.MathUtils.lerp(g.position.y, fy, 0.05);
+      g.position.z = home[2] + jet;
+      const dx = tx - g.position.x;
+      g.rotation.y = THREE.MathUtils.lerp(g.rotation.y, THREE.MathUtils.clamp(dx * 0.18, -0.7, 0.7), 0.06);
+      g.rotation.x = THREE.MathUtils.lerp(
+        g.rotation.x,
+        THREE.MathUtils.clamp(-(ty - g.position.y) * 0.1, -0.35, 0.35),
+        0.06
+      );
     }
     if (tentaclesRef.current) tentaclesRef.current.rotation.x = Math.sin(t * 3) * 0.18;
     if (finLeftRef.current) finLeftRef.current.rotation.z = 0.3 + Math.sin(t * 4) * 0.2;
     if (finRightRef.current) finRightRef.current.rotation.z = -0.3 - Math.sin(t * 4) * 0.2;
     if (glowRef.current) glowRef.current.scale.setScalar(0.18 * (0.75 + Math.sin(t * 4) * 0.2));
+    if (mantleRef.current) mantleRef.current.rotation.z = Math.sin(t * 0.6) * 0.06;
+    if (headRef.current) headRef.current.rotation.x = Math.sin(t * 0.7) * 0.03;
   });
 
   return (
-    <group ref={groupRef} position={position} scale={scale}>
-      <mesh geometry={geos.mantleGeo} position={[0, 0, 0.1]}>
-        <meshPhysicalMaterial color={COL_SQUID_MANTLE} roughness={0.3} clearcoat={0.4} />
+    <group ref={groupRef} position={home} scale={scale}>
+      <mesh ref={mantleRef} geometry={geos.mantleGeo} position={[0, 0.1, 0.05]} scale={[0.9, 1.15, 0.9]}>
+        <meshPhysicalMaterial color={COL_SQUID_MANTLE} roughness={0.28} clearcoat={0.45} />
       </mesh>
-      <mesh ref={finLeftRef} position={[-0.15, 0, 0.45]} rotation={[0, 0, 0.3]} scale={[0.02, 0.25, 0.3]}>
+      <group ref={headRef} position={[0, 0.18, 0.3]}>
+        <mesh geometry={geos.headGeo}>
+          <meshPhysicalMaterial color={COL_SQUID_TENTACLE} roughness={0.35} />
+        </mesh>
+        <GoofyEyes position={[0, 0.05, 0.18]} scale={0.22} />
+      </group>
+      <mesh ref={finLeftRef} position={[-0.22, 0.22, 0.28]} rotation={[0.1, 0, 0.5]} scale={[0.02, 0.22, 0.34]}>
         <sphereGeometry args={[1, 16, 16]} />
         <meshPhysicalMaterial color={COL_SQUID_TENTACLE} roughness={0.4} />
       </mesh>
-      <mesh ref={finRightRef} position={[0.15, 0, 0.45]} rotation={[0, 0, -0.3]} scale={[0.02, 0.25, 0.3]}>
+      <mesh ref={finRightRef} position={[0.22, 0.22, 0.28]} rotation={[0.1, 0, -0.5]} scale={[0.02, 0.22, 0.34]}>
         <sphereGeometry args={[1, 16, 16]} />
         <meshPhysicalMaterial color={COL_SQUID_TENTACLE} roughness={0.4} />
       </mesh>
-      
-      <GoofyEyes position={[0, 0.15, 0.2]} scale={0.3} />
-      
-      <group ref={tentaclesRef} position={[0, 0, -0.4]}>
-        {[[-0.16, 0.04], [-0.08, -0.08], [0, 0.06], [0.08, -0.08], [0.16, 0.04], [0, -0.14]].map((p, i) => (
-          <mesh key={i} position={[p[0], p[1], -0.2]} rotation={[Math.PI / 2 + (i - 2.5) * 0.05, 0, (i - 2.5) * 0.1]} scale={[0.025, 0.55, 0.025]}>
-            <cylinderGeometry args={[1, 0.2, 1, 8]} />
-            <meshPhysicalMaterial color={COL_SQUID_TENTACLE} roughness={0.4} />
+      <group ref={tentaclesRef} position={[0, -0.12, -0.28]}>
+        {tentacles.map((tentacle, i) => (
+          <mesh
+            key={i}
+            position={[tentacle.offsetX, -0.1, tentacle.offsetZ]}
+            rotation={[Math.PI / 2 + tentacle.bend, 0, tentacle.bend * 1.5]}
+            scale={[0.02, tentacle.length, 0.02]}
+          >
+            <cylinderGeometry args={[1, 0.12, 1, 8]} />
+            <meshPhysicalMaterial color={COL_SQUID_TENTACLE} roughness={0.45} />
           </mesh>
         ))}
       </group>
-      <mesh ref={glowRef} position={[0, 0, -0.25]}>
+      <mesh ref={glowRef} position={[0, -0.04, -0.2]}>
         <sphereGeometry args={[1, 16, 16]} />
-        <meshStandardMaterial color={COL_SQUID_GLOW} emissive={COL_SQUID_GLOW} emissiveIntensity={2.5} />
+        <meshStandardMaterial color={COL_SQUID_GLOW} emissive={COL_SQUID_GLOW} emissiveIntensity={1.6} />
       </mesh>
     </group>
   );
 }
 
-function EcoShark({ position, scale = 1, phase = 0 }: CreatureProps) {
+/* ──────────────────────────────────────────────────────────────────────────
+   Reef shark — patrols the background, nose toward the cursor
+   ────────────────────────────────────────────────────────────────────────── */
+function EcoShark({ home, scale = 1, phase = 0 }: CreatureProps) {
   const groupRef = useRef<THREE.Group>(null);
   const tailBaseRef = useRef<THREE.Group>(null);
   const tailFinRef = useRef<THREE.Mesh>(null);
@@ -506,7 +581,7 @@ function EcoShark({ position, scale = 1, phase = 0 }: CreatureProps) {
     const bodyPts = [];
     for (let i = 0; i <= 20; i++) {
       const t = i / 20;
-      const r = Math.sin(t * Math.PI) * (1 - Math.pow(t - 0.5, 2)) * 0.35; 
+      const r = Math.sin(t * Math.PI) * (1 - Math.pow(t - 0.5, 2)) * 0.35;
       bodyPts.push(new THREE.Vector2(r, (t - 0.5) * 1.8));
     }
     const bodyGeo = new THREE.LatheGeometry(bodyPts, 32);
@@ -516,8 +591,13 @@ function EcoShark({ position, scale = 1, phase = 0 }: CreatureProps) {
     finShape.moveTo(0, 0);
     finShape.quadraticCurveTo(0.5, 0.2, 0.8, -0.5);
     finShape.lineTo(0, -0.1);
-    
-    const finGeo = new THREE.ExtrudeGeometry(finShape, { depth: 0.04, bevelEnabled: true, bevelSize: 0.01, bevelThickness: 0.01 });
+
+    const finGeo = new THREE.ExtrudeGeometry(finShape, {
+      depth: 0.04,
+      bevelEnabled: true,
+      bevelSize: 0.01,
+      bevelThickness: 0.01,
+    });
     finGeo.center();
 
     return { bodyGeo, finGeo };
@@ -525,20 +605,27 @@ function EcoShark({ position, scale = 1, phase = 0 }: CreatureProps) {
 
   useFrame((state) => {
     const t = state.clock.getElapsedTime() + phase;
-    if (groupRef.current) {
-      // FIX: Removed "+ Math.PI" to correct the backward-facing issue
-      const yaw = state.pointer.x * 0.55;
-      const pitch = -state.pointer.y * 0.3;
-      groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, yaw, 0.12);
-      groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, pitch, 0.12);
-      groupRef.current.position.y = position[1] + Math.sin(t * 0.7) * 0.15;
+    const [tx, ty] = cursorWorld(state.viewport);
+    const g = groupRef.current;
+    if (g) {
+      // slow patrol left-right across its home range
+      const patrol = Math.sin(t * 0.25) * 1.6;
+      g.position.x = THREE.MathUtils.lerp(g.position.x, home[0] + patrol, 0.02);
+      g.position.y = home[1] + Math.sin(t * 0.7) * 0.15;
+      const dx = tx - g.position.x;
+      g.rotation.y = THREE.MathUtils.lerp(g.rotation.y, THREE.MathUtils.clamp(dx * 0.14, -0.8, 0.8), 0.05);
+      g.rotation.x = THREE.MathUtils.lerp(
+        g.rotation.x,
+        THREE.MathUtils.clamp(-(ty - g.position.y) * 0.06, -0.3, 0.3),
+        0.05
+      );
     }
     if (tailBaseRef.current) tailBaseRef.current.rotation.y = Math.sin(t * 4) * 0.28;
     if (tailFinRef.current) tailFinRef.current.rotation.y = Math.sin(t * 4 + 1.2) * 0.36;
   });
 
   return (
-    <group ref={groupRef} position={position} scale={scale}>
+    <group ref={groupRef} position={home} scale={scale}>
       <mesh geometry={geos.bodyGeo}>
         <meshPhysicalMaterial color={COL_SHARK_BODY} roughness={0.3} clearcoat={0.5} metalness={0.2} />
       </mesh>
@@ -554,9 +641,9 @@ function EcoShark({ position, scale = 1, phase = 0 }: CreatureProps) {
       <mesh geometry={geos.finGeo} position={[0.25, -0.1, 0.3]} rotation={[0.4, 0, -Math.PI / 2.5]} scale={[-0.5, 0.5, 0.5]}>
         <meshPhysicalMaterial color={COL_SHARK_BODY} roughness={0.3} clearcoat={0.5} />
       </mesh>
-      
+
       <GoofyEyes position={[0, 0.15, 0.65]} scale={0.25} />
-      
+
       <group ref={tailBaseRef} position={[0, 0, -0.8]}>
         <mesh geometry={geos.finGeo} ref={tailFinRef} position={[0, 0, -0.2]} rotation={[Math.PI / 2, 0, 0]} scale={0.6}>
           <meshPhysicalMaterial color={COL_SHARK_BODY} roughness={0.3} clearcoat={0.5} />
@@ -566,7 +653,10 @@ function EcoShark({ position, scale = 1, phase = 0 }: CreatureProps) {
   );
 }
 
-function EcoJelly({ position, scale = 0.55, phase = 0 }: CreatureProps) {
+/* ──────────────────────────────────────────────────────────────────────────
+   Jellyfish — drifts vertically, mostly ignores the cursor (it's a jelly)
+   ────────────────────────────────────────────────────────────────────────── */
+function EcoJelly({ home, scale = 0.55, phase = 0 }: CreatureProps) {
   const groupRef = useRef<THREE.Group>(null);
   const coreRef = useRef<THREE.Mesh>(null);
   const coreMatRef = useRef<THREE.MeshStandardMaterial>(null);
@@ -574,19 +664,20 @@ function EcoJelly({ position, scale = 0.55, phase = 0 }: CreatureProps) {
   useFrame((state) => {
     const t = state.clock.getElapsedTime() + phase;
     if (groupRef.current) {
-      groupRef.current.position.y = position[1] + Math.sin(t * 1.2) * 0.25;
+      groupRef.current.position.y = home[1] + Math.sin(t * 1.2) * 0.25;
+      groupRef.current.position.x = home[0] + Math.sin(t * 0.4) * 0.2;
       groupRef.current.rotation.z = Math.sin(t * 0.6) * 0.08;
     }
     if (coreRef.current) {
       coreRef.current.scale.setScalar(0.2 * (0.85 + Math.sin(t * 2.2) * 0.18));
     }
     if (coreMatRef.current) {
-      coreMatRef.current.emissiveIntensity = 1 + Math.sin(t * 2.2) * 1;
+      coreMatRef.current.emissiveIntensity = 0.8 + Math.sin(t * 2.2) * 0.7;
     }
   });
 
   return (
-    <group ref={groupRef} position={position} scale={scale}>
+    <group ref={groupRef} position={home} scale={scale}>
       <mesh>
         <sphereGeometry args={[0.5, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
         <meshPhysicalMaterial
@@ -615,7 +706,294 @@ function EcoJelly({ position, scale = 0.55, phase = 0 }: CreatureProps) {
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
-   Post Processing & Effects Wrapper
+   CORAL — the reef floor. All procedural, gently swaying in the current.
+   ────────────────────────────────────────────────────────────────────────── */
+const BRANCH_LAYOUT = [
+  { pos: [0, 0.8, 0], rot: 0.55, len: 0.55, tips: 2 },
+  { pos: [0.04, 0.7, 0.04], rot: -0.7, len: 0.62, tips: 2 },
+  { pos: [-0.03, 0.86, -0.04], rot: 0.1, len: 0.5, tips: 1 },
+] as const;
+
+function BranchCoral({
+  position,
+  color,
+  scale = 1,
+  phase = 0,
+}: {
+  position: [number, number, number];
+  color: string;
+  scale?: number;
+  phase?: number;
+}) {
+  const ref = useRef<THREE.Group>(null);
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime() + phase;
+    if (ref.current) ref.current.rotation.z = Math.sin(t * 0.8) * 0.045;
+  });
+  return (
+    <group ref={ref} position={position} scale={scale}>
+      {/* trunk */}
+      <mesh position={[0, 0.45, 0]}>
+        <cylinderGeometry args={[0.07, 0.13, 0.95, 8]} />
+        <meshStandardMaterial color={color} roughness={0.75} />
+      </mesh>
+      {BRANCH_LAYOUT.map((b, i) => (
+        <group key={i} position={b.pos as unknown as [number, number, number]} rotation={[0, 0, b.rot]}>
+          <mesh position={[0, b.len / 2, 0]}>
+            <cylinderGeometry args={[0.045, 0.07, b.len, 8]} />
+            <meshStandardMaterial color={color} roughness={0.75} />
+          </mesh>
+          {Array.from({ length: b.tips }).map((_, j) => (
+            <group
+              key={j}
+              position={[0, b.len * 0.92, 0]}
+              rotation={[0, 0, (j === 0 ? 1 : -1) * 0.55]}
+            >
+              <mesh position={[0, 0.16, 0]}>
+                <cylinderGeometry args={[0.028, 0.045, 0.34, 8]} />
+                <meshStandardMaterial color={color} roughness={0.75} />
+              </mesh>
+              <mesh position={[0, 0.34, 0]}>
+                <sphereGeometry args={[0.05, 10, 10]} />
+                <meshStandardMaterial
+                  color="#ffffff"
+                  emissive={color}
+                  emissiveIntensity={0.5}
+                  roughness={0.5}
+                />
+              </mesh>
+            </group>
+          ))}
+        </group>
+      ))}
+    </group>
+  );
+}
+
+const TUBE_LAYOUT = [
+  { x: -0.16, z: 0.02, h: 0.55 },
+  { x: -0.05, z: -0.07, h: 0.78 },
+  { x: 0.07, z: 0.05, h: 0.62 },
+  { x: 0.18, z: -0.03, h: 0.45 },
+  { x: 0.0, z: 0.12, h: 0.38 },
+] as const;
+
+function TubeCoral({
+  position,
+  color,
+  scale = 1,
+  phase = 0,
+}: {
+  position: [number, number, number];
+  color: string;
+  scale?: number;
+  phase?: number;
+}) {
+  const ref = useRef<THREE.Group>(null);
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime() + phase;
+    if (ref.current) ref.current.rotation.z = Math.sin(t * 0.7) * 0.03;
+  });
+  return (
+    <group ref={ref} position={position} scale={scale}>
+      {TUBE_LAYOUT.map((tube, i) => (
+        <group key={i} position={[tube.x, 0, tube.z]}>
+          <mesh position={[0, tube.h / 2, 0]}>
+            <cylinderGeometry args={[0.075, 0.05, tube.h, 10, 1, true]} />
+            <meshStandardMaterial color={color} roughness={0.8} side={THREE.DoubleSide} />
+          </mesh>
+          <mesh position={[0, tube.h, 0]} rotation={[Math.PI / 2, 0, 0]}>
+            <torusGeometry args={[0.07, 0.018, 8, 16]} />
+            <meshStandardMaterial color={color} roughness={0.7} />
+          </mesh>
+        </group>
+      ))}
+    </group>
+  );
+}
+
+function FanCoral({
+  position,
+  color,
+  scale = 1,
+  phase = 0,
+}: {
+  position: [number, number, number];
+  color: string;
+  scale?: number;
+  phase?: number;
+}) {
+  const ref = useRef<THREE.Group>(null);
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime() + phase;
+    if (ref.current) ref.current.rotation.z = Math.sin(t * 0.9) * 0.09;
+  });
+  return (
+    <group ref={ref} position={position} scale={scale}>
+      <mesh position={[0, 0.12, 0]}>
+        <cylinderGeometry args={[0.03, 0.05, 0.24, 8]} />
+        <meshStandardMaterial color={color} roughness={0.8} />
+      </mesh>
+      {/* the fan blade — half disc standing upright */}
+      <mesh position={[0, 0.62, 0]}>
+        <circleGeometry args={[0.55, 28, 0, Math.PI]} />
+        <meshStandardMaterial color={color} roughness={0.65} side={THREE.DoubleSide} transparent opacity={0.92} />
+      </mesh>
+      {/* vein lines via thin rings */}
+      <mesh position={[0, 0.62, 0.005]}>
+        <ringGeometry args={[0.32, 0.34, 24, 1, 0, Math.PI]} />
+        <meshBasicMaterial color="#ffffff" transparent opacity={0.25} side={THREE.DoubleSide} />
+      </mesh>
+    </group>
+  );
+}
+
+function BrainCoral({
+  position,
+  color,
+  scale = 1,
+}: {
+  position: [number, number, number];
+  color: string;
+  scale?: number;
+}) {
+  return (
+    <mesh position={position} scale={[scale, scale * 0.62, scale]}>
+      <sphereGeometry args={[0.42, 20, 14]} />
+      <meshStandardMaterial color={color} roughness={0.95} />
+    </mesh>
+  );
+}
+
+function Seaweed({
+  position,
+  scale = 1,
+  phase = 0,
+}: {
+  position: [number, number, number];
+  scale?: number;
+  phase?: number;
+}) {
+  const refs = [useRef<THREE.Group>(null), useRef<THREE.Group>(null), useRef<THREE.Group>(null)];
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime() + phase;
+    refs.forEach((r, i) => {
+      if (r.current) r.current.rotation.z = Math.sin(t * 1.1 + i * 0.9) * 0.16;
+    });
+  });
+  const blades = [
+    { x: -0.1, h: 1.1 },
+    { x: 0.04, h: 1.5 },
+    { x: 0.16, h: 0.9 },
+  ];
+  return (
+    <group position={position} scale={scale}>
+      {blades.map((b, i) => (
+        <group key={i} ref={refs[i]} position={[b.x, 0, 0]}>
+          <mesh position={[0, b.h / 2, 0]}>
+            <coneGeometry args={[0.05, b.h, 6]} />
+            <meshStandardMaterial color={COL_SEAWEED} roughness={0.7} />
+          </mesh>
+        </group>
+      ))}
+    </group>
+  );
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   ReefScene — positions everything as FRACTIONS of the visible viewport so
+   nothing ever sits outside the frame, on any screen size. The About copy
+   panel occupies the left half, so the school skews right.
+   ────────────────────────────────────────────────────────────────────────── */
+function ReefScene({ fullBleed, isHovered }: { fullBleed: boolean; isHovered: boolean }) {
+  const { viewport } = useThree();
+  const w = viewport.width;
+  const h = viewport.height;
+
+  // seabed line, slightly above the bottom edge
+  const floor = -h / 2 + 0.18;
+
+  const homes = fullBleed
+    ? {
+        turtle: [w * 0.18, h * 0.06, 0] as [number, number, number],
+        manta: [-w * 0.04, h * 0.3, -1.5] as [number, number, number],
+        clown: [w * 0.3, -h * 0.16, 0.6] as [number, number, number],
+        squid: [w * 0.36, h * 0.14, -0.8] as [number, number, number],
+        shark: [-w * 0.16, -h * 0.02, -3] as [number, number, number],
+        jelly: [w * 0.41, -h * 0.05, -0.4] as [number, number, number],
+      }
+    : {
+        turtle: [0, h * 0.05, 0] as [number, number, number],
+        manta: [w * 0.22, h * 0.26, -1.5] as [number, number, number],
+        clown: [-w * 0.24, -h * 0.18, 0.4] as [number, number, number],
+        squid: [-w * 0.26, h * 0.2, -0.8] as [number, number, number],
+        shark: [w * 0.1, -h * 0.05, -3] as [number, number, number],
+        jelly: [w * 0.3, -h * 0.06, -0.4] as [number, number, number],
+      };
+
+  return (
+    <>
+      <SunDust count={fullBleed ? 170 : 110} />
+
+      <TurtleProcedural home={homes.turtle} scale={0.95} isHovered={isHovered} />
+
+      <Float speed={1.6} rotationIntensity={0.12} floatIntensity={0.3}>
+        <EcoManta home={homes.manta} scale={0.95} phase={0} />
+      </Float>
+
+      <EcoClownfish home={homes.clown} scale={0.8} phase={2.3} />
+
+      <Float speed={1.8} rotationIntensity={0.15} floatIntensity={0.3}>
+        <EcoSquid home={homes.squid} scale={0.75} phase={4.1} />
+      </Float>
+
+      <EcoShark home={homes.shark} scale={0.95} phase={5.5} />
+
+      <Float speed={0.8} rotationIntensity={0.05} floatIntensity={0.15}>
+        <EcoJelly home={homes.jelly} scale={0.55} phase={1.7} />
+      </Float>
+
+      {/* ── the reef floor: sand mounds + coral clusters + seaweed ─────── */}
+      <group>
+        {/* sand bed spanning the width */}
+        <mesh position={[0, floor - 0.85, -0.6]} scale={[w * 0.75, 0.95, 3.2]}>
+          <sphereGeometry args={[1, 28, 18]} />
+          <meshStandardMaterial color={COL_SAND} roughness={1} />
+        </mesh>
+        <mesh position={[-w * 0.34, floor - 0.7, -1.2]} scale={[w * 0.3, 0.7, 2.4]}>
+          <sphereGeometry args={[1, 24, 16]} />
+          <meshStandardMaterial color="#e8cf96" roughness={1} />
+        </mesh>
+
+        {/* left cluster — peeks out from under the About panel */}
+        <group position={[-w * 0.33, floor, -0.4]}>
+          <BranchCoral position={[0, 0, 0]} color={COL_CORAL_RED} scale={1.15} phase={0.4} />
+          <TubeCoral position={[0.75, 0, 0.3]} color={COL_CORAL_ORANGE} scale={0.95} phase={1.2} />
+          <Seaweed position={[-0.7, 0, -0.2]} scale={0.9} phase={2.1} />
+        </group>
+
+        {/* center cluster */}
+        <group position={[-w * 0.04, floor, -0.9]}>
+          <FanCoral position={[0, 0, 0]} color={COL_CORAL_MAGENTA} scale={1.25} phase={0.9} />
+          <BrainCoral position={[0.7, 0.12, 0.3]} color={COL_CORAL_LAVENDER} scale={1.1} />
+          <Seaweed position={[-0.6, 0, 0.2]} scale={1.1} phase={0.2} />
+        </group>
+
+        {/* right cluster — under the turtle's patch of water */}
+        <group position={[w * 0.27, floor, -0.3]}>
+          <BranchCoral position={[0, 0, 0]} color={COL_CORAL_PINK} scale={1.3} phase={1.7} />
+          <FanCoral position={[0.9, 0, -0.4]} color={COL_CORAL_ORANGE} scale={0.9} phase={2.6} />
+          <TubeCoral position={[-0.8, 0, 0.25]} color={COL_CORAL_RED} scale={0.85} phase={0.6} />
+          <BrainCoral position={[1.5, 0.1, 0.2]} color={COL_CORAL_MAGENTA} scale={0.85} />
+        </group>
+      </group>
+    </>
+  );
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Post Processing — gentle bloom; the scene is bright so keep the
+   threshold high or everything washes out.
    ────────────────────────────────────────────────────────────────────────── */
 function PostProcessingWrapper() {
   const [isMobile, setIsMobile] = useState(false);
@@ -631,8 +1009,7 @@ function PostProcessingWrapper() {
 
   return (
     <EffectComposer multisampling={4}>
-      <Bloom luminanceThreshold={0.5} luminanceSmoothing={0.9} intensity={1.5} />
-      {/* Removed DepthOfField for crisp high-fidelity look */}
+      <Bloom luminanceThreshold={0.75} luminanceSmoothing={0.9} intensity={0.7} />
     </EffectComposer>
   );
 }
@@ -641,97 +1018,57 @@ function PostProcessingWrapper() {
    Main Component
    ────────────────────────────────────────────────────────────────────────── */
 interface TurtleMascot3DProps {
-  height?: number;
+  height?: number | string;
   showHud?: boolean;
-  ecosystem?: boolean;
+  /** Full-bleed section background mode: transparent, borderless, school
+      skewed right so the layered About copy stays clear. */
+  fullBleed?: boolean;
 }
 
 export default function TurtleMascot3D({
   height = 360,
   showHud = false,
-  ecosystem = true,
+  fullBleed = false,
 }: TurtleMascot3DProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    bindCursorListener();
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   return (
     <div
-      className="turtle3d"
+      className={`turtle3d ${fullBleed ? 'turtle3d--fullbleed' : ''}`}
       style={{ height }}
       onPointerEnter={() => setIsHovered(true)}
       onPointerLeave={() => setIsHovered(false)}
     >
       <Canvas
-        camera={{ position: [0, 0.3, ecosystem ? 7.0 : 4.2], fov: ecosystem ? 42 : 38 }}
-        dpr={[1, 2]}
+        camera={{ position: [0, 0.1, 9], fov: 45 }}
+        dpr={isMobile ? [1, 1.15] : [1, 2]}
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       >
-        <ambientLight intensity={0.5} color="#a8d4c4" />
-        <directionalLight position={[3, 6, 4]} intensity={1.3} color="#7dcfb0" castShadow />
-        <pointLight position={[-3, -2, -3]} intensity={0.7} color={COL_GLOW} />
-        <pointLight position={[2, -1.5, 3]} intensity={0.5} color="#0d8a5e" />
-        <pointLight position={[0, -3, 1]} intensity={0.4} color="#ffb84d" />
-
-        <Environment preset="night" />
+        {/* Sunlit water: warm key light from above, bright cool fill */}
+        <ambientLight intensity={0.85} color="#dffaf5" />
+        <directionalLight position={[2, 8, 4]} intensity={1.6} color="#fff4d6" />
+        <directionalLight position={[-4, 3, -2]} intensity={0.5} color="#9be8ff" />
+        <pointLight position={[3, -2, 3]} intensity={0.4} color="#ffd1a3" />
 
         <Suspense fallback={null}>
-          {ecosystem && (
-            <>
-              {/* Added Glowing Message in a Bottle sitting on the wave surface */}
-              <GlowingBottle position={[1.5, 2.5, -2]} />
-            </>
-          )}
-
-          <Float speed={1.4} rotationIntensity={0.25} floatIntensity={0.45}>
-            <group scale={ecosystem ? 0.85 : 1.05} position={[0, ecosystem ? -0.1 : 0, 0.3]}>
-              <TurtleProcedural isHovered={isHovered} />
-            </group>
-          </Float>
-
-          {ecosystem && (
-            <>
-              <MarineSnow count={200} />
-              
-              <ReefCoral position={[-1.5, -1.2, -1]} scale={0.8} />
-              <ReefCoral position={[1.8, -1.5, -1.5]} scale={1.2} />
-
-              <Float speed={1.6} rotationIntensity={0.15} floatIntensity={0.4}>
-                <EcoManta position={[1.6, 1.3, -0.6]} scale={0.95} phase={0} />
-              </Float>
-
-              <Float speed={1.2} rotationIntensity={0.1} floatIntensity={0.2}>
-                <EcoAngler position={[-1.9, -1.1, -0.4]} scale={0.7} phase={2.3} />
-              </Float>
-
-              <Float speed={2.0} rotationIntensity={0.2} floatIntensity={0.35}>
-                <EcoSquid position={[-2.1, 1.1, -0.5]} scale={0.75} phase={4.1} />
-              </Float>
-
-              <Float speed={1.4} rotationIntensity={0.2} floatIntensity={0.25}>
-                <EcoShark position={[1.4, -1.0, -1.8]} scale={0.9} phase={5.5} />
-              </Float>
-
-              <Float speed={0.8} rotationIntensity={0.05} floatIntensity={0.15}>
-                <EcoJelly position={[2.3, 0.1, 0.4]} scale={0.55} phase={1.7} />
-              </Float>
-            </>
-          )}
-
+          <ReefScene fullBleed={fullBleed} isHovered={isHovered} />
           <PostProcessingWrapper />
         </Suspense>
       </Canvas>
 
       {showHud && (
         <div className="turtle3d__hud" aria-hidden="true">
-          <span className="turtle3d__hud-label">
-            {ecosystem ? 'Reef matrix · live' : 'Mascot engine · live'}
-          </span>
-          <span className="turtle3d__hud-status">
-            {isHovered
-              ? ecosystem
-                ? 'tracking · 5 species linked'
-                : 'tracking · calibrating'
-              : 'idle · drifting'}
-          </span>
+          <span className="turtle3d__hud-label">Reef · live</span>
+          <span className="turtle3d__hud-status">the locals follow your cursor</span>
         </div>
       )}
     </div>

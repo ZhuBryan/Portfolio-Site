@@ -1,40 +1,48 @@
 .turtle3d {
   position: relative;
   width: 100%;
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   overflow: hidden;
   background:
-    radial-gradient(circle at 60% 35%, rgba(78, 203, 160, 0.08), transparent 55%),
-    linear-gradient(180deg, rgba(7, 26, 40, 0.85) 0%, rgba(6, 15, 28, 0.95) 100%);
-  border: 1px solid rgba(78, 203, 160, 0.1);
-  cursor: grab;
+    radial-gradient(circle at 60% 20%, rgba(255, 248, 214, 0.25), transparent 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.04) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.35);
 }
 
-.turtle3d:active {
-  cursor: grabbing;
+/* Full-bleed mode — invisible chrome, the canvas IS the section background */
+.turtle3d--fullbleed {
+  border-radius: 0;
+  background: none;
+  border: none;
 }
 
 .turtle3d__hud {
   position: absolute;
-  top: 10px;
-  left: 12px;
+  bottom: 14px;
+  right: 16px;
   display: flex;
   flex-direction: column;
   gap: 2px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  align-items: flex-end;
   pointer-events: none;
   user-select: none;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 12px;
+  padding: 8px 14px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .turtle3d__hud-label {
-  font-size: 9px;
-  letter-spacing: 0.18em;
+  font-size: 10px;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--accent-teal);
-  font-weight: 500;
+  color: var(--ink);
+  font-weight: 700;
 }
 
 .turtle3d__hud-status {
-  font-size: 9px;
-  color: rgba(90, 138, 122, 0.85);
+  font-size: 11px;
+  color: var(--ink-soft);
 }

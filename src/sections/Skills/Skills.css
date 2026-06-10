@@ -1,7 +1,6 @@
 .skills-section {
-  background: var(--bg-underwater-c);
-  padding: 32px var(--content-pad-x);
-  border-top: 1px solid var(--border-teal-08);
+  background: linear-gradient(180deg, var(--lagoon-4) 0%, var(--lagoon-5) 100%);
+  padding: 90px 0 90px;
   position: relative;
   overflow: hidden;
 }
@@ -9,37 +8,36 @@
 .skills-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  margin-top: 16px;
-  position: relative;
-  z-index: 1;
+  gap: 12px;
 }
 
 .skill-chip {
-  background: rgba(10, 30, 50, 0.7);
-  border: 1px solid var(--border-teal-12);
-  border-radius: 8px;
-  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 999px;
+  padding: 11px 18px;
   display: flex;
   align-items: center;
-  gap: 7px;
-  transition: border-color 0.18s var(--ease-smooth), transform 0.18s var(--ease-smooth);
+  gap: 10px;
+  box-shadow: 0 6px 18px -8px rgba(6, 45, 65, 0.3);
+  transition: transform 0.2s var(--ease-smooth), box-shadow 0.2s var(--ease-smooth);
 }
 .skill-chip:hover {
-  border-color: var(--border-teal-25);
-  transform: translateY(-1px);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 26px -10px rgba(6, 45, 65, 0.4);
 }
 
 .skill-dot {
-  width: 5px;
-  height: 5px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 
 .skill-name {
-  font-size: 11px;
-  color: #8abfb0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -47,26 +45,37 @@
 
 .skills-legend {
   display: flex;
-  gap: 16px;
-  margin-top: 14px;
-  font-size: 10px;
-  color: #4a6a5a;
+  gap: 22px;
+  margin-top: 26px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--foam-soft);
   flex-wrap: wrap;
-  position: relative;
-  z-index: 1;
+}
+
+.skills-legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
 }
 
 .legend-dot {
   display: inline-block;
-  width: 6px;
-  height: 6px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
-  margin-right: 4px;
-  vertical-align: middle;
 }
 
+@media (max-width: 900px) {
+  .skills-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
 @media (max-width: 640px) {
   .skills-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+  .skills-section {
+    padding: 64px 0;
   }
 }
