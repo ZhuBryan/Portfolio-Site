@@ -137,8 +137,9 @@ export default function Hero() {
           Bryan Zhu
         </motion.h1>
         <motion.p className="hero-tagline" variants={fadeUp} initial="hidden" animate="show" custom={2}>
-          CS @ Waterloo, building at the intersection of <em>AI&thinsp;/&thinsp;ML</em> and{' '}
-          <em>finance</em>. AR/VR gesture-recognition lead at Waterloo Reality Labs. Hackathon builder.
+          CS student at Waterloo. I build <em>AI&thinsp;/&thinsp;ML</em> systems for problems in{' '}
+          <em>finance</em> and security, lead gesture recognition for AR/VR at Waterloo Reality Labs,
+          and spend a lot of weekends at hackathons.
         </motion.p>
 
         <motion.div className="hero-stats" variants={fadeUp} initial="hidden" animate="show" custom={3}>
@@ -199,7 +200,7 @@ export default function Hero() {
         <span className="hero-bottle__bob">
           <BottleSvg />
         </span>
-        <span className="hero-bottle__hint">psst — open me</span>
+        <span className="hero-bottle__hint">psst, open me</span>
       </motion.button>
 
       <div className="hero-scroll-cue" aria-hidden="true">
@@ -242,11 +243,11 @@ export default function Hero() {
               </button>
               <p className="bottle-letter__eyebrow">A message washed ashore</p>
               <p className="bottle-letter__body">
-                Hey — I&rsquo;m Bryan. I study CS at the University of Waterloo, lead AR/VR gesture
+                Hey, I&rsquo;m Bryan. I study CS at the University of Waterloo, lead AR/VR gesture
                 recognition at Waterloo Reality Labs, and spend most weekends at hackathons turning
                 caffeine into demos. I like hard problems, elegant systems, and sea turtles.
               </p>
-              <p className="bottle-letter__sign">— B</p>
+              <p className="bottle-letter__sign">B.</p>
             </motion.div>
           </motion.div>
         )}

@@ -26,7 +26,7 @@ export const experience: ExperienceEntry[] = [
     ],
   },
   {
-    role: 'Content Strategist — World Finalist',
+    role: 'Content Strategist, World Finalist',
     org: 'Wharton Global Investment Competition · Nov 2023 – Apr 2024',
     dotColor: '#ffc14d',
     bullets: [

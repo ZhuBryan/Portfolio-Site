@@ -58,7 +58,7 @@ export const projects: Project[] = [
     id: 'vantage',
     name: 'VANTAGE',
     description:
-      'Satellite audit platform — 94% accuracy detecting deforestation via fine-tuned ResNet-18 on 27k+ images',
+      'Satellite audit platform: 94% accuracy detecting deforestation via fine-tuned ResNet-18 on 27k+ images',
     longDescription:
       'Built an end-to-end environmental audit platform that ingests satellite tiles, classifies land-use change with a fine-tuned ResNet-18 (94% accuracy on 27k+ EuroSAT images), and surfaces explainable per-pixel attribution via Grad-CAM. Real-time API + dashboard.',
     accentColor: '#0ea5a0',
@@ -88,13 +88,13 @@ export const projects: Project[] = [
         type: 'EuroSAT Training Set',
         title: 'Dataset Metrics',
         content:
-          '27k+ multispectral satellite tiles, 10 land-use classes, stratified split — 94% top-1 accuracy on the held-out set.',
+          '27k+ multispectral satellite tiles, 10 land-use classes, stratified split, 94% top-1 accuracy on the held-out set.',
       },
       {
         type: 'Visual Interpretability',
         title: 'Grad-CAM Heatmaps',
         content:
-          'Per-pixel attribution overlays show where the model is locking onto deforestation signatures — auditable, not a black box.',
+          'Per-pixel attribution overlays show where the model is locking onto deforestation signatures: auditable, not a black box.',
       },
     ],
   },
@@ -102,7 +102,7 @@ export const projects: Project[] = [
     id: 'honeykey',
     name: 'HoneyKey',
     description:
-      'Honeypot security system detecting credential abuse, MITRE ATT&CK mapping, AI SOC reports — nwHacks 2026',
+      'Honeypot security system detecting credential abuse, MITRE ATT&CK mapping, AI SOC reports · nwHacks 2026',
     longDescription:
       'A deceptive honeypot service that exposes fake credentials, observes attacker behaviour, and auto-generates SOC-grade incident reports via an LLM. Maps observed TTPs onto MITRE ATT&CK and triages severity. Built end-to-end at nwHacks 2026.',
     accentColor: '#f5a524',
@@ -125,7 +125,7 @@ export const projects: Project[] = [
         type: 'Trap Layer',
         title: 'Decoy Credential Vault',
         content:
-          'Synthetic API keys + login pairs seeded into deliberate weak spots — every fetch is logged with full request context.',
+          'Synthetic API keys and login pairs seeded into deliberate weak spots. Every fetch is logged with full request context.',
       },
       {
         type: 'Detection Logic',
@@ -137,7 +137,7 @@ export const projects: Project[] = [
         type: 'SOC Output',
         title: 'AI Incident Reports',
         content:
-          'LLM generates analyst-grade incident write-ups with timeline, IOCs, and recommended next actions — ready to forward.',
+          'LLM generates analyst-grade incident write-ups with timeline, IOCs, and recommended next actions, ready to forward.',
       },
     ],
   },
@@ -145,7 +145,7 @@ export const projects: Project[] = [
     id: 'investher',
     name: 'InvestHER',
     description:
-      'Chrome extension reducing impulse purchases 70% with RAG-based AI coaching + voice synthesis — Hack Western 12',
+      'Chrome extension reducing impulse purchases 70% with RAG-based AI coaching + voice synthesis · Hack Western 12',
     longDescription:
       'Chrome extension that intercepts checkout flows and runs an in-the-moment coaching conversation, grounded by RAG over the user’s prior financial decisions. ElevenLabs voice synthesis makes the nudge feel human. Reduced impulse purchases by 70% in user testing.',
     accentColor: '#2e7cf6',
@@ -173,13 +173,13 @@ export const projects: Project[] = [
         type: 'Memory Layer',
         title: 'RAG Index',
         content:
-          'Past purchases + goals embedded into Supabase pgvector — Gemini retrieves the most relevant moments to argue against impulse.',
+          'Past purchases and goals embedded into Supabase pgvector. Gemini retrieves the most relevant moments to argue against impulse.',
       },
       {
         type: 'Voice Synthesis',
         title: 'ElevenLabs Layer',
         content:
-          'Coaching reply is spoken in real time so the nudge feels human, not a popup — the part users said actually changed behaviour.',
+          'Coaching reply is spoken in real time so the nudge feels human, not a popup. That’s the part users said actually changed behaviour.',
       },
     ],
   },
@@ -187,7 +187,7 @@ export const projects: Project[] = [
     id: 'instrument-classifier',
     name: 'Instrument Classifier',
     description:
-      'CNN achieving 98% accuracy on mel spectrograms — 4-layer architecture, Adam optimizer, 2000+ audio samples',
+      'CNN achieving 98% accuracy on mel spectrograms: 4-layer architecture, Adam optimizer, 2000+ audio samples',
     longDescription:
       'Trained a four-layer convolutional network on mel-spectrogram representations of 2000+ audio samples to classify musical instruments with 98% test accuracy. Used Adam, data augmentation, and careful regularization to keep generalization tight.',
     accentColor: '#8b5cf6',
@@ -221,7 +221,7 @@ export const projects: Project[] = [
         type: 'Result',
         title: '98% Test Accuracy',
         content:
-          '2000+ samples across instrument classes — top-1 holds at 98% with no obvious confusion clusters on the per-class matrix.',
+          '2000+ samples across instrument classes. Top-1 holds at 98% with no obvious confusion clusters on the per-class matrix.',
       },
     ],
   },
@@ -229,7 +229,7 @@ export const projects: Project[] = [
     id: 'boxbots-skeeball',
     name: 'BoxBots Skee-ball',
     description:
-      'Multi-Arduino I²C robotic skee-ball — 99%+ communication reliability, Best Game Award',
+      'Multi-Arduino I²C robotic skee-ball: 99%+ communication reliability, Best Game Award',
     longDescription:
       'Designed a distributed embedded system where multiple Arduinos coordinate over I²C to run a robotic skee-ball arcade game. Achieved 99%+ inter-board communication reliability under load. Won Best Game Award.',
     accentColor: '#ff6f61',
@@ -251,7 +251,7 @@ export const projects: Project[] = [
         type: 'Bus Topology',
         title: 'Multi-Master I²C',
         content:
-          'Three Arduinos on a shared bus — controller orchestrates, scoring slave reports ball detections, motor slave drives launcher.',
+          'Three Arduinos on a shared bus: controller orchestrates, scoring slave reports ball detections, motor slave drives launcher.',
       },
       {
         type: 'Reliability',

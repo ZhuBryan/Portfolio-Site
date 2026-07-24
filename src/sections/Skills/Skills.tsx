@@ -24,7 +24,6 @@ export default function Skills() {
       <div className="section-inner">
         <p className="section-label">Skills</p>
         <h2 className="section-title">What I build with</h2>
-        <p className="section-sub">Three loose clusters: languages, machine learning, and tooling.</p>
 
         <div className="tidepool">
           {CLUSTER_ORDER.map((cat, ci) => {

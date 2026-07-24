@@ -28,10 +28,6 @@ export default function Projects() {
       <div className="section-inner">
         <p className="section-label">Projects</p>
         <h2 className="section-title">Things I&rsquo;ve built</h2>
-        <p className="section-sub">
-          Machine learning, security, fintech, and one very competitive skee-ball robot. Click any
-          card for the full story.
-        </p>
 
         {flagship && (
           <div className="reef-flagship">
