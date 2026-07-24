@@ -1,71 +1,51 @@
-# Bryan Zhu — Portfolio
+# Portfolio
 
-Personal portfolio site built around a "deep-sea / scuba diving" metaphor.
-The hero starts above water; as you scroll, a diving-mask transition takes you
-underwater and the rest of the site lives in a deep-navy reef.
+My personal site. One page, ocean theme, the water gets deeper as you scroll.
+
+There are a few small creatures living in it: a turtle that follows your cursor
+(click for a barrel roll), a school of fish in the Experience section that you
+can feed by clicking the water (move the mouse too fast and you'll spook them),
+an octopus that peeks over the coral and watches you browse, and a crab in the
+footer that does not want to be caught. All of them shut off under
+prefers-reduced-motion and on touch devices.
 
 ## Stack
 
-- **Vite + React + TypeScript** — fast dev loop, type safety, zero-config build
-- **Framer Motion** — for the project-modal transitions and (incoming) the
-  scroll-driven mask animation
-- **Plain CSS** with design-token CSS variables in `src/styles/global.css`
-- **Vercel** for hosting (config in `vercel.json`)
-- **GitHub Actions** runs `tsc` + `vite build` on every push/PR
+React 18, Vite, TypeScript (strict), framer-motion, plain CSS with variables in
+`src/styles/global.css`. The octopus is a GLB rendered with react-three-fiber
+in a lazy chunk, so three.js never loads unless the model does. Everything else
+is SVG and canvas.
 
-## Local development
+## Running it
 
 ```bash
 npm install
 npm run dev      # http://localhost:5173
-npm run build    # type-check + production build into ./dist
-npm run preview  # serve the built site locally
+npm run build    # type check + build into ./dist
+npm run preview
 ```
 
-## Project structure
+## Editing content
 
-```
-src/
-├── main.tsx              entry, mounts <App />
-├── App.tsx               composes all sections
-├── styles/global.css     design tokens (CSS variables) + base styles
-├── components/           reusable atoms (BubbleParticles, DepthBar, SectionLabel)
-├── svg/                  illustration components (Turtle, ScubaMask, WaterSurface, corals, …)
-├── data/                 content data (projects, experience, skills)
-└── sections/
-    ├── Hero/             above-water intro
-    ├── MaskTransition/   the "putting on the mask" moment
-    ├── About/            personality blurb + turtle mascot
-    ├── Projects/         coral cards (signature section) + expand-on-click modal
-    ├── Experience/       vertical timeline
-    ├── Skills/           color-coded skill grid
-    └── Contact/          resurfacing CTA + links
-```
+All the content lives in `src/data/`:
 
-## Adding a project
+- `projects.ts` for project cards. Each entry needs an id, name, description,
+  accentColor and tags. Thumbnails are 16:9 SVGs in `public/images/projects/`.
+  Optional: set `video: '/videos/<id>.mp4'` (file goes in `public/videos/`)
+  and the card plays a muted preview on hover. The first project in the array
+  renders as the big flagship card.
+- `experience.ts` for the timeline. Wrap numbers in `<stat>...</stat>` inside
+  bullets and they render as pills.
+- `skills.ts` for the skill clusters, categorized as lang / ml / tools.
 
-1. Drop a new `<NameCoral />` component in `src/svg/corals/index.tsx` —
-   use the existing 120×64 viewBox and anchor the trunk at `(60, 64)`.
-2. Append a new entry to `projects` in `src/data/projects.ts`, referencing
-   the coral component and picking an accent color.
+Photo goes at `public/images/portrait.jpg`, resume at
+`public/Bryan_Zhu_Resume.pdf`.
 
-Tag tones available: `teal | amber | blue | purple`.
+## Deploying
 
-## Adding experience
+Cloudflare Workers, static assets from `dist`. Config is in `wrangler.jsonc`.
+Build command `npm run build`, deploy command `npx wrangler deploy`.
 
-Edit `src/data/experience.ts`. Wrap inline stats in `<stat>…</stat>` and the
-timeline renderer will turn them into stat pills automatically.
+## Credits
 
-## What's still to build
-
-- [ ] Full-viewport scroll-driven mask transition (hooks in `MaskTransition.tsx`)
-- [ ] Parallax background coral silhouettes in underwater sections
-- [ ] Cursor-following turtle behaviour in About
-- [ ] Drop the real resume PDF at `public/Bryan_Zhu_Resume.pdf`
-- [ ] Wire `message in a bottle` button to a personal note modal
-
-## Deployment
-
-The repo is set up for Vercel out of the box: import the repo at
-[vercel.com](https://vercel.com) → it will auto-detect Vite, use the settings
-from `vercel.json`, and deploy on every push to `main`.
+Octopus model: "Octopus" by jeremy on poly.pizza, CC-BY 3.0.
