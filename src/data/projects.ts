@@ -5,6 +5,14 @@ export interface ProjectTag {
   tone: TagTone;
 }
 
+/** Headline metric shown on a card — a big accent numeral + a short label. */
+export interface ProjectMetric {
+  /** The numeral / value, e.g. "94%" or "27k+". */
+  value: string;
+  /** Short descriptor under the value, e.g. "accuracy". */
+  label: string;
+}
+
 /** Card surfaced in the modal's 3D depth stack (front-of-deck cycles on click). */
 export interface DeckCard {
   /** Short label shown in the small pill at the top of the card. */
@@ -24,10 +32,21 @@ export interface Project {
   longDescription?: string;
   /** Card thumbnail URL (16:9). */
   imageUrl?: string;
+  /**
+   * Optional hover-preview clip for the card. To activate: drop an .mp4 into
+   * public/videos/ and set `video: '/videos/<id>.mp4'`. When present the card
+   * plays it (muted, looped) on mouseenter and resets on mouseleave. Leave it
+   * unset for the current SVG-thumbnail-only behaviour.
+   */
+  video?: string;
   thumbnailVideoUrl?: string;
   gallery?: string[];
   fullVideoUrl?: string;
   accentColor: string;
+  /** One-line "exhibit" summary shown on the flagship card. */
+  tagline?: string;
+  /** Up to three headline metrics rendered as big accent numerals. */
+  metrics?: ProjectMetric[];
   tags: ProjectTag[];
   /** Three deck cards rendered as a 3D stack inside the modal. */
   deckCards?: DeckCard[];
@@ -43,6 +62,12 @@ export const projects: Project[] = [
     longDescription:
       'Built an end-to-end environmental audit platform that ingests satellite tiles, classifies land-use change with a fine-tuned ResNet-18 (94% accuracy on 27k+ EuroSAT images), and surfaces explainable per-pixel attribution via Grad-CAM. Real-time API + dashboard.',
     accentColor: '#0ea5a0',
+    tagline: 'Seeing the forest change from orbit.',
+    metrics: [
+      { value: '94%', label: 'accuracy' },
+      { value: '27k+', label: 'satellite tiles' },
+      { value: '10', label: 'land-use classes' },
+    ],
     mediaType: 'photo',
     imageUrl: '/images/projects/vantage.svg',
     gallery: ['/images/projects/vantage.svg'],
@@ -81,6 +106,11 @@ export const projects: Project[] = [
     longDescription:
       'A deceptive honeypot service that exposes fake credentials, observes attacker behaviour, and auto-generates SOC-grade incident reports via an LLM. Maps observed TTPs onto MITRE ATT&CK and triages severity. Built end-to-end at nwHacks 2026.',
     accentColor: '#f5a524',
+    tagline: 'A trap that writes its own incident report.',
+    metrics: [
+      { value: 'ATT&CK', label: 'TTP mapping' },
+      { value: 'AI', label: 'SOC reports' },
+    ],
     mediaType: 'photo',
     imageUrl: '/images/projects/honeykey.svg',
     gallery: ['/images/projects/honeykey.svg'],
@@ -119,6 +149,10 @@ export const projects: Project[] = [
     longDescription:
       'Chrome extension that intercepts checkout flows and runs an in-the-moment coaching conversation, grounded by RAG over the user’s prior financial decisions. ElevenLabs voice synthesis makes the nudge feel human. Reduced impulse purchases by 70% in user testing.',
     accentColor: '#2e7cf6',
+    tagline: 'A human voice at the checkout button.',
+    metrics: [
+      { value: '70%', label: 'fewer impulse buys' },
+    ],
     mediaType: 'photo',
     imageUrl: '/images/projects/investher.svg',
     gallery: ['/images/projects/investher.svg'],
@@ -157,6 +191,11 @@ export const projects: Project[] = [
     longDescription:
       'Trained a four-layer convolutional network on mel-spectrogram representations of 2000+ audio samples to classify musical instruments with 98% test accuracy. Used Adam, data augmentation, and careful regularization to keep generalization tight.',
     accentColor: '#8b5cf6',
+    tagline: 'Naming instruments from a picture of sound.',
+    metrics: [
+      { value: '98%', label: 'test accuracy' },
+      { value: '2k+', label: 'audio samples' },
+    ],
     mediaType: 'photo',
     imageUrl: '/images/projects/instrument-classifier.svg',
     gallery: ['/images/projects/instrument-classifier.svg'],
@@ -194,6 +233,11 @@ export const projects: Project[] = [
     longDescription:
       'Designed a distributed embedded system where multiple Arduinos coordinate over I²C to run a robotic skee-ball arcade game. Achieved 99%+ inter-board communication reliability under load. Won Best Game Award.',
     accentColor: '#ff6f61',
+    tagline: 'Three Arduinos, one very competitive arcade game.',
+    metrics: [
+      { value: '99%+', label: 'link reliability' },
+      { value: 'Best', label: 'game award' },
+    ],
     mediaType: 'photo',
     imageUrl: '/images/projects/boxbots-skeeball.svg',
     gallery: ['/images/projects/boxbots-skeeball.svg'],

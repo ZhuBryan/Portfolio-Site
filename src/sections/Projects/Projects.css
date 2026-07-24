@@ -1,32 +1,213 @@
-/* ── Act IV: the coral reef (projects) ──────────────────────────────── */
+/* ── Act III: the coral reef (projects) ─────────────────────────────── */
 .projects-section {
   position: relative;
-  background: linear-gradient(180deg, var(--lagoon-2) 0%, var(--lagoon-3) 100%);
-  padding: 110px 0 140px;
+  background: linear-gradient(180deg, var(--lagoon-2) 0%, var(--lagoon-4) 100%);
+  /* generous sea-floor band at the bottom: the coral strip + peeking octopus
+     live there, guaranteed clear of the last card row */
+  padding: 56px 0 320px;
+  /* clip horizontally (drifting SwimBy schools translate to 100vw) without
+     clipping vertical content — the ReefPeeker must rise clear of the coral */
+  overflow-x: clip;
+}
+
+/* keep the whole content column above the boids canvas (z-index:1),
+   caustics (z-index:0) and coral (z-index:1) */
+.projects-section .section-inner {
+  z-index: 3;
+}
+
+.projects-section .section-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--sun);
+}
+
+/* ── flagship exhibit ───────────────────────────────────────────────── */
+.reef-flagship {
+  margin-bottom: 30px;
+  position: relative;
+  z-index: 2;
+}
+
+.flagship-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 0;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  width: 100%;
+  padding: 0;
+  border-radius: var(--radius-lg);
   overflow: hidden;
+  cursor: pointer;
+  /* tinted glass edge that absorbs the project accent */
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--card-accent) 8%, #ffffff) 0%,
+    #ffffff 55%
+  );
+  border: 1px solid color-mix(in srgb, var(--card-accent) 40%, rgba(255, 255, 255, 0.7));
+  box-shadow: var(--shadow-card), 0 0 0 0 transparent;
+  transform: perspective(1400px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transform-style: preserve-3d;
+  transition: box-shadow 0.35s var(--ease-smooth), transform 0.2s var(--ease-smooth),
+    border-color 0.35s var(--ease-smooth);
 }
-
-/* coral silhouettes growing along the bottom edge */
-.projects-coral-silhouette {
+.flagship-card:hover {
+  box-shadow: var(--shadow-card-hover),
+    0 0 48px -12px color-mix(in srgb, var(--card-accent) 55%, transparent);
+  border-color: color-mix(in srgb, var(--card-accent) 60%, rgba(255, 255, 255, 0.7));
+}
+.flagship-card:focus-visible {
+  outline: 3px solid var(--sun);
+  outline-offset: 3px;
+}
+/* accent glow that tracks the pointer */
+.flagship-card__glow {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -6px;
-  height: 130px;
+  inset: 0;
   pointer-events: none;
-  opacity: 0.22;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 130' preserveAspectRatio='none'%3E%3Cpath d='M0 130 L0 96 Q14 92 16 74 Q18 56 30 60 Q40 64 38 84 Q52 60 48 44 Q44 28 58 30 Q72 32 66 52 Q80 40 84 56 Q88 72 76 88 L80 130 Z M120 130 L118 84 Q104 80 108 64 Q112 50 124 58 Q120 36 134 34 Q148 32 144 54 Q158 44 160 62 Q162 78 146 86 L150 130 Z M220 130 L216 92 Q200 88 204 70 Q208 54 222 62 Q218 40 234 40 Q250 40 244 64 Q260 52 262 72 Q263 88 246 94 L250 130 Z M340 130 L338 90 Q322 84 328 66 Q333 52 346 60 Q344 38 360 38 Q374 38 370 60 Q384 50 386 68 Q388 84 372 92 L376 130 Z M460 130 L456 96 Q442 92 446 76 Q450 62 462 68 Q458 48 474 46 Q488 44 484 66 Q498 56 500 74 Q501 88 486 96 L490 130 Z M560 130 L558 88 Q544 84 548 68 Q552 54 564 60 Q562 42 576 42 Q590 42 586 62 Q598 54 600 70 L600 130 Z' fill='%23063a4f'/%3E%3C/svg%3E");
-  background-size: 1200px 130px;
-  background-repeat: repeat-x;
+  opacity: 0;
+  background: radial-gradient(
+    260px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    color-mix(in srgb, var(--card-accent) 22%, transparent),
+    transparent 70%
+  );
+  transition: opacity 0.35s var(--ease-smooth);
+  z-index: 1;
+}
+.flagship-card:hover .flagship-card__glow {
+  opacity: 1;
 }
 
-/* the grid */
+.flagship-card__media {
+  position: relative;
+  overflow: hidden;
+  min-height: 260px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--card-accent) 22%, transparent),
+    color-mix(in srgb, var(--card-accent) 6%, transparent)
+  );
+}
+.flagship-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-smooth);
+}
+.flagship-card:hover .flagship-card__img {
+  transform: scale(1.04);
+}
+/* hover-preview clip layered over the SVG thumbnail; fades in on hover */
+.flagship-card__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  transition: opacity 0.35s var(--ease-smooth);
+}
+.flagship-card__flag {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--card-accent) 82%, #06344a);
+  box-shadow: 0 6px 18px -8px rgba(6, 45, 65, 0.5);
+}
+
+.flagship-card__body {
+  position: relative;
+  z-index: 2;
+  padding: 34px 36px 32px;
+  display: flex;
+  flex-direction: column;
+}
+.flagship-card__titlerow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.flagship-card__name {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 3vw, 34px);
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0;
+  letter-spacing: -0.015em;
+}
+.flagship-card__tagline {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 16.5px;
+  color: color-mix(in srgb, var(--card-accent) 70%, var(--ink));
+  margin: 6px 0 12px;
+}
+.flagship-card__desc {
+  font-size: 15px;
+  color: var(--ink-soft);
+  line-height: 1.62;
+  margin: 0 0 20px;
+}
+
+.flagship-card__metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 26px;
+  margin: 0 0 22px;
+}
+.metric {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+}
+.metric__value {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 600;
+  color: var(--card-accent);
+  letter-spacing: -0.02em;
+}
+.metric__label {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-top: 4px;
+}
+
+.flagship-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+}
+
+/* ── the grid (remaining projects, varied rhythm) ───────────────────── */
 .reef-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 32px 28px;
   position: relative;
   z-index: 2;
+}
+/* varied rhythm: nudge alternating cards vertically so it reads staggered,
+   not spreadsheet-uniform */
+.reef-grid > :nth-child(2n) {
+  transform: translateY(22px);
 }
 
 /* ── card ───────────────────────────────────────────────────────────── */
@@ -39,17 +220,24 @@
   color: inherit;
   width: 100%;
   padding: 0;
-  background: var(--card);
-  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--card-accent, var(--coral)) 7%, #ffffff) 0%,
+    #ffffff 60%
+  );
+  border: 1px solid color-mix(in srgb, var(--card-accent, var(--coral)) 34%, rgba(255, 255, 255, 0.7));
   border-radius: var(--radius-lg);
   overflow: hidden;
   cursor: pointer;
   box-shadow: var(--shadow-card);
-  transition: transform 0.3s var(--ease-smooth), box-shadow 0.3s var(--ease-smooth);
+  transition: transform 0.3s var(--ease-smooth), box-shadow 0.3s var(--ease-smooth),
+    border-color 0.3s var(--ease-smooth);
 }
 .reef-card:hover {
   transform: translateY(-6px);
-  box-shadow: var(--shadow-card-hover);
+  box-shadow: var(--shadow-card-hover),
+    0 0 36px -14px color-mix(in srgb, var(--card-accent, var(--coral)) 60%, transparent);
+  border-color: color-mix(in srgb, var(--card-accent, var(--coral)) 55%, rgba(255, 255, 255, 0.7));
 }
 .reef-card:focus-visible {
   outline: 3px solid var(--sun);
@@ -62,7 +250,11 @@
   width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(25, 149, 180, 0.15), rgba(25, 149, 180, 0.05));
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--card-accent, var(--coral)) 20%, transparent),
+    color-mix(in srgb, var(--card-accent, var(--coral)) 5%, transparent)
+  );
 }
 .reef-card__img,
 .reef-card__video {
@@ -70,6 +262,16 @@
   height: 100%;
   object-fit: cover;
   transition: transform 0.5s var(--ease-smooth);
+}
+/* hover-preview clip layered over the SVG thumbnail; fades in on hover */
+.reef-card__hover-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  transition: opacity 0.35s var(--ease-smooth);
 }
 
 /* shine sweep across the media on hover */
@@ -104,6 +306,35 @@
   letter-spacing: 0.08em;
   color: var(--ink-faint);
 }
+/* floating headline-metric badge */
+.reef-card__badge {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--card-accent, var(--coral)) 88%, #06344a);
+  color: #fff;
+  box-shadow: 0 10px 24px -10px rgba(6, 45, 65, 0.55);
+}
+.reef-card__badge-val {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.reef-card__badge-lbl {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.9;
+  margin-top: 2px;
+}
 /* per-project accent ribbon along the media base */
 .reef-card__accent {
   position: absolute;
@@ -137,6 +368,10 @@
   color: var(--ink);
   margin: 0;
   letter-spacing: -0.01em;
+  transition: color 0.25s var(--ease-smooth);
+}
+.reef-card:hover .reef-card__name {
+  color: var(--card-accent, var(--ink));
 }
 
 .reef-card__open {
@@ -150,7 +385,8 @@
   background: color-mix(in srgb, var(--card-accent, var(--coral)) 12%, transparent);
   transition: transform 0.25s var(--ease-spring), background-color 0.25s var(--ease-smooth);
 }
-.reef-card:hover .reef-card__open {
+.reef-card:hover .reef-card__open,
+.flagship-card:hover .reef-card__open {
   transform: translate(2px, -2px);
   background: color-mix(in srgb, var(--card-accent, var(--coral)) 22%, transparent);
 }
@@ -171,11 +407,27 @@
 
 /* ── responsive ─────────────────────────────────────────────────────── */
 @media (max-width: 860px) {
+  .flagship-card {
+    grid-template-columns: 1fr;
+  }
+  .flagship-card__media {
+    min-height: 200px;
+    aspect-ratio: 16 / 9;
+  }
   .reef-grid {
     grid-template-columns: 1fr;
     gap: 26px;
   }
+  .reef-grid > :nth-child(2n) {
+    transform: none;
+  }
   .projects-section {
     padding: 80px 0 110px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flagship-card {
+    transform: none !important;
   }
 }

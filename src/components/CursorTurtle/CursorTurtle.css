@@ -1,0 +1,80 @@
+/* Cursor buddy — a small turtle that swims after the mouse.
+   Fixed, non-interactive, sits just below the glass navbar. */
+.cturtle {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 900; /* navbar is 1000+ */
+  pointer-events: none;
+  will-change: transform;
+  filter: drop-shadow(0 6px 10px rgba(6, 60, 70, 0.35));
+}
+
+/* heading = rotation toward travel direction (set from JS) */
+.cturtle__heading {
+  width: 100%;
+  height: 100%;
+}
+
+/* body = barrel-roll layer (framer writes transform here) */
+.cturtle__body {
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 50%;
+}
+
+/* bob = separate idle layer so its transform never fights the roll */
+.cturtle__bob {
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 50%;
+}
+.cturtle__bob.is-idle {
+  animation: ct-bob 2.6s ease-in-out infinite;
+}
+@keyframes ct-bob {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-3px) scale(1.02);
+  }
+}
+
+/* flippers wiggle continuously; faster while swimming (not idle) */
+.ct-flip {
+  transform-origin: 32px 26px;
+  animation: ct-paddle 0.9s ease-in-out infinite;
+}
+.cturtle__bob:not(.is-idle) .ct-flip {
+  animation-duration: 0.5s;
+}
+.ct-flip--fr,
+.ct-flip--rr {
+  animation-delay: -0.25s;
+}
+.ct-flip--rl {
+  transform-origin: 24px 44px;
+  animation-delay: -0.12s;
+}
+.ct-flip--rr {
+  transform-origin: 40px 44px;
+}
+@keyframes ct-paddle {
+  0%,
+  100% {
+    transform: rotate(-8deg);
+  }
+  50% {
+    transform: rotate(10deg);
+  }
+}
+
+/* respect reduced motion — the buddy only mounts when no-preference,
+   but guard the CSS accents too. */
+@media (prefers-reduced-motion: reduce) {
+  .cturtle {
+    display: none;
+  }
+}

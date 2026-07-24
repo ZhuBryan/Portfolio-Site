@@ -1,0 +1,98 @@
+/* Full-width strip pinned at `top`; the school patrols inside it and never
+   leaves the section rectangle. The strip itself only does a slow vertical
+   bob (independent period) so the patrol doesn't read as a metronome. */
+.swimby {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 0;
+  pointer-events: none;
+  animation: swimby-bob 8.5s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* The runner carries the school from the left inset to the right inset and
+   back (alternate). --patrol-x is set from JS = stripWidth − schoolWidth − 2·margin. */
+.swimby__runner {
+  position: relative;
+  left: 24px;
+  width: 300px;
+  animation-name: swimby-patrol;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  will-change: transform;
+}
+@keyframes swimby-patrol {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(var(--patrol-x, 0px));
+  }
+}
+
+/* Square-wave facing flip at 2× the leg duration, phase-locked to the patrol:
+   face right on the rightward leg, left on the return leg. */
+.swimby__flip {
+  display: block;
+  width: 300px;
+  transform-origin: 50% 50%;
+  animation-name: swimby-flip;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+@keyframes swimby-flip {
+  0%, 49.999% {
+    transform: scaleX(1);
+  }
+  50%, 100% {
+    transform: scaleX(-1);
+  }
+}
+
+@keyframes swimby-bob {
+  from {
+    transform: translateY(-6px);
+  }
+  to {
+    transform: translateY(6px);
+  }
+}
+
+/* fish fin/tail wiggle (extracted from the old Descent scene) */
+.dfish-tail {
+  transform-box: fill-box;
+  transform-origin: 100% 50%;
+  animation: dfish-tail-beat 0.5s ease-in-out infinite alternate;
+  animation-delay: var(--d, 0s);
+}
+@keyframes dfish-tail-beat {
+  from {
+    transform: rotate(-22deg);
+  }
+  to {
+    transform: rotate(22deg);
+  }
+}
+.dfish-pec {
+  transform-box: fill-box;
+  transform-origin: 100% 0%;
+  animation: dfish-pec 0.7s ease-in-out infinite alternate;
+  animation-delay: var(--d, 0s);
+}
+@keyframes dfish-pec {
+  from {
+    transform: rotate(-8deg);
+  }
+  to {
+    transform: rotate(12deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .swimby {
+    display: none;
+  }
+}

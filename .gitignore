@@ -33,3 +33,9 @@ dist-ssr
 .vercel
 
 *.tsbuildinfo
+
+# Agent handoff notes — local only, never commit
+HANDOFF.md
+vite.config.ts.timestamp-*
+_diag.mjs
+.claude/

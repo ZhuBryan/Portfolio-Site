@@ -1,6 +1,13 @@
-import { useState, type CSSProperties } from 'react';
+import { useRef, useState, type CSSProperties } from 'react';
 import { motion } from 'framer-motion';
 import type { Project, TagTone } from '../../data/projects';
+
+/** Play, swallowing the interrupt rejection browsers throw on a fast leave. */
+function safePlay(el: HTMLVideoElement | null) {
+  if (!el) return;
+  const p = el.play();
+  if (p && typeof p.catch === 'function') p.catch(() => {});
+}
 
 const TAG_TONE_CLASS: Record<TagTone, string> = {
   teal: 'tag tag-teal',
@@ -19,10 +26,30 @@ interface CoralCardProps {
 type AccentStyle = CSSProperties & { '--card-accent'?: string };
 
 export default function CoralCard({ project, index, onSelect }: CoralCardProps) {
-  const { name, description, tags, accentColor, imageUrl, thumbnailVideoUrl } = project;
+  const { name, description, tags, accentColor, imageUrl, thumbnailVideoUrl, metrics, video } =
+    project;
   const [isHovered, setIsHovered] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const style: AccentStyle = { '--card-accent': accentColor };
+  const headline = metrics && metrics.length > 0 ? metrics[0] : null;
+
+  // Hover-preview: play the clip on enter, reset on leave. Inert unless the
+  // project defines a `video` src.
+  const handleEnter = () => {
+    setIsHovered(true);
+    if (!video) return;
+    safePlay(videoRef.current);
+  };
+  const handleLeave = () => {
+    setIsHovered(false);
+    if (!video) return;
+    const v = videoRef.current;
+    if (v) {
+      v.pause();
+      v.currentTime = 0;
+    }
+  };
 
   return (
     <motion.button
@@ -30,8 +57,8 @@ export default function CoralCard({ project, index, onSelect }: CoralCardProps) 
       className="reef-card"
       style={style}
       onClick={() => onSelect(project)}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
       aria-label={`Open details for ${name}`}
       initial={{ opacity: 0, y: 36 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -52,6 +79,24 @@ export default function CoralCard({ project, index, onSelect }: CoralCardProps) 
           <img src={imageUrl} alt="" className="reef-card__img" loading="lazy" />
         ) : (
           <div className="reef-card__placeholder">Preview coming soon</div>
+        )}
+        {video && (
+          <video
+            ref={videoRef}
+            className="reef-card__hover-video"
+            style={{ opacity: isHovered ? 1 : 0 }}
+            src={video}
+            muted
+            loop
+            playsInline
+            preload="metadata"
+          />
+        )}
+        {headline && (
+          <span className="reef-card__badge">
+            <span className="reef-card__badge-val">{headline.value}</span>
+            <span className="reef-card__badge-lbl">{headline.label}</span>
+          </span>
         )}
         <span className="reef-card__accent" />
       </div>

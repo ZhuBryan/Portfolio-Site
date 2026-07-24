@@ -1,0 +1,79 @@
+/* The crab wrapper is positioned absolutely inside the Contact section and
+   moved purely via an inline transform written from rAF (no layout thrash).
+   It never intercepts pointer events — the section owns the listeners. */
+.sandcrab {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 46px;
+  height: 32px;
+  z-index: 3;
+  pointer-events: none;
+  will-change: transform;
+  transform: translate3d(-100px, -100px, 0); /* off-screen until first frame */
+  filter: drop-shadow(0 4px 5px rgba(8, 60, 80, 0.28));
+}
+
+/* legs: a gentle scuttle cycle, only while walking. Two phase groups so the
+   left/right legs alternate. Disabled entirely under reduced-motion. */
+.sandcrab__leg {
+  transform-box: fill-box;
+  transform-origin: top center;
+}
+.sandcrab--walking .sandcrab__leg--l1,
+.sandcrab--walking .sandcrab__leg--r2 {
+  animation: crab-step-a 0.24s linear infinite;
+}
+.sandcrab--walking .sandcrab__leg--l2,
+.sandcrab--walking .sandcrab__leg--r3 {
+  animation: crab-step-b 0.24s linear infinite;
+}
+.sandcrab--walking .sandcrab__leg--l3,
+.sandcrab--walking .sandcrab__leg--r1 {
+  animation: crab-step-a 0.24s linear infinite 0.12s;
+}
+@keyframes crab-step-a {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-1.4px) rotate(-8deg);
+  }
+}
+@keyframes crab-step-b {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-1.4px) rotate(8deg);
+  }
+}
+
+/* claws: the left claw raises + snaps when the crab is cornered (alarmed). */
+.sandcrab__claw--l {
+  transform-box: fill-box;
+  transform-origin: 14px 15px;
+  transition: transform 0.14s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.sandcrab--alarmed .sandcrab__claw--l {
+  transform: translateY(-9px) rotate(-32deg);
+  animation: crab-claw-snap 0.4s ease-in-out infinite;
+}
+@keyframes crab-claw-snap {
+  0%,
+  100% {
+    transform: translateY(-9px) rotate(-32deg);
+  }
+  50% {
+    transform: translateY(-9px) rotate(-20deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sandcrab__leg,
+  .sandcrab__claw--l {
+    animation: none !important;
+  }
+}

@@ -1,0 +1,40 @@
+.drift {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.drift span {
+  position: absolute;
+  bottom: -14px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(214, 250, 255, 0.9), rgba(150, 230, 255, 0.25) 55%, transparent 70%);
+  box-shadow: 0 0 7px rgba(150, 230, 255, 0.5);
+  opacity: 0;
+  animation-name: drift-rise;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+@keyframes drift-rise {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.5;
+  }
+  88% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate3d(var(--dx, 0), -105vh, 0);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .drift {
+    display: none;
+  }
+}

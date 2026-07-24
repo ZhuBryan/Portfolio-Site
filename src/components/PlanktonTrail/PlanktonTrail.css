@@ -1,0 +1,12 @@
+/* One fixed, full-viewport plankton canvas mounted once (in App). It never eats
+   pointer events (the cursor still reaches the pills / crab / links; the motes
+   read the cursor via a window mousemove listener). Additive glow above the
+   section backgrounds but low enough not to hurt content readability. */
+.plankton-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}

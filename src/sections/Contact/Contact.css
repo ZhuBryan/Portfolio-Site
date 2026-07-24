@@ -3,7 +3,9 @@
   padding: 110px 0 0;
   text-align: center;
   position: relative;
-  overflow: hidden;
+  /* clip horizontally (drifting SwimBy schools translate to 100vw) without
+     creating a scroll container or clipping vertical content */
+  overflow-x: clip;
 }
 
 .contact-inner {
@@ -49,7 +51,7 @@
   gap: 9px;
   background: rgba(255, 255, 255, 0.92);
   border: 1px solid rgba(255, 255, 255, 0.7);
-  border-radius: 999px;
+  border-radius: 6px;
   padding: 13px 24px;
   font-size: 15px;
   font-weight: 600;
@@ -84,7 +86,7 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
   padding: 8px 12px;
-  border-radius: 999px;
+  border-radius: 6px;
   transition: color 0.2s var(--ease-smooth);
 }
 .contact-surface:hover {

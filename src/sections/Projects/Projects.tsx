@@ -1,27 +1,46 @@
 import { useState } from 'react';
 import { projects, type Project } from '../../data/projects';
 import CoralCard from './CoralCard';
+import FlagshipCard from './FlagshipCard';
 import ProjectModal from './ProjectModal';
+import Coral from '../../components/Coral/Coral';
+import ReefPeeker from '../../components/ReefPeeker/ReefPeeker';
+import SwimBy from '../../components/SwimBy/SwimBy';
 import './Projects.css';
 
+// (coral reef row + ambient schools + caustic shimmer)
 export default function Projects() {
   const [selected, setSelected] = useState<Project | null>(null);
 
+  const [flagship, ...rest] = projects;
+
   return (
     <section className="projects-section" id="projects">
-      {/* drifting coral silhouettes along the bottom edge */}
-      <div className="projects-coral-silhouette" aria-hidden="true" />
+      {/* subtle drifting light + a couple of ambient schools drifting past the
+          reef (the interactive flocking canvas lives in Experience). */}
+      <div className="caustics" aria-hidden="true" />
+      <SwimBy top="16%" duration={38} tint="rgba(6, 44, 60, 0.22)" scale={0.9} />
+      <SwimBy top="58%" duration={34} reverse delay={-18} tint="rgba(6, 44, 60, 0.16)" scale={0.7} />
+      {/* the shy octopus rises from behind the coral and watches the cursor */}
+      <ReefPeeker />
+      <Coral />
 
       <div className="section-inner">
-        <p className="section-label">Act IV · The Coral Reef</p>
-        <h2 className="section-title">Projects growing on the reef</h2>
+        <p className="section-label">Projects</p>
+        <h2 className="section-title">Things I&rsquo;ve built</h2>
         <p className="section-sub">
-          Five builds I&rsquo;m proud of — machine learning, security, fintech, and one very
-          competitive skee-ball robot. Click any card for the full story.
+          Machine learning, security, fintech, and one very competitive skee-ball robot. Click any
+          card for the full story.
         </p>
 
+        {flagship && (
+          <div className="reef-flagship">
+            <FlagshipCard project={flagship} onSelect={setSelected} />
+          </div>
+        )}
+
         <div className="reef-grid">
-          {projects.map((p, i) => (
+          {rest.map((p, i) => (
             <CoralCard key={p.id} project={p} index={i} onSelect={setSelected} />
           ))}
         </div>

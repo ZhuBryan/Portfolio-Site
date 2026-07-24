@@ -1,4 +1,6 @@
 import { motion } from 'framer-motion';
+import DriftLayer from '../../components/DriftLayer/DriftLayer';
+import SandCrab from '../../components/SandCrab/SandCrab';
 import './Contact.css';
 
 const MailIcon = (
@@ -27,6 +29,10 @@ export default function Contact() {
 
   return (
     <section className="contact-section" id="contact">
+      <DriftLayer />
+      {/* a small crab that scuttles along the sand away from the cursor
+          (desktop/hover/no-reduced-motion; canvas-free, pointer-events none) */}
+      <SandCrab sectionSelector="#contact" />
       <div className="section-inner contact-inner">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -34,12 +40,12 @@ export default function Contact() {
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
-          <p className="section-label contact-label">The Ocean Floor</p>
+          <p className="section-label contact-label">Get in touch</p>
           <h2 className="contact-tagline">
-            Always open to <em>cool problems</em>.
+            Always up for a <em>good problem</em>.
           </h2>
           <p className="contact-sub">
-            Internships, collaborations, or just a good conversation about ML — my inbox is open.
+            Internships, collaborations, or a conversation about ML. My inbox is open.
           </p>
 
           <div className="contact-links">
@@ -76,7 +82,6 @@ export default function Contact() {
         </motion.div>
       </div>
 
-      {/* sandy floor with a starfish */}
       <div className="contact-floor" aria-hidden="true">
         <svg className="contact-starfish" viewBox="0 0 64 64" width="46" height="46">
           <path
@@ -88,7 +93,7 @@ export default function Contact() {
           />
         </svg>
       </div>
-      <div className="contact-footer">© {new Date().getFullYear()} Bryan Zhu · built with React, Three.js & a snorkel</div>
+      <div className="contact-footer">© {new Date().getFullYear()} Bryan Zhu</div>
     </section>
   );
 }

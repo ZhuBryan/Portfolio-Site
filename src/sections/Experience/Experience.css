@@ -1,45 +1,125 @@
 .exp-section {
-  background: linear-gradient(180deg, var(--lagoon-3) 0%, var(--lagoon-4) 100%);
+  background: linear-gradient(180deg, var(--lagoon-0) 0%, var(--lagoon-2) 100%);
   padding: 100px 0 90px;
   position: relative;
-  overflow: hidden;
+  /* clip horizontally (drifting SwimBy schools translate to 100vw) without
+     creating a scroll container or clipping vertical content */
+  overflow-x: clip;
+}
+/* keep dive-log + label above the caustic overlay AND the boids canvas (z:1) */
+.exp-section .section-inner {
+  z-index: 2;
 }
 
-.timeline {
-  display: flex;
-  flex-direction: column;
-  gap: 26px;
+/* unobtrusive feeding hint sitting beside the act label */
+.exp-feed-hint {
+  display: inline-block;
+  margin-left: 12px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: none;
+  color: var(--foam-soft, rgba(220, 250, 255, 0.7));
+  opacity: 0.6;
+  vertical-align: middle;
+}
+.exp-feed-hint::before {
+  content: '·';
+  margin-right: 10px;
+  opacity: 0.6;
+}
+/* the dive-log cards must remain clickable/hover-able above the canvas */
+.exp-section .divelog {
   position: relative;
-  padding-left: 26px;
+  z-index: 2;
+}
+/* hide the food hint where the interactive canvas doesn't mount */
+@media (max-width: 767px), (hover: none), (prefers-reduced-motion: reduce) {
+  .exp-feed-hint {
+    display: none;
+  }
 }
 
-.timeline::before {
-  content: '';
+.exp-section .section-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--sun);
+}
+
+/* ── the dive log: a vertical descent line with depth markers ────────── */
+.divelog {
+  position: relative;
+  padding: 8px 0 12px;
+}
+
+/* central descent line (desktop) */
+.divelog__line {
   position: absolute;
-  left: 7px;
-  top: 14px;
-  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+  bottom: 0;
   width: 2px;
   border-radius: 2px;
-  background: rgba(255, 255, 255, 0.3);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.4) 12%,
+    rgba(255, 255, 255, 0.4) 88%,
+    rgba(255, 255, 255, 0.05)
+  );
 }
 
-.timeline-item {
+.divelog-entry {
   position: relative;
+  display: grid;
+  margin-bottom: 42px;
+  align-items: center;
+}
+.divelog-entry:last-child {
+  margin-bottom: 0;
+}
+/* left entry: card in left column, anchor pinned to the center line */
+.divelog-entry--left {
+  grid-template-columns: minmax(0, 1fr) 0;
+  justify-items: end;
+}
+.divelog-entry--right {
+  grid-template-columns: 0 minmax(0, 1fr);
+  justify-items: start;
+}
+.divelog-entry--left .divelog-card {
+  margin-right: 46px;
+}
+.divelog-entry--right .divelog-card {
+  grid-column: 2;
+  margin-left: 46px;
 }
 
-.timeline-dot {
+/* the anchor: the ignite dot sitting on the center line */
+.divelog-entry__anchor {
   position: absolute;
-  left: -26px;
-  top: 26px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+}
+.divelog-dot {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  border: 3px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.15);
+  border: 3px solid rgba(255, 255, 255, 0.92);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.14),
+    0 0 18px 2px color-mix(in srgb, currentColor 0%, transparent);
 }
 
-.timeline-card {
+/* the glass card, anchored to the line */
+.divelog-card {
+  position: relative;
+  max-width: 480px;
   background: var(--glass);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
@@ -47,25 +127,47 @@
   box-shadow: var(--shadow-card);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  transition: transform 0.3s var(--ease-smooth), box-shadow 0.3s var(--ease-smooth);
+}
+.divelog-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card-hover),
+    0 0 30px -14px color-mix(in srgb, var(--entry-glow, var(--seafoam)) 70%, transparent);
+}
+/* little connector nib from the card toward the line */
+.divelog-entry--left .divelog-card::after,
+.divelog-entry--right .divelog-card::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 30px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--entry-glow, var(--seafoam)), transparent);
+  transform: translateY(-50%);
+}
+.divelog-entry--left .divelog-card::after {
+  right: -34px;
+  background: linear-gradient(90deg, transparent, var(--entry-glow, var(--seafoam)));
+}
+.divelog-entry--right .divelog-card::after {
+  left: -34px;
 }
 
-.timeline-role {
+.divelog-role {
   font-family: var(--font-display);
   font-size: 21px;
   font-weight: 600;
   color: var(--ink);
   margin: 0 0 2px;
 }
-
-.timeline-org {
+.divelog-org {
   font-size: 13.5px;
   font-weight: 600;
   color: var(--coral-cta);
   margin: 0 0 14px;
   letter-spacing: 0.02em;
 }
-
-.timeline-bullets {
+.divelog-bullets {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -73,30 +175,59 @@
   flex-direction: column;
   gap: 8px;
 }
-
-.timeline-bullets li {
+.divelog-bullets li {
   font-size: 14.5px;
   color: var(--ink-soft);
   line-height: 1.6;
   display: flex;
   gap: 10px;
 }
-.timeline-bullets li::before {
+.divelog-bullets li::before {
   content: '';
   flex-shrink: 0;
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--seafoam);
+  background: var(--entry-glow, var(--seafoam));
   margin-top: 8px;
-  box-shadow: 0 0 0 3px rgba(62, 230, 192, 0.2);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--entry-glow, var(--seafoam)) 24%, transparent);
 }
 
+/* ── mobile: single column, line on the left ────────────────────────── */
 @media (max-width: 768px) {
   .exp-section {
     padding: 70px 0 60px;
   }
-  .timeline-card {
+  .divelog {
+    padding-left: 30px;
+  }
+  .divelog__line {
+    left: 8px;
+    transform: none;
+  }
+  .divelog-entry,
+  .divelog-entry--left,
+  .divelog-entry--right {
+    grid-template-columns: 1fr;
+    justify-items: stretch;
+    margin-bottom: 30px;
+  }
+  .divelog-entry--left .divelog-card,
+  .divelog-entry--right .divelog-card {
+    grid-column: 1;
+    margin-left: 0;
+    margin-right: 0;
+    max-width: none;
     padding: 18px 18px;
+  }
+  .divelog-entry__anchor {
+    left: -22px;
+    top: 26px;
+    transform: none;
+    flex-direction: row;
+  }
+  .divelog-entry--left .divelog-card::after,
+  .divelog-entry--right .divelog-card::after {
+    display: none;
   }
 }
