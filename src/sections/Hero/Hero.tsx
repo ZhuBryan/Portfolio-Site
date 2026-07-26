@@ -243,13 +243,10 @@ export default function Hero() {
               </button>
               <p className="bottle-letter__eyebrow">A message washed ashore</p>
               <p className="bottle-letter__body">
-                You opened the bottle, so here&rsquo;s the version that doesn&rsquo;t fit on a resume:
-                I&rsquo;m the person who trained a model to spot deforestation from orbit, then spent
-                a weekend teaching a browser extension to gently talk you out of an impulse buy. Most
-                days it&rsquo;s AR/VR gesture recognition at Waterloo Reality Labs; most weekends it&rsquo;s
-                whatever a hackathon throws at me, honeypots, rental-map AI, robots that argue with
-                each other over a shared bus. If any of that sounds like your kind of problem, send a
-                message back my way.
+                Fun fact for opening the bottle: when I&rsquo;m not staring at a terminal, I&rsquo;m
+                probably lifting, folding origami with more precision than it really deserves, or
+                spinning a butterfly knife and a begleri to keep my hands busy while my brain works
+                through a bug.
               </p>
               <p className="bottle-letter__sign">B</p>
             </motion.div>
