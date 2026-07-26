@@ -232,44 +232,47 @@ export const projects: Project[] = [
     ],
   },
   {
-    id: 'boxbots-skeeball',
-    name: 'BoxBots Skee-ball',
+    id: 'runbook',
+    name: 'RunBook',
     description:
-      'Multi-Arduino I²C robotic skee-ball: 99%+ communication reliability, Best Game Award',
+      'AI onboarding copilot: reads a product’s docs and codebase, then guides users through real in-app steps with grounded chat, next-action inference, and live UI highlighting.',
     longDescription:
-      'Designed a distributed embedded system where multiple Arduinos coordinate over I²C to run a robotic skee-ball arcade game. Achieved 99%+ inter-board communication reliability under load. Won Best Game Award.',
-    accentColor: '#ff6f61',
-    tagline: 'Three Arduinos, one very competitive arcade game.',
+      'Led the backend/AI implementation for RunBook, an embeddable onboarding copilot that turns a product’s own documentation into guided, step-by-step workflows instead of a static help page. Built the core chat API and its context-composition pipeline (combining page state, hovered-feature metadata, and project docs into a single grounded prompt), plus the retrieval flow that keeps answers tied to real source material. Went past search-only Q&A by implementing next-step inference and structured UI-action payloads, so the assistant can trigger a highlight or start a tour rather than just describe one. Also hardened the system for the messiness of real demos: fallback logic for incomplete model output, deterministic error messaging, and reliability patches for event timing and highlight recovery across pages that hadn’t fully rendered yet. Validated the whole pipeline across two structurally different demo products, a workflow SaaS surface and an e-commerce ops surface, spanning 3 repositories, proving the onboarding engine generalizes rather than being hand-tuned to one UI.',
+    accentColor: '#6366f1',
+    tagline: 'Turns a product’s own docs into a guided tour.',
     metrics: [
-      { value: '99%+', label: 'link reliability' },
-      { value: 'Best', label: 'game award' },
+      { value: '2', label: 'demo products validated' },
+      { value: '3', label: 'repos spanned' },
     ],
-    mediaType: 'photo',
-    imageUrl: '/images/projects/boxbots-skeeball.svg',
-    gallery: ['/images/projects/boxbots-skeeball.svg'],
+    mediaType: 'video',
+    youtubeId: 'Bc27sklDOag',
+    imageUrl: '/images/projects/runbook.svg',
     tags: [
-      { label: 'Arduino', tone: 'teal' },
-      { label: 'C++', tone: 'teal' },
-      { label: 'I²C', tone: 'amber' },
+      { label: 'Next.js', tone: 'blue' },
+      { label: 'FastAPI', tone: 'amber' },
+      { label: 'LLM Orchestration', tone: 'purple' },
+      { label: 'RAG', tone: 'blue' },
+      { label: 'Event-Driven Architecture', tone: 'teal' },
+      { label: 'TypeScript', tone: 'purple' },
     ],
     deckCards: [
       {
-        type: 'Bus Topology',
-        title: 'Multi-Master I²C',
+        type: 'AI Core',
+        title: 'Context-Grounded Chat API',
         content:
-          'Three Arduinos on a shared bus: controller orchestrates, scoring slave reports ball detections, motor slave drives launcher.',
+          'A retrieval-aware chat endpoint that fuses page state, hovered-feature metadata, and a project’s own docs into one coherent prompt. Answers are grounded in real source material, not hallucinated, and every response includes numbered steps plus a UI-action payload.',
+      },
+      {
+        type: 'Execution Layer',
+        title: 'Action-First Onboarding',
+        content:
+          'Goes beyond Q&A: the assistant infers the user’s next step from live app state and emits structured UI actions (trigger a highlight, start a tour, focus an element) so guidance is something the frontend executes, not just displays.',
       },
       {
         type: 'Reliability',
-        title: '99%+ Frame Delivery',
+        title: 'Cross-Site Runtime Hardening',
         content:
-          'Pull-up tuning, ACK retry, and checksum framing pushed message loss below 1% across a full demo session.',
-      },
-      {
-        type: 'Game Loop',
-        title: 'State Machine',
-        content:
-          'Idle → Ready → Roll → Score → Reset, with debounced sensor reads. Won Best Game Award at the showcase.',
+          'An embeddable widget runtime with fallback selector logic, popup-placement recovery, and stale-cache handling, validated across two structurally different demo products so guidance holds up on UIs it wasn’t built for.',
       },
     ],
   },
