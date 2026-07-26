@@ -61,7 +61,15 @@ export default function ProjectModal({ project, onClose }: ProjectModalProps) {
             </button>
 
             <div className="modal-media">
-              {project.mediaType === 'video' && project.fullVideoUrl ? (
+              {project.mediaType === 'video' && project.youtubeId ? (
+                <iframe
+                  className="modal-media__video"
+                  src={`https://www.youtube.com/embed/${project.youtubeId}`}
+                  title={`${project.name} demo video`}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              ) : project.mediaType === 'video' && project.fullVideoUrl ? (
                 <video className="modal-media__video" src={project.fullVideoUrl} controls playsInline />
               ) : (
                 <div className="modal-media__gallery">

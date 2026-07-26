@@ -42,6 +42,8 @@ export interface Project {
   thumbnailVideoUrl?: string;
   gallery?: string[];
   fullVideoUrl?: string;
+  /** YouTube video id for the modal's media slot (mediaType: 'video'). Takes priority over fullVideoUrl. */
+  youtubeId?: string;
   accentColor: string;
   /** One-line "exhibit" summary shown on the flagship card. */
   tagline?: string;
@@ -184,44 +186,48 @@ export const projects: Project[] = [
     ],
   },
   {
-    id: 'instrument-classifier',
-    name: 'Instrument Classifier',
+    id: 'canopi',
+    name: 'Canopi',
     description:
-      'CNN achieving 98% accuracy on mel spectrograms: 4-layer architecture, Adam optimizer, 2000+ audio samples',
+      'Rental intelligence platform with natural-language home search: describe what you want and Gemini finds the fit, live amenity tethers, and a fault-tolerant geospatial API.',
     longDescription:
-      'Trained a four-layer convolutional network on mel-spectrogram representations of 2000+ audio samples to classify musical instruments with 98% test accuracy. Used Adam, data augmentation, and careful regularization to keep generalization tight.',
-    accentColor: '#8b5cf6',
-    tagline: 'Naming instruments from a picture of sound.',
+      'Team project built at Hack Canada 2026. My focus was the AI preference layer and the 3D map experience: a conversational engine where Gemini infers an 8-axis lifestyle profile from plain-English answers and updates a live radar chart in real time, plus the animated amenity tethers and Three.js neighborhood diorama that visualize walkability, transit, and greenery around a selected listing. The wider platform layers that on top of a scraped-and-enriched dataset of 200+ real Canadian rental listings and a fault-tolerant vitality API (3-mirror Overpass failover, server-side caching, in-flight deduplication) that keeps amenity data flowing under load.',
+    accentColor: '#22c55e',
+    tagline: 'Home search that listens instead of filters.',
     metrics: [
-      { value: '98%', label: 'test accuracy' },
-      { value: '2k+', label: 'audio samples' },
+      { value: '200+', label: 'rental listings' },
+      { value: '8-axis', label: 'preference engine' },
+      { value: '3×', label: 'API failover' },
     ],
-    mediaType: 'photo',
-    imageUrl: '/images/projects/instrument-classifier.svg',
-    gallery: ['/images/projects/instrument-classifier.svg'],
+    mediaType: 'video',
+    youtubeId: 'VEvdZdRp5EU',
+    imageUrl: '/images/projects/canopi.svg',
     tags: [
-      { label: 'PyTorch', tone: 'purple' },
-      { label: 'torchaudio', tone: 'purple' },
-      { label: 'CNN', tone: 'purple' },
+      { label: 'Next.js', tone: 'blue' },
+      { label: 'TypeScript', tone: 'purple' },
+      { label: 'Mapbox GL', tone: 'teal' },
+      { label: 'Gemini', tone: 'blue' },
+      { label: 'Three.js', tone: 'purple' },
+      { label: 'Supabase', tone: 'teal' },
     ],
     deckCards: [
       {
-        type: 'Audio Pipeline',
-        title: 'Mel Spectrogram',
+        type: 'Preference Engine',
+        title: 'Natural-Language Home Search',
         content:
-          'Raw WAV → resample → 128-bin mel spectrogram, normalized per-clip. Augmented with time/frequency masking on the fly.',
+          'Describe what you want in plain English, like "quiet, near good food, short commute," and Gemini infers a structured 8-axis lifestyle profile, auto-selecting the listing that fits and snapping the map straight to it. No filters, no dropdowns.',
       },
       {
-        type: 'Network',
-        title: '4-layer CNN',
+        type: 'Map Intelligence',
+        title: 'Live Amenity Tethers',
         content:
-          'Four conv blocks (32→64→128→256), batch norm + ReLU + max-pool, single dense head. Trained with Adam + cosine schedule.',
+          'Selecting a home draws real-time animated tether lines to nearby cafes, transit, parks, and clinics, pulled live from OpenStreetMap. Each tether opens into a card with walk time, rating, and distance.',
       },
       {
-        type: 'Result',
-        title: '98% Test Accuracy',
+        type: 'Reliability',
+        title: '3-Mirror Failover',
         content:
-          '2000+ samples across instrument classes. Top-1 holds at 98% with no obvious confusion clusters on the per-class matrix.',
+          'A fault-tolerant vitality API with 3-mirror Overpass failover, 5-minute server-side caching, and in-flight request deduplication, built to keep live amenity data flowing even when the primary source stalls in dense downtown areas.',
       },
     ],
   },
