@@ -2,7 +2,7 @@
 // Explicit config so wrangler skips Vite framework auto-config
 // (which refuses Vite 5). Build first, then deploy ./dist.
 {
-  "name": "portfolio-site",
+  "name": "bryanzhu",
   "compatibility_date": "2026-07-01",
   "assets": {
     "directory": "./dist",
