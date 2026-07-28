@@ -51,7 +51,7 @@ const fadeUp = {
 const STATS = [
   { value: '4.0', label: 'GPA @ Waterloo' },
   { value: 'AR/VR', label: 'Lead @ Reality Labs' },
-  { value: '10+', label: 'hackathons' },
+  { value: '7', label: 'hackathons' },
 ];
 
 const MailIcon = (
@@ -244,9 +244,8 @@ export default function Hero() {
               <p className="bottle-letter__eyebrow">A message washed ashore</p>
               <p className="bottle-letter__body">
                 Fun fact for opening the bottle: when I&rsquo;m not staring at a terminal, I&rsquo;m
-                probably lifting, folding origami with more precision than it really deserves, or
-                spinning a butterfly knife and a begleri to keep my hands busy while my brain works
-                through a bug.
+                probably lifting, folding origami, or
+                spinning a butterfly knife and a begleri to keep my hands busy while my brain works.
               </p>
               <p className="bottle-letter__sign">B</p>
             </motion.div>

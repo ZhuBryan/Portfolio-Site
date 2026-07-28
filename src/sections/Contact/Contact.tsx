@@ -45,7 +45,7 @@ export default function Contact() {
             Always up for a <em>good problem</em>.
           </h2>
           <p className="contact-sub">
-            Internships, collaborations, or a conversation about ML. My inbox is open.
+            Internships, collaborations, or good conversation. My inbox is open.
           </p>
 
           <div className="contact-links">
