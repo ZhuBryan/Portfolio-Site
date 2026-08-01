@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import OscillatingWave from '../../components/OscillatingWave';
+import SwimBy from '../../components/SwimBy/SwimBy';
 import './Hero.css';
 
 /** Hand-drawn message-in-a-bottle, bobbing on the waterline. */
@@ -102,6 +103,8 @@ export default function Hero() {
       <div className="hero-sun" aria-hidden="true" />
       <div className="hero-cloud hero-cloud--a" aria-hidden="true" />
       <div className="hero-cloud hero-cloud--b" aria-hidden="true" />
+      {/* a sailfish gliding low near the waterline */}
+      <SwimBy top="82%" duration={58} tint="rgba(255, 255, 255, 0.16)" scale={1.5} species="sailfish" />
 
       <div className="hero-ui">
         {/* Portrait slot — sits right of the copy on desktop, above it on

@@ -91,49 +91,21 @@
   }
 }
 
-/* round fish: quicker tail flick + a small dorsal-fin wobble */
-.rf-tail {
+/* traced creatures (round fish, ray) are single solid contours with no
+   separable fin to articulate, so they get one gentle whole-body sway
+   instead of per-fin animation. */
+.traced-sway {
   transform-box: fill-box;
-  transform-origin: 100% 50%;
-  animation: rf-tail-beat 0.45s ease-in-out infinite alternate;
+  transform-origin: 50% 50%;
+  animation: traced-sway-rock 2.2s ease-in-out infinite alternate;
   animation-delay: var(--d, 0s);
 }
-@keyframes rf-tail-beat {
+@keyframes traced-sway-rock {
   from {
-    transform: rotate(-18deg);
+    transform: rotate(-3deg);
   }
   to {
-    transform: rotate(18deg);
-  }
-}
-.rf-dorsal {
-  transform-box: fill-box;
-  transform-origin: 50% 100%;
-  animation: rf-dorsal-wobble 0.9s ease-in-out infinite alternate;
-  animation-delay: var(--d, 0s);
-}
-@keyframes rf-dorsal-wobble {
-  from {
-    transform: rotate(-6deg);
-  }
-  to {
-    transform: rotate(6deg);
-  }
-}
-
-/* ray: slow wing flap, much lazier than a fish tail beat */
-.ray-tail {
-  transform-box: fill-box;
-  transform-origin: 50% 0%;
-  animation: ray-tail-sway 1.8s ease-in-out infinite alternate;
-  animation-delay: var(--d, 0s);
-}
-@keyframes ray-tail-sway {
-  from {
-    transform: rotate(-5deg);
-  }
-  to {
-    transform: rotate(5deg);
+    transform: rotate(3deg);
   }
 }
 

@@ -51,16 +51,15 @@ export function FishSchool({ tint }: { tint: string }) {
 }
 
 /* ── round tropical fish (chunkier body, dorsal hump) ──────────────────────
-   Traced from a public-domain tropical-fish silhouette (OpenClipart, via
-   freesvg.org/fish-black-silhouette) for proportions: rounder body, raised
-   dorsal fin, blunter nose than the slim minnow shape above. */
+   Outline traced with OpenCV contour extraction directly off a public-domain
+   tropical-fish silhouette (OpenClipart, via freesvg.org/fish-black-silhouette),
+   then normalized to local coordinates — real proportions, not a freehand
+   guess. */
 function RoundFish() {
   return (
-    <g>
-      <path className="rf-tail" d="M-14 0 L-25 -9 L-25 9 Z" />
-      <path d="M-14 0 C-14 -11 -3 -15 8 -14 C17 -13 22 -6 23 0 C22 6 17 13 8 14 C-3 15 -14 11 -14 0 Z" />
-      <path className="rf-dorsal" d="M1 -14 C5 -20 12 -20 14 -15 C10 -14 5 -13 1 -14 Z" />
-      <circle cx="15" cy="-4" r="1.6" fill="#03252f" />
+    <g className="traced-sway">
+      <path d="M19.0 0 L15.9 -4.7 L12.3 -2.2 L14.9 -5.2 L1.8 -10.9 L-0.6 -11.0 L0.2 -7.9 L-4.7 -5.9 L-7.5 -5.9 L-7.5 -3.9 L-10.8 -0.9 L-18.2 -7.8 L-18.2 -4.7 L-16.2 0.2 L-19.8 7.8 L-15.8 6.0 L-11.0 2.0 L-7.9 3.3 L-7.7 4.9 L-5.5 4.3 L2.1 5.9 L1.8 8.2 L3.2 8.1 L6.8 6.0 L15.2 3.7 Z" />
+      <circle cx="10.5" cy="-4.5" r="1.3" fill="#03252f" />
     </g>
   );
 }
@@ -96,14 +95,14 @@ export function RoundFishSchool({ tint }: { tint: string }) {
 }
 
 /* ── ray / manta (diamond wings, trailing tail) ────────────────────────────
-   Traced from a public-domain manta ray engraving (Wikimedia Commons, via
-   freesvg.org/devilfish) for proportions: wide flat diamond body with a
-   center front notch, thin tapering tail off the rear. */
+   Outline traced with OpenCV contour extraction directly off a public-domain
+   manta ray engraving (Wikimedia Commons, via freesvg.org/devilfish), then
+   normalized to local coordinates — includes the source drawing's own
+   forward-curling tail pose. */
 function Ray() {
   return (
-    <g>
-      <path d="M-42 2 L-6 -15 L0 -8 L6 -15 L42 2 Q20 10 0 7 Q-20 10 -42 2 Z" />
-      <path className="ray-tail" d="M-3 6 L3 6 L1 46 L-1 46 Z" />
+    <g className="traced-sway">
+      <path d="M-32.0 -30.3 L-24.5 -25.4 L-8.4 -36.6 L-0.1 -34.4 L-3.3 -26.8 L-11.1 -23.2 L-19.8 -5.4 L-31.6 0 L-42.0 0 L-32.0 7.2 L-12.5 13.0 L-4.4 24.7 L-3.9 19.2 L3.5 18.8 L4.3 24.4 L12.6 12.0 L42.0 0 L28.1 -1.1 L17.8 -6.4 L8.1 -24.4 L2.0 -26.6 L4.0 -34.9 L-0.1 -39.5 L-9.8 -38.5 L-24.6 -26.6 Z" />
     </g>
   );
 }
@@ -188,6 +187,55 @@ export function ShrimpSchool({ tint }: { tint: string }) {
   );
 }
 
+/* ── sailfish (sail dorsal fin, swoosh body) ────────────────────────────────
+   Body/tail/sail curves are the real path data from a public-domain sailfish
+   logo mark (OpenClipart, "sailfish" by redccshirt, via freesvg.org/segelfisch-b),
+   simplified to a single-tint silhouette: the body is stroked (matching how
+   the original artist actually drew it, as a thick open swoosh) rather than
+   filled, and the sail is the original's two filled triangles. */
+function Sailfish() {
+  return (
+    <g transform="translate(-216 -210)">
+      <path
+        d="m35.349 298.62s68.641-79.08 163.83-72.34c83.01 5.88 229.79 114.9 229.79 114.9"
+        fill="none"
+        strokeWidth="20"
+        strokeLinecap="round"
+      />
+      <path
+        d="m400.91 252.22l31.34 39.73-32.12 35.46"
+        fill="none"
+        strokeWidth="9"
+        strokeLinecap="round"
+      />
+      <path d="m60.881 253.94l121.28-185.1v135.74s-29.13 1.9-39.87 4.63c-22.54 5.71-26.13 8.15-39.88 14.81-11.394 5.52-41.529 29.92-41.529 29.92z" />
+      <path d="m343.22 267.6l-151.49-249.83 0.99 186.32s22.96-0.4 45.57 5.16c20.23 4.98 19 5.58 28.58 9.45 13.83 5.59 16.72 7.15 30.8 14.84 14.07 7.69 40.06 25.78 45.55 34.06z" />
+    </g>
+  );
+}
+
+const SAILFISH_POS = [{ x: 150, y: 40, s: 0.32 }];
+
+export function SailfishSchool({ tint }: { tint: string }) {
+  return (
+    <svg
+      viewBox="-30 -24 340 112"
+      width="300"
+      height="99"
+      aria-hidden="true"
+      fill={tint}
+      stroke={tint}
+      style={{ overflow: 'visible' }}
+    >
+      {SAILFISH_POS.map((f, i) => (
+        <g key={i} transform={`translate(${f.x} ${f.y}) scale(${f.s})`}>
+          <Sailfish />
+        </g>
+      ))}
+    </svg>
+  );
+}
+
 /**
  * A school of creatures patrolling its section — pure CSS animation, zero JS
  * per frame. The wrapper is a full-width strip; inside it a "runner" swims to
@@ -204,7 +252,7 @@ interface SwimByProps {
   reverse?: boolean;
   tint?: string;
   scale?: number;
-  species?: 'fish' | 'roundfish' | 'ray' | 'shrimp';
+  species?: 'fish' | 'roundfish' | 'ray' | 'shrimp' | 'sailfish';
 }
 
 const SPECIES: Record<NonNullable<SwimByProps['species']>, (props: { tint: string }) => JSX.Element> = {
@@ -212,6 +260,7 @@ const SPECIES: Record<NonNullable<SwimByProps['species']>, (props: { tint: strin
   roundfish: RoundFishSchool,
   ray: RaySchool,
   shrimp: ShrimpSchool,
+  sailfish: SailfishSchool,
 };
 
 const SCHOOL_W = 300; // school svg intrinsic width (px); scale only shrinks it
