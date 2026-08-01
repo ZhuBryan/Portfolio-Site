@@ -2,6 +2,7 @@ import { type CSSProperties } from 'react';
 import { motion } from 'framer-motion';
 import { skills, CATEGORY_COLOR, CATEGORY_LABEL, type SkillCategory } from '../../data/skills';
 import SwimBy from '../../components/SwimBy/SwimBy';
+import JellyBloom from '../../components/JellyBloom/JellyBloom';
 import DriftLayer from '../../components/DriftLayer/DriftLayer';
 import './Skills.css';
 
@@ -20,7 +21,7 @@ export default function Skills() {
       <div className="caustics" aria-hidden="true" />
       <DriftLayer />
       <SwimBy top="70%" duration={42} tint="rgba(220, 250, 255, 0.12)" scale={0.7} />
-      <SwimBy top="86%" duration={30} reverse delay={-10} tint="rgba(220, 250, 255, 0.16)" scale={0.65} species="jelly" />
+      <JellyBloom left="12%" top="9%" tint="rgba(220, 250, 255, 0.22)" scale={0.75} />
 
       <div className="section-inner">
         <p className="section-label">Skills</p>

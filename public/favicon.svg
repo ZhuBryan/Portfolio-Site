@@ -4,43 +4,33 @@
       <stop offset="0%" stop-color="#2fc2cf"/>
       <stop offset="100%" stop-color="#064a61"/>
     </linearGradient>
-    <linearGradient id="glyph" x1="0" y1="0" x2="0" y2="1">
+    <linearGradient id="wave" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#eafffb"/>
-      <stop offset="55%" stop-color="#aef0ea"/>
-      <stop offset="100%" stop-color="#3fd0c9"/>
+      <stop offset="45%" stop-color="#7fe3e6"/>
+      <stop offset="100%" stop-color="#1a8fb0"/>
     </linearGradient>
   </defs>
 
   <rect width="64" height="64" rx="14" fill="url(#bg)"/>
 
-  <!-- a "B" built from two wave-crest bulges curling off a straight stem -->
   <path
-    fill="url(#glyph)"
-    fill-rule="evenodd"
-    d="M14,10
-       L24,10
-       C34,10 46,12 48,20
-       C49,23 47,25 43,26
-       C40,27 30,28 24,28
-       C31,28 42,29 46,34
-       C50,40 50,46 46,50
-       C42,53 32,54 24,54
-       L14,54
-       Z
-       M25,15
-       C33,14 40,16 41,20
-       C42,23 38,25 30,25
-       C26,25 24,23 24,20
-       C24,17 24,16 25,15
-       Z
-       M25,33
-       C34,32 43,34 44,40
-       C45,45 40,48 31,48
-       C26,48 24,45 24,41
-       C24,37 24,34 25,33
-       Z"
+    fill="none"
+    stroke="url(#wave)"
+    stroke-width="7"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    d="M19 13 L19 51
+       M19 14
+       C27 11 37 12 41 18
+       C43 21 42 24 38 25
+       C45 26 48 22 47 18
+       M38 25
+       C33 27 25 27 19 27
+       M19 29
+       C30 27 44 29 49 37
+       C52 42 50 46 45 47
+       C52 49 56 44 54 39
+       M45 47
+       C39 50 28 50 19 50"
   />
-
-  <!-- a little foam curl where the top lobe breaks, so the "B" still reads as a wave crest -->
-  <path d="M40 15 Q46 17 46 21" fill="none" stroke="#f4fffd" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
 </svg>

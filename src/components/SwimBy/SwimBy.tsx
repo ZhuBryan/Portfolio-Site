@@ -50,101 +50,13 @@ export function FishSchool({ tint }: { tint: string }) {
   );
 }
 
-/* ── jellyfish (bell pulse + trailing tentacle sway) ──────────────────────── */
-function Jellyfish() {
-  return (
-    <g>
-      <path className="jelly-bell" d="M-20 0 C-20 -18 20 -18 20 0 C12 5 -12 5 -20 0 Z" />
-      <path className="jelly-t jelly-t1" fill="none" strokeWidth="2" strokeLinecap="round" d="M-14 3 C-16 13 -11 18 -13 27" />
-      <path className="jelly-t jelly-t2" fill="none" strokeWidth="2" strokeLinecap="round" d="M-5 4 C-6 15 -2 19 -4 29" />
-      <path className="jelly-t jelly-t3" fill="none" strokeWidth="2" strokeLinecap="round" d="M5 4 C6 15 2 19 4 29" />
-      <path className="jelly-t jelly-t4" fill="none" strokeWidth="2" strokeLinecap="round" d="M14 3 C16 13 11 18 13 27" />
-    </g>
-  );
-}
-
-const JELLY_POS = [
-  { x: 44, y: 26, s: 0.9 },
-  { x: 150, y: 12, s: 1.05 },
-  { x: 232, y: 34, s: 0.82 },
-];
-
-/** A small bloom of jellyfish, drifting rather than darting. */
-export function JellySchool({ tint }: { tint: string }) {
-  return (
-    <svg
-      viewBox="-30 -24 340 112"
-      width="300"
-      height="99"
-      aria-hidden="true"
-      fill={tint}
-      stroke={tint}
-      style={{ overflow: 'visible' }}
-    >
-      {JELLY_POS.map((j, i) => (
-        <g
-          key={i}
-          transform={`translate(${j.x} ${j.y}) scale(${j.s})`}
-          style={{ ['--d' as string]: `${(-i * 0.45).toFixed(2)}s` }}
-        >
-          <Jellyfish />
-        </g>
-      ))}
-    </svg>
-  );
-}
-
-/* ── ray (diamond wings, slow flap) ────────────────────────────────────────── */
-function Ray() {
-  return (
-    <g>
-      <path
-        className="ray-body"
-        d="M-38 0 Q-18 -16 0 -4 Q18 -16 38 0 Q18 8 0 3 Q-18 8 -38 0 Z"
-      />
-      <path className="ray-tail" fill="none" strokeWidth="2" strokeLinecap="round" d="M0 2 C8 4 18 5 27 3" />
-    </g>
-  );
-}
-
-const RAY_POS = [
-  { x: 64, y: 22, s: 1.1 },
-  { x: 200, y: 38, s: 0.85 },
-];
-
-/** A couple of rays gliding by, wings flapping slower than a fish's tail. */
-export function RaySchool({ tint }: { tint: string }) {
-  return (
-    <svg
-      viewBox="-30 -24 340 112"
-      width="300"
-      height="99"
-      aria-hidden="true"
-      fill={tint}
-      stroke={tint}
-      style={{ overflow: 'visible' }}
-    >
-      {RAY_POS.map((r, i) => (
-        <g
-          key={i}
-          transform={`translate(${r.x} ${r.y}) scale(${r.s})`}
-          style={{ ['--d' as string]: `${(-i * 0.5).toFixed(2)}s` }}
-        >
-          <Ray />
-        </g>
-      ))}
-    </svg>
-  );
-}
-
 /**
- * A creature patrolling its section — pure CSS animation, zero JS per frame.
- * The wrapper is a full-width strip; inside it a "runner" swims to an inset
- * margin, turns around, and swims back, forever, never leaving the section
- * rectangle. A ResizeObserver keeps the turn point (--patrol-x) in step with
- * the strip width, so nothing ever crosses out or gets clipped.
- * Drop one or two into any section that feels static; `species` picks the
- * silhouette (defaults to the fish school).
+ * A school of fish patrolling its section — pure CSS animation, zero JS per
+ * frame. The wrapper is a full-width strip; inside it a "runner" swims to an
+ * inset margin, turns around, and swims back, forever, never leaving the
+ * section rectangle. A ResizeObserver keeps the turn point (--patrol-x) in
+ * step with the strip width, so the school never crosses out or gets clipped.
+ * Drop one or two into any section that feels static.
  */
 interface SwimByProps {
   top: string;
@@ -153,14 +65,7 @@ interface SwimByProps {
   reverse?: boolean;
   tint?: string;
   scale?: number;
-  species?: 'fish' | 'jelly' | 'ray';
 }
-
-const SPECIES: Record<NonNullable<SwimByProps['species']>, (props: { tint: string }) => JSX.Element> = {
-  fish: FishSchool,
-  jelly: JellySchool,
-  ray: RaySchool,
-};
 
 const SCHOOL_W = 300; // FishSchool svg intrinsic width (px); scale only shrinks it
 const MARGIN = 24; // inset from each strip edge where the school turns around
@@ -172,9 +77,7 @@ export default function SwimBy({
   reverse = false,
   tint = 'rgba(6, 44, 60, 0.25)',
   scale = 1,
-  species = 'fish',
 }: SwimByProps) {
-  const Creature = SPECIES[species];
   const stripRef = useRef<HTMLDivElement>(null);
   const runnerRef = useRef<HTMLDivElement>(null);
 
@@ -214,7 +117,7 @@ export default function SwimBy({
           style={{ animationDuration: `${duration * 2}s`, animationDelay: `${legDelay}s` }}
         >
           <div style={{ transform: `scale(${scale})` }}>
-            <Creature tint={tint} />
+            <FishSchool tint={tint} />
           </div>
         </div>
       </div>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#831843"/>
+      <stop offset="55%" stop-color="#ec4899"/>
+      <stop offset="100%" stop-color="#fbcfe8"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <!-- folded paper crane, faceted low-poly style -->
+  <g opacity="0.95">
+    <polygon points="560,420 720,300 780,430" fill="#fce7f3"/>
+    <polygon points="560,420 780,430 660,520" fill="#f9a8d4"/>
+    <polygon points="780,430 900,360 940,470" fill="#f472b6"/>
+    <polygon points="780,430 940,470 820,540" fill="#db2777"/>
+    <polygon points="720,300 780,430 900,360" fill="#fbcfe8"/>
+    <polygon points="560,420 660,520 520,540" fill="#be185d"/>
+  </g>
+  <!-- crease-pattern lines overlay -->
+  <g stroke="#ffffff" stroke-width="2.5" opacity="0.55" fill="none">
+    <path d="M560 420 L780 430 M780 430 L900 360 M780 430 L940 470 M560 420 L660 520 M720 300 L780 430"/>
+  </g>
+  <!-- title -->
+  <text x="72" y="610" font-family="Georgia, serif" font-size="72" font-weight="600" fill="#ffffff">FoldForge</text>
+  <text x="74" y="652" font-family="system-ui, sans-serif" font-size="26" fill="#fce7f3">Differentiable origami, gradients to ~1e-8</text>
+</svg>

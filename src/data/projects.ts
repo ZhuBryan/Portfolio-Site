@@ -57,46 +57,47 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    id: 'vantage',
-    name: 'VANTAGE',
+    id: 'foldforge',
+    name: 'FoldForge',
     description:
-      'Satellite audit platform: 94% accuracy detecting deforestation via fine-tuned ResNet-18 on 27k+ images',
+      'Differentiable origami engine: hand-derived gradients accurate to ~1e-8, a photo-to-fold pipeline, and a live browser studio. Give it a photo, it figures out how to fold it.',
     longDescription:
-      'Built an end-to-end environmental audit platform that ingests satellite tiles, classifies land-use change with a fine-tuned ResNet-18 (94% accuracy on 27k+ EuroSAT images), and surfaces explainable per-pixel attribution via Grad-CAM. Real-time API + dashboard.',
-    accentColor: '#0ea5a0',
-    tagline: 'Seeing the forest change from orbit.',
+      'Give it a photo. It figures out how to fold it. FoldForge is a differentiable computational origami engine: it reads and validates crease patterns, folds them into 3D with a physically accurate rigid-panel simulator, and runs the whole thing backwards, from a target shape, or a photograph, to the crease pattern that folds into it. Built from scratch in NumPy, every gradient hand-derived and checked against finite differences to ~1e-8, including an implicit-function-theorem layer that differentiates a full physics solver at its energy equilibrium through a single linear solve. Feed it a photo shot at an angle and it detects the mirror axis and straightens the fold before folding it into a real, exportable, 3D-printable crease pattern.',
+    accentColor: '#ec4899',
+    tagline: 'Give it a photo. It figures out the fold.',
     metrics: [
-      { value: '94%', label: 'accuracy' },
-      { value: '27k+', label: 'satellite tiles' },
-      { value: '10', label: 'land-use classes' },
+      { value: '1e-8', label: 'gradient accuracy' },
+      { value: '8-200×', label: 'better surface fit' },
+      { value: '~2MB', label: 'browser studio' },
     ],
     mediaType: 'photo',
-    imageUrl: '/images/projects/vantage.svg',
-    gallery: ['/images/projects/vantage.svg'],
+    imageUrl: '/images/projects/foldforge.svg',
+    gallery: ['/images/projects/foldforge.svg'],
     tags: [
-      { label: 'PyTorch', tone: 'teal' },
-      { label: 'FastAPI', tone: 'teal' },
-      { label: 'Grad-CAM', tone: 'amber' },
-      { label: 'Reflex', tone: 'teal' },
+      { label: 'Python', tone: 'blue' },
+      { label: 'NumPy/SciPy', tone: 'teal' },
+      { label: 'PyTorch', tone: 'purple' },
+      { label: 'JAX', tone: 'amber' },
+      { label: 'Three.js', tone: 'purple' },
     ],
     deckCards: [
       {
-        type: 'VANTAGE Core',
-        title: 'Architecture',
+        type: 'Differentiable Core',
+        title: 'Analytic Gradients to ~1e-8',
         content:
-          'ResNet-18 backbone fine-tuned on EuroSAT, served from a FastAPI inference layer with a Reflex dashboard on top.',
+          'Hand-derived fold kinematics (Jacobians, sparse-Hessian implicit-function layer) differentiate a full rigid-panel physics simulator, verified against finite differences to ~1e-8, no autodiff framework required.',
       },
       {
-        type: 'EuroSAT Training Set',
-        title: 'Dataset Metrics',
+        type: 'Photo-to-Origami',
+        title: '8-200x Better Surface Fit',
         content:
-          '27k+ multispectral satellite tiles, 10 land-use classes, stratified split, 94% top-1 accuracy on the held-out set.',
+          'A 2D warped-Miura solver jointly optimizes flat crease pattern and folded surface via gradient descent, fed by GrabCut segmentation and MiDaS monocular depth estimation, turning any photo into a real, printable fold.',
       },
       {
-        type: 'Visual Interpretability',
-        title: 'Grad-CAM Heatmaps',
+        type: 'Live Studio',
+        title: 'Fold It in Your Browser',
         content:
-          'Per-pixel attribution overlays show where the model is locking onto deforestation signatures: auditable, not a black box.',
+          'A dependency-free ~2MB Three.js studio with its own in-browser physics fold solver: drag a photo on, watch it get segmented, depth-estimated, and folded live. No install, no server.',
       },
     ],
   },

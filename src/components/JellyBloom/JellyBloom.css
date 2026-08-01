@@ -1,0 +1,52 @@
+/* Fixed near-surface position; only a small local drift, never a full-width
+   patrol and never pulled down into deep water. */
+.jelly-bloom {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  animation: jelly-bloom-drift 9s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes jelly-bloom-drift {
+  from {
+    transform: translate(-5px, -4px);
+  }
+  to {
+    transform: translate(5px, 6px);
+  }
+}
+
+.jb-bell {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: jb-pulse 2.4s ease-in-out infinite alternate;
+}
+@keyframes jb-pulse {
+  from {
+    transform: scaleY(1);
+  }
+  to {
+    transform: scaleY(0.82);
+  }
+}
+
+.jb-t {
+  transform-box: fill-box;
+  transform-origin: 50% 0%;
+  animation: jb-sway 2.4s ease-in-out infinite alternate;
+  animation-delay: var(--d, 0s);
+}
+@keyframes jb-sway {
+  from {
+    transform: rotate(-8deg);
+  }
+  to {
+    transform: rotate(8deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jelly-bloom {
+    display: none;
+  }
+}
