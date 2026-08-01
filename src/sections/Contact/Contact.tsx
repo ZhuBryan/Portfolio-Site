@@ -34,8 +34,8 @@ export default function Contact() {
       <DriftLayer />
       {/* a jellyfish drifting near the surface behind the contact copy */}
       <JellyBloom left="76%" top="8%" tint="rgba(180, 235, 245, 0.24)" scale={0.8} />
-      {/* a shrimp darting low near the sand, alongside the crab */}
-      <SwimBy top="82%" duration={22} tint="rgba(180, 235, 245, 0.2)" scale={0.7} species="shrimp" />
+      {/* a small fish darting low near the sand, alongside the crab */}
+      <SwimBy top="82%" duration={26} tint="rgba(180, 235, 245, 0.2)" scale={0.5} species="roundfish" />
       {/* a small crab that scuttles along the sand away from the cursor
           (desktop/hover/no-reduced-motion; canvas-free, pointer-events none) */}
       <SandCrab sectionSelector="#contact" />

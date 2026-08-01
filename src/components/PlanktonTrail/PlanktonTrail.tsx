@@ -225,6 +225,13 @@ function PlanktonCanvas() {
       raf = requestAnimationFrame(step);
       const dtMs = Math.min(now - lastT, 100);
       lastT = now;
+      // Always clear, even when paused: this canvas is a fixed full-viewport
+      // overlay, so returning early *without* clearing (the previous bug)
+      // left the last-drawn frame of glowing motes frozen on screen — visible
+      // over whatever section happened to be in view — until visibility
+      // flipped back on. Scrolling away from Skills/Contact mid-bloom is
+      // exactly when that got stuck.
+      ctx.clearRect(0, 0, w, h);
       if (hidden || !(skillsVisible || contactVisible)) return;
       const dt = Math.min(dtMs / 16.67, 2.4); // 60fps ticks
 
@@ -232,7 +239,6 @@ function PlanktonCanvas() {
       cur.vx *= Math.pow(0.8, dt);
       cur.vy *= Math.pow(0.8, dt);
 
-      ctx.clearRect(0, 0, w, h);
       ctx.globalCompositeOperation = 'lighter';
 
       for (const m of pool) {

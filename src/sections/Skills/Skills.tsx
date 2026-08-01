@@ -21,6 +21,7 @@ export default function Skills() {
       <div className="caustics" aria-hidden="true" />
       <DriftLayer />
       <SwimBy top="70%" duration={42} tint="rgba(220, 250, 255, 0.12)" scale={0.7} species="roundfish" />
+      <SwimBy top="40%" duration={36} reverse delay={-15} tint="rgba(220, 250, 255, 0.1)" scale={0.6} />
       <JellyBloom left="12%" top="9%" tint="rgba(220, 250, 255, 0.22)" scale={0.75} />
 
       <div className="section-inner">
