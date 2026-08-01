@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { experience, STAT_OPEN, STAT_CLOSE } from '../../data/experience';
 import DriftLayer from '../../components/DriftLayer/DriftLayer';
 import BoidsSchool from '../../components/BoidsSchool/BoidsSchool';
+import BackgroundWhale from '../../components/BackgroundWhale/BackgroundWhale';
 import './Experience.css';
 
 /**
@@ -45,6 +46,9 @@ export default function Experience() {
     <section className="exp-section" id="experience">
       <div className="caustics" aria-hidden="true" />
       <DriftLayer />
+      {/* a huge, faint whale drifting once every couple minutes, far behind
+          everything else, for scale contrast against the small schooling fish */}
+      <BackgroundWhale top="38%" duration={120} tint="rgba(3, 25, 34, 0.09)" scale={1.1} />
       {/* the interactive flocking school swims full-bleed behind the dive-log
           cards (desktop, hover, no-reduced-motion — gated inside the component).
           Click the water to drop food and the school converges. */}

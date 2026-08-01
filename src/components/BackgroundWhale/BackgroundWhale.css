@@ -1,0 +1,27 @@
+/* One-way infinite drift, left to right, in viewport-width units so no
+   ResizeObserver/JS measurement is needed (unlike SwimBy's ping-pong patrol,
+   a distant whale doesn't need to convincingly "turn around"). */
+.bg-whale {
+  position: absolute;
+  left: -22vw;
+  z-index: 0;
+  pointer-events: none;
+  animation-name: bg-whale-drift;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+@keyframes bg-whale-drift {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(142vw);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-whale {
+    display: none;
+  }
+}

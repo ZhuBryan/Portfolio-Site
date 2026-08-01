@@ -91,6 +91,82 @@
   }
 }
 
+/* round fish: quicker tail flick + a small dorsal-fin wobble */
+.rf-tail {
+  transform-box: fill-box;
+  transform-origin: 100% 50%;
+  animation: rf-tail-beat 0.45s ease-in-out infinite alternate;
+  animation-delay: var(--d, 0s);
+}
+@keyframes rf-tail-beat {
+  from {
+    transform: rotate(-18deg);
+  }
+  to {
+    transform: rotate(18deg);
+  }
+}
+.rf-dorsal {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: rf-dorsal-wobble 0.9s ease-in-out infinite alternate;
+  animation-delay: var(--d, 0s);
+}
+@keyframes rf-dorsal-wobble {
+  from {
+    transform: rotate(-6deg);
+  }
+  to {
+    transform: rotate(6deg);
+  }
+}
+
+/* ray: slow wing flap, much lazier than a fish tail beat */
+.ray-tail {
+  transform-box: fill-box;
+  transform-origin: 50% 0%;
+  animation: ray-tail-sway 1.8s ease-in-out infinite alternate;
+  animation-delay: var(--d, 0s);
+}
+@keyframes ray-tail-sway {
+  from {
+    transform: rotate(-5deg);
+  }
+  to {
+    transform: rotate(5deg);
+  }
+}
+
+/* shrimp: quick tail-fan flick + a lazily trailing antenna */
+.shrimp-tail {
+  transform-box: fill-box;
+  transform-origin: 100% 50%;
+  animation: shrimp-tail-flick 0.5s ease-in-out infinite alternate;
+  animation-delay: var(--d, 0s);
+}
+@keyframes shrimp-tail-flick {
+  from {
+    transform: rotate(-10deg);
+  }
+  to {
+    transform: rotate(10deg);
+  }
+}
+.shrimp-antenna {
+  transform-box: fill-box;
+  transform-origin: 0% 100%;
+  animation: shrimp-antenna-sway 1.6s ease-in-out infinite alternate;
+  animation-delay: var(--d, 0s);
+}
+@keyframes shrimp-antenna-sway {
+  from {
+    transform: rotate(-6deg);
+  }
+  to {
+    transform: rotate(6deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .swimby {
     display: none;

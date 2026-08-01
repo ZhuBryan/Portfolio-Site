@@ -1,36 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#2fc2cf"/>
-      <stop offset="100%" stop-color="#064a61"/>
-    </linearGradient>
-    <linearGradient id="wave" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#eafffb"/>
-      <stop offset="45%" stop-color="#7fe3e6"/>
-      <stop offset="100%" stop-color="#1a8fb0"/>
+      <stop offset="0%" stop-color="#1aa8b8"/>
+      <stop offset="100%" stop-color="#053b4d"/>
     </linearGradient>
   </defs>
 
   <rect width="64" height="64" rx="14" fill="url(#bg)"/>
 
-  <path
-    fill="none"
-    stroke="url(#wave)"
-    stroke-width="7"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    d="M19 13 L19 51
-       M19 14
-       C27 11 37 12 41 18
-       C43 21 42 24 38 25
-       C45 26 48 22 47 18
-       M38 25
-       C33 27 25 27 19 27
-       M19 29
-       C30 27 44 29 49 37
-       C52 42 50 46 45 47
-       C52 49 56 44 54 39
-       M45 47
-       C39 50 28 50 19 50"
-  />
+  <!-- a plain, easy background: one calm horizon wave + a couple of bubbles -->
+  <path d="M0 46 C 10 42, 20 50, 32 46 C 44 42, 54 50, 64 46 L64 64 L0 64 Z"
+        fill="#ffffff" opacity="0.07"/>
+  <circle cx="12" cy="14" r="2" fill="#ffffff" opacity="0.18"/>
+  <circle cx="19" cy="9" r="1.2" fill="#ffffff" opacity="0.16"/>
+
+  <!-- BZ monogram -->
+  <text
+    x="32" y="40"
+    text-anchor="middle"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="27"
+    font-weight="700"
+    letter-spacing="-0.5"
+    fill="#f3fffd"
+  >BZ</text>
 </svg>
