@@ -91,6 +91,51 @@
   }
 }
 
+/* jellyfish: bell contracts, tentacles trail with a lazy sway */
+.jelly-bell {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: jelly-pulse 2.6s ease-in-out infinite alternate;
+}
+@keyframes jelly-pulse {
+  from {
+    transform: scaleY(1);
+  }
+  to {
+    transform: scaleY(0.84);
+  }
+}
+.jelly-t {
+  transform-box: fill-box;
+  transform-origin: 50% 0%;
+  animation: jelly-sway 2.6s ease-in-out infinite alternate;
+  animation-delay: var(--d, 0s);
+}
+@keyframes jelly-sway {
+  from {
+    transform: rotate(-7deg);
+  }
+  to {
+    transform: rotate(7deg);
+  }
+}
+
+/* ray: slow wing flap, much lazier than the fish tail beat */
+.ray-body {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: ray-flap 1.7s ease-in-out infinite alternate;
+  animation-delay: var(--d, 0s);
+}
+@keyframes ray-flap {
+  from {
+    transform: scaleY(0.8);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .swimby {
     display: none;

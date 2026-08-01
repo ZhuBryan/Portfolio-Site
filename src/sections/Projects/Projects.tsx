@@ -20,7 +20,7 @@ export default function Projects() {
           reef (the interactive flocking canvas lives in Experience). */}
       <div className="caustics" aria-hidden="true" />
       <SwimBy top="16%" duration={38} tint="rgba(6, 44, 60, 0.22)" scale={0.9} />
-      <SwimBy top="58%" duration={34} reverse delay={-18} tint="rgba(6, 44, 60, 0.16)" scale={0.7} />
+      <SwimBy top="58%" duration={46} reverse delay={-18} tint="rgba(6, 44, 60, 0.16)" scale={0.8} species="ray" />
       {/* the shy octopus rises from behind the coral and watches the cursor */}
       <ReefPeeker />
       <Coral />

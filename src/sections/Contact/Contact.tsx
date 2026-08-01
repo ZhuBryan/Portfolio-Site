@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import DriftLayer from '../../components/DriftLayer/DriftLayer';
 import SandCrab from '../../components/SandCrab/SandCrab';
+import SwimBy from '../../components/SwimBy/SwimBy';
 import './Contact.css';
 
 const MailIcon = (
@@ -30,6 +31,8 @@ export default function Contact() {
   return (
     <section className="contact-section" id="contact">
       <DriftLayer />
+      {/* a jellyfish drifting in the deep water behind the contact copy */}
+      <SwimBy top="18%" duration={44} tint="rgba(180, 235, 245, 0.14)" scale={0.75} species="jelly" />
       {/* a small crab that scuttles along the sand away from the cursor
           (desktop/hover/no-reduced-motion; canvas-free, pointer-events none) */}
       <SandCrab sectionSelector="#contact" />

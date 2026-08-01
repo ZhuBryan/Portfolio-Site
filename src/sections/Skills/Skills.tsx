@@ -20,6 +20,7 @@ export default function Skills() {
       <div className="caustics" aria-hidden="true" />
       <DriftLayer />
       <SwimBy top="70%" duration={42} tint="rgba(220, 250, 255, 0.12)" scale={0.7} />
+      <SwimBy top="86%" duration={30} reverse delay={-10} tint="rgba(220, 250, 255, 0.16)" scale={0.65} species="jelly" />
 
       <div className="section-inner">
         <p className="section-label">Skills</p>

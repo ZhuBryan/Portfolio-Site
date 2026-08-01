@@ -28,9 +28,9 @@ const W_SEP = 1.4;
 const W_ALI = 1.0;
 const W_COH = 0.75;
 const W_WANDER = 0.35;
-const W_EDGE = 1.2;
+const W_EDGE = 2.6;
 const W_FOOD = 1.9;
-const EDGE_MARGIN = 80;
+const EDGE_MARGIN = 130;
 const DT_CAP = 2.4; // in 60fps ticks
 
 // feeding
@@ -259,11 +259,13 @@ function BoidsCanvas() {
           }
         }
 
-        // soft edges: gentle inward steer ramping inside the margin
-        if (f.x < EDGE_MARGIN) steer(1, 0, W_EDGE * (1 - f.x / EDGE_MARGIN));
-        if (f.x > w - EDGE_MARGIN) steer(-1, 0, W_EDGE * (1 - (w - f.x) / EDGE_MARGIN));
-        if (f.y < EDGE_MARGIN) steer(0, 1, W_EDGE * (1 - f.y / EDGE_MARGIN));
-        if (f.y > h - EDGE_MARGIN) steer(0, -1, W_EDGE * (1 - (h - f.y) / EDGE_MARGIN));
+        // edges: steer away from the border, ramping up quadratically as the
+        // fish nears it (soft far out, firm right at the wall) so it turns
+        // well before ever reaching the boundary rather than nosing into it.
+        if (f.x < EDGE_MARGIN) { const t = 1 - f.x / EDGE_MARGIN; steer(1, 0, W_EDGE * t * t); }
+        if (f.x > w - EDGE_MARGIN) { const t = 1 - (w - f.x) / EDGE_MARGIN; steer(-1, 0, W_EDGE * t * t); }
+        if (f.y < EDGE_MARGIN) { const t = 1 - f.y / EDGE_MARGIN; steer(0, 1, W_EDGE * t * t); }
+        if (f.y > h - EDGE_MARGIN) { const t = 1 - (h - f.y) / EDGE_MARGIN; steer(0, -1, W_EDGE * t * t); }
 
         f.vx += fx;
         f.vy += fy;
@@ -275,9 +277,14 @@ function BoidsCanvas() {
 
         f.x += f.vx * dt;
         f.y += f.vy * dt;
-        // hard clamp as a last resort (soft steer should prevent reaching this)
-        f.x = Math.max(-20, Math.min(w + 20, f.x));
-        f.y = Math.max(-20, Math.min(h + 20, f.y));
+        // hard clamp exactly at the canvas edge — true last resort, zero
+        // overflow allowed (unlike a buffered clamp, an escape here would be
+        // visibly outside the section). Kill the outward velocity component
+        // too so a pinned fish doesn't keep shoving into the wall every tick.
+        if (f.x < 0) { f.x = 0; if (f.vx < 0) f.vx = 0; }
+        else if (f.x > w) { f.x = w; if (f.vx > 0) f.vx = 0; }
+        if (f.y < 0) { f.y = 0; if (f.vy < 0) f.vy = 0; }
+        else if (f.y > h) { f.y = h; if (f.vy > 0) f.vy = 0; }
 
         f.excite *= exciteDecay;
         f.startle *= startleDecay;
