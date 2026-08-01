@@ -1,10 +1,46 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="14" fill="#060f1c"/>
-  <ellipse cx="32" cy="34" rx="18" ry="13" fill="#1aaf7a"/>
-  <ellipse cx="32" cy="33" rx="13" ry="9" fill="#0d8a5e"/>
-  <ellipse cx="32" cy="24" rx="8" ry="6.5" fill="#1aaf7a"/>
-  <circle cx="29" cy="23" r="1.6" fill="#e8f4f0"/>
-  <circle cx="35" cy="23" r="1.6" fill="#e8f4f0"/>
-  <circle cx="29" cy="23" r="0.7" fill="#0a1628"/>
-  <circle cx="35" cy="23" r="0.7" fill="#0a1628"/>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2fc2cf"/>
+      <stop offset="100%" stop-color="#064a61"/>
+    </linearGradient>
+    <linearGradient id="glyph" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#eafffb"/>
+      <stop offset="55%" stop-color="#aef0ea"/>
+      <stop offset="100%" stop-color="#3fd0c9"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+
+  <!-- a "B" built from two wave-crest bulges curling off a straight stem -->
+  <path
+    fill="url(#glyph)"
+    fill-rule="evenodd"
+    d="M14,10
+       L24,10
+       C34,10 46,12 48,20
+       C49,23 47,25 43,26
+       C40,27 30,28 24,28
+       C31,28 42,29 46,34
+       C50,40 50,46 46,50
+       C42,53 32,54 24,54
+       L14,54
+       Z
+       M25,15
+       C33,14 40,16 41,20
+       C42,23 38,25 30,25
+       C26,25 24,23 24,20
+       C24,17 24,16 25,15
+       Z
+       M25,33
+       C34,32 43,34 44,40
+       C45,45 40,48 31,48
+       C26,48 24,45 24,41
+       C24,37 24,34 25,33
+       Z"
+  />
+
+  <!-- a little foam curl where the top lobe breaks, so the "B" still reads as a wave crest -->
+  <path d="M40 15 Q46 17 46 21" fill="none" stroke="#f4fffd" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
 </svg>
